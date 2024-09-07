@@ -1,0 +1,42 @@
+.app-navigation {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 40px;
+
+    .app-navigation__logo {
+        color: $primary;
+        font-family: "YesevaOne", sans-serif;
+        font-size: 1.5rem;
+    }
+
+    .app-navigation__menu {
+        list-style-type: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        li {
+            a {
+                padding: 0 25px;
+                font-size: 13px;
+                font-family: "VarelaRound", sans-serif;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: #fff;
+            }
+        }
+    }
+}
+
+.app-locale {
+
+    a {
+        text-decoration: none;
+    }
+    img {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+}
