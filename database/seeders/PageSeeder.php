@@ -9,8 +9,11 @@ class PageSeeder extends Seeder
 {
     public function run(): void
     {
-        Page::factory()
-            ->count(5)
-            ->create();
+        Page::factory()->home()->create();
+        Page::factory()->about()->create();
+        Page::factory()->menu()->create();
+        Page::factory()->restaurant()->create();
+        Page::factory()->hotel()->create();
+        Page::factory()->contact()->create();
     }
 }

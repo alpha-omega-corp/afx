@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Page;
+use App\Enums\Page as PageEnum;
 use Illuminate\View\View;
 
 class GuestController extends Controller
 {
     public function index(): View
     {
-        return view('app.home');
+        return view('app.home', [
+            'page' => Page::where('name', PageEnum::HOME)->first(),
+        ]);
     }
 
     public function about(): View

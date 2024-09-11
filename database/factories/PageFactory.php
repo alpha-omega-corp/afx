@@ -18,7 +18,7 @@ class PageFactory extends Factory
     public function definition(): array
     {
         return [
-            'image' => 'storage/afx-dummy.jpg',
+            'image' => 'storage/hero-bg.jpg',
         ];
     }
 
@@ -35,5 +35,47 @@ class PageFactory extends Factory
                ])->create();
 
         });
+    }
+
+    public function home(): self
+    {
+        return $this->state([
+            'name' => \App\Enums\Page::HOME,
+        ]);
+    }
+
+    public function about(): self
+    {
+        return $this->state([
+            'name' => \App\Enums\Page::ABOUT,
+        ]);
+    }
+
+    public function menu(): self
+    {
+        return $this->state([
+            'name' => \App\Enums\Page::MENU,
+        ]);
+    }
+
+    public function restaurant(): self
+    {
+        return $this->state([
+            'name' => \App\Enums\Page::RESTAURANT,
+        ]);
+    }
+
+    public function hotel(): self
+    {
+        return $this->state([
+            'name' => \App\Enums\Page::HOTEL,
+        ]);
+    }
+
+    public function contact(): self
+    {
+        return $this->state([
+            'name' => \App\Enums\Page::CONTACT,
+        ]);
     }
 }
