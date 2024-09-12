@@ -1,9 +1,8 @@
 
 <div class="carousel__frame">
     <div class="carousel__section">
-        <div id="{{$name}}" x-data="carousel('{{$name}}', '{{$perView}}')">
-            <div class="{{$container ? 'container' : ''}} position-relative">
-
+        <div id="{{$name}}" x-data="carousel('{{$name}}', '{{$count}}')">
+            <div class="container position-relative">
 
                 <!-- Controls -->
                 <div class="glide__arrows pointer-events-none" data-glide-el="controls">
@@ -32,7 +31,7 @@
                 <div class="glide__">
                     <div class="glide__track" data-glide-el="track">
                         <ul class="glide__slides">
-                            {{$items}}
+                            {{$slot}}
                         </ul>
                     </div>
                 </div>

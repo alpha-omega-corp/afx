@@ -12,6 +12,12 @@ class GuestController extends Controller
     {
         return view('app.home', [
             'page' => Page::where('name', PageEnum::HOME)->first(),
+            'images' => [
+                'storage/afx-dummy.jpg',
+                'storage/afx-dummy.jpg',
+                'storage/afx-dummy.jpg',
+                'storage/afx-dummy.jpg',
+            ]
         ]);
     }
 

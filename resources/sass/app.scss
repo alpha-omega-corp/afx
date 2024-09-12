@@ -1,6 +1,30 @@
 @import "components/navigation";
 @import "components/page";
+@import "components/carousel";
+@import "components/animation";
+
+@import "pages/home";
 
 body {
     background-color: $dark;
+
+    h2 {
+        color: $primary;
+        font-family: "YesevaOne", sans-serif;
+        font-size: 3rem;
+        text-align: center;
+        margin-top: 40px;
+    }
 }
+
+.app-section {
+    padding: 40px;
+
+    .section-padding {
+        padding-top: 400px;
+    }
+}
+
+
+
+

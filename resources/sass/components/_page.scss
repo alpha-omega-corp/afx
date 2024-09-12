@@ -30,7 +30,6 @@
             bottom: 50%;
             top: 50%;
             width: 100%;
-            height: 100%;
             color: #efa765;
             text-align: center;
             z-index: 2;
@@ -38,13 +37,36 @@
             h1 {
                 font-size: 75px;
                 font-family: "YesevaOne", sans-serif;
-                margin: 0;
             }
         }
     }
 
     .app-page__content {
+        z-index: 3;
+    }
 
+    .app-page__footer {
+        position: relative;
+
+        .parallax {
+            height: 600px;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .parallax-overlay {
+            background-color: transparent;
+            background-image: linear-gradient(180deg, rgba(29, 25, 34, 0.5098039216) 0%, #1d1922 98%);
+            opacity: 1;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1;
+            height: 100%;
+            width: 100%;
+        }
     }
 
 }

@@ -15,4 +15,14 @@
 @yield('content')
 
 </body>
+
+<footer class="app-footer">
+    <div class="container">
+
+        <div class="">
+            wwww
+        </div>
+
+    </div>
+</footer>
 </html>

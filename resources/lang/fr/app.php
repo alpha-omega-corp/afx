@@ -2,4 +2,6 @@
 
 return [
     'title' => 'Auberge De Founex',
+    'booking' => 'Faites une réservation via WhatsApp',
+    'delicacies' => 'Délicatesses Vedette',
 ];

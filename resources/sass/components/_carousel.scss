@@ -1,0 +1,44 @@
+.carousel__frame {
+    position: relative;
+
+    .glide__arrows-container {
+        width: 100%;
+        padding-left: 20px;
+        padding-right: 20px;
+
+        .glide__arrows {
+            display: flex;
+            justify-content: center;
+
+            .arrow-content {
+                border: 1px solid $blue;
+                padding: 20px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+
+    .glide__arrow {
+        svg {
+            width: 40px;
+            height: 40px;
+            color: #ffffff;
+        }
+    }
+
+    .glide__arrow--left {
+        position: absolute;
+        left: -80px;
+        bottom: 0;
+        top: 0;
+    }
+
+    .glide__arrow--right {
+        position: absolute;
+        right: -80px;
+        bottom: 0;
+        top: 0;
+    }
+}
