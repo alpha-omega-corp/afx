@@ -47,3 +47,8 @@ lightGallery(document.getElementById('lightgallery'), {
     speed: 500,
     thumbnail: true,
 });
+
+
+import.meta.glob([
+    '../images/**',
+]);
