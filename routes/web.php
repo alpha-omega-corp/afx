@@ -7,7 +7,7 @@ use App\Http\Controllers\GuestController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/locale/{locale}', [LocaleController::class, 'locale'])->name('locale');
 
@@ -24,6 +24,7 @@ Route::controller(PageController::class)
     });
 
 Route::controller(AdminController::class)
+    ->middleware(AdminMiddleware::class)
     ->name('admin.')
     ->prefix('admin')
     ->group(function() {
