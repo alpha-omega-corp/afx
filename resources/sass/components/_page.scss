@@ -1,5 +1,6 @@
 .app-page {
 
+
     .app-page__header {
         position: relative;
         height: 100vh;
@@ -43,6 +44,7 @@
 
     .app-page__content {
         z-index: 3;
+        color: $gray;
     }
 
     .app-page__footer {

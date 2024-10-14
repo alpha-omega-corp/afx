@@ -12,16 +12,24 @@
 }
 
 $primary: #efa765;
+$danger: $red-600;
 $dark: #1d1922;
 $light: #2d2d38;
 $gray: #b8b8be;
+$info: #4e73df;
 
 $theme-colors: (
+    "info": $info,
     "primary": $primary,
+    "danger": $danger,
     "dark": $dark,
     "light": $light,
-    "gray": $gray
+    "gray": $gray,
 );
+
+$modal-content-bg: $dark;
+$modal-content-color: $gray;
+
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
 @import "../../node_modules/bootstrap/scss/maps";
@@ -46,4 +54,5 @@ $theme-colors: (
 @import "../../node_modules/bootstrap/scss/utilities/api";
 
 @import "../../node_modules/@glidejs/glide/src/assets/sass/glide.core";
+@import "../../node_modules/lightgallery/scss/lightgallery";
 

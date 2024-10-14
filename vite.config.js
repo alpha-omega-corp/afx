@@ -21,8 +21,10 @@ export default defineConfig({
             scss: {
                 additionalData: `
                     @import "./resources/sass/bootstrap";
-                `
+                `,
             },
         },
-    }
+    },
+
+
 });

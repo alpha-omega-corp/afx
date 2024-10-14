@@ -10,6 +10,6 @@ class LocaleScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('locale', app()->getLocale());
+        $builder->where('lang', app()->getLocale());
     }
 }

@@ -22,8 +22,7 @@
 
 .description {
     display: flex;
-    justify-content: space-between;
-    gap: 80px;
+    justify-content: space-around;
     padding: 20px 30px;
 
     .description-image {
@@ -40,10 +39,10 @@
         }
 
         img {
-            width: 650px;
+            width: 450px;
             height: 520px;
             object-fit: cover;
-            object-position: center;
+            object-position: left;
             top: 0;
             position: absolute;
             z-index: 2
@@ -52,6 +51,7 @@
 
     p {
         padding-top: 40px;
+        padding-left: 100px;
         max-width: 400px;
         color: $gray;
         font-family: "VarelaRound", sans-serif;

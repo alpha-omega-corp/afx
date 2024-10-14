@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\Locale;
+use App\Enums\Language;
 use App\Models\Page;
 use App\Models\PageLocale;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -29,9 +29,9 @@ class PageFactory extends Factory
                ->for($page)
                ->count(2)
                ->sequence(fn(Sequence $sequence) => [
-                   'locale' => $sequence->index == 0
-                        ? Locale::FR
-                        : Locale::EN
+                   'lang' => $sequence->index == 0
+                        ? Language::FR
+                        : Language::EN
                ])->create();
 
         });

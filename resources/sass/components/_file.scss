@@ -1,0 +1,61 @@
+.file-upload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+
+    svg {
+        width: 40px;
+        height: 40px;
+        color: $primary;
+    }
+
+    span {
+        color: $gray;
+    }
+}
+
+.file-preview {
+    position: relative;
+    overflow: hidden;
+
+    .file-label {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        display: flex;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+
+        .preview-icon {
+            width: 44px;
+            padding: 12px;
+            background-color: $primary;
+        }
+
+        .preview-label {
+            padding: 14px;
+            display: flex;
+            justify-content: space-around;
+        }
+    }
+
+    img {
+        object-fit: cover;
+        width: 100%;
+    }
+}
+
+.preview-edit {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+
+    svg {
+        width: 20px;
+        height: 20px;
+        color: #ffffff;
+    }
+}

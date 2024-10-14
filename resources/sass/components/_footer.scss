@@ -4,8 +4,27 @@
     color: #fff;
     padding: 40px;
     text-align: center;
-    font-family: "VarelaRound", sans-serif;
     font-size: 13px;
-    text-transform: uppercase;
     z-index: 2;
+
+    .app-footer__section {
+        text-align: center;
+
+        li {
+            list-style-type: none;
+        }
+
+        h3 {
+            color: $primary;
+            font-family: "YesevaOne", sans-serif;
+        }
+
+        p, a  {
+            color: $gray;
+            font-size: 1rem;
+            text-decoration: none;
+            font-family: "VarelaRound", sans-serif;
+            font-weight: bold;
+        }
+    }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gallery;
+use App\Models\MenuSection;
 use App\Models\Page;
 use App\Enums\Page as PageEnum;
 use Illuminate\View\View;
+use App\Enums\Gallery as GalleryEnum;
 
 class GuestController extends Controller
 {
@@ -12,28 +15,24 @@ class GuestController extends Controller
     {
         return view('app.home', [
             'page' => Page::where('name', PageEnum::HOME)->first(),
-            'images' => [
-                'storage/afx-dummy.jpg',
-                'storage/afx-dummy.jpg',
-                'storage/afx-dummy.jpg',
-                'storage/afx-dummy.jpg',
-            ]
+            'gallery' => Gallery::where('name', GalleryEnum::DELICACIES)->first(),
         ]);
-    }
-
-    public function about(): View
-    {
-        return view('app.about');
     }
 
     public function menu(): View
     {
-        return view('app.menu');
+        return view('app.menu', [
+            'page' => Page::where('name', PageEnum::MENU)->first(),
+            'sections' => MenuSection::all(),
+        ]);
     }
 
     public function restaurant(): View
     {
-        return view('app.restaurant');
+        return view('app.restaurant', [
+            'page' => Page::where('name', PageEnum::RESTAURANT)->first(),
+            'gallery' => Gallery::where('name', GalleryEnum::RESTAURANT)->first(),
+        ]);
     }
 
     public function hotel(): View

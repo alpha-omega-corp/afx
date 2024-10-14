@@ -16,13 +16,6 @@
 
 </body>
 
-<footer class="app-footer">
-    <div class="container">
+<x-footer />
 
-        <div class="">
-            wwww
-        </div>
-
-    </div>
-</footer>
 </html>

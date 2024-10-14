@@ -1,0 +1,52 @@
+.menu-section {
+    padding: 80px 0;
+
+    .menu-section__title {
+        color: $primary;
+        font-family: "YesevaOne", sans-serif;
+        position: absolute;
+        top: 40%;
+        text-align: center;
+        width: 100%;
+        font-size: 3.5rem;
+        margin: 0;
+    }
+
+    .menu-section__item {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+
+        .menu-item__title {
+            color: $primary;
+            font-family: "YesevaOne", sans-serif;
+        }
+
+        .menu-item__description {
+            color: $gray;
+        }
+
+        .menu-item__content {
+            .menu-item__price {
+                color: $gray;
+                font-size: 20px;
+            }
+        }
+    }
+}
+
+.menu-parallax {
+    position: relative;
+    height: 400px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .menu-parallax__overlay {
+        background-image: linear-gradient(180deg, rgba(29, 25, 34, 0.5098039216) 0%, #1d1922 98%);
+        width: 100%;
+        height: 100%;
+        content: "";
+    }
+}

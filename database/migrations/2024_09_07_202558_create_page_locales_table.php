@@ -12,7 +12,7 @@ return new class extends Migration
         Schema::create('page_locales', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Page::class);
-            $table->enum('locale', \App\Enums\Locale::values());
+            $table->enum('lang', \App\Enums\Locale::values());
             $table->string('title');
             $table->text('content');
             $table->timestamps();

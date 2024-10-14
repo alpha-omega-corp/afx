@@ -17,33 +17,34 @@
             <div class="description">
 
                 <div class="description-image animation-grow">
-                    <img src="{{asset($page->image)}}" alt="{{$page->image}}"/>
+                    <img src="{{Vite::image('afx-building.png')}}" alt="{{$page->image}}"/>
                 </div>
 
                 <div class="d-flex flex-column">
                     <p>{{$page->locale->content}}</p>
-                    <h2 class="text">{{__('app.delicacies')}}</h2>
-                </div>
 
+                </div>
             </div>
         </x-section>
 
 
         <x-section
             :color="Color::LIGHT"
+            :title="__('app.delicacies')"
+            :padding="true"
         >
-            <x-carousel name="foods" :count="4">
-                @foreach($images as $image)
-                    <li class="glide__slide">
-                        <div class="delicacies">
-                            <img src="{{asset($image)}}" alt="{{$image}}"/>
-                        </div>
-                    </li>
-                @endforeach
-            </x-carousel>
+            <div class="animation-grow">
+                <x-carousel name="foods" :count="4">
+                    @foreach($gallery->items as $item)
+                        <li class="glide__slide">
+                            <div class="delicacies">
+                                <img src="{{asset($item->image)}}" alt=""/>
+                            </div>
+                        </li>
+                    @endforeach
+                </x-carousel>
+            </div>
         </x-section>
-
-
 
     </x-page>
 @endsection
@@ -71,7 +72,6 @@
 
                 this.$nextTick(() => {
                     glide.mount(GlideControls)
-                    console.log('mounted')
                 })
             },
         }))

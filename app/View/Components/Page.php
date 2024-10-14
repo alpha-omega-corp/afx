@@ -8,7 +8,7 @@ use Illuminate\View\Component;
 
 class Page extends Component
 {
-    public function __construct(public string $image)
+    public function __construct(public string $image, public bool $isLarge = false)
     {
         //
     }

@@ -1,0 +1,47 @@
+.admin-page {
+    position: relative;
+
+    .admin-page__action {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        z-index: 2;
+    }
+
+    .admin-page__image {
+        position: relative;
+
+        img {
+            height: 400px;
+            width: 100%;
+        }
+
+        .admin-page__image-overlay {
+            background-color: transparent;
+            background-image: linear-gradient(180deg, rgba(29, 25, 34, 0.5098039216) 0%, #1d1922 98%);
+            opacity: 1;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1;
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    .admin-page__title {
+        color: $primary;
+        font-family: "YesevaOne", sans-serif;
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        left: 0;
+        top: 30%;
+        z-index: 3;
+        padding: 0 20px;
+    }
+
+
+
+}
+

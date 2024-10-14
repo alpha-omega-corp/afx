@@ -1,0 +1,25 @@
+.card {
+    height: 100%;
+    background-color: $light;
+
+    .card-body {
+        position: relative;
+        padding: 0;
+        color: $gray;
+
+        .card-title__container {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ffffff;
+            padding: 20px;
+            background-color: $dark;
+
+            .card-title {
+                font-family: "VarelaRound", sans-serif;
+                padding: 10px 0;
+            }
+        }
+
+
+    }
+}
