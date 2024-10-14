@@ -17,7 +17,7 @@ class PageController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('public');
+            $path = $request->file('image')->store('public/app');
 
             $page->update([
                 'image' => str_replace('public', 'storage', $path),

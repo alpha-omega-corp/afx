@@ -13,7 +13,7 @@ class GalleryItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'image' => 'storage/hero-bg.jpg',
+            'image' => 'storage/mock/afx-dummy.jpg',
         ];
     }
 }

@@ -16,7 +16,7 @@ class GalleryController extends Controller
         $request->validated();
 
         foreach ($request->file('items') as $item) {
-            $path = $item->store('public');
+            $path = $item->store('public/app');
 
             GalleryItem::create([
                 'image' => str_replace('public', 'storage', $path),
