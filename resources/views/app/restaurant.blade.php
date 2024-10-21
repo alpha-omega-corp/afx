@@ -8,19 +8,12 @@
             <h1>{{$page->locale->title}}</h1>
         </x-slot:title>
 
-        <div class="container text-center p-4">
-            {{$page->locale->content}}
-        </div>
-
-        <div id="lightgallery">
-            @foreach($gallery->items as $item)
-                <a href="{{asset($item->image)}}" >
-                    <img alt=".." src="{{asset($item->image)}}" />
-                </a>
-            @endforeach
-        </div>
-
+        <x-gallery.index
+            :gallery="$gallery"
+            :description="$page->locale->content"
+        />
 
     </x-page>
+
 @endsection
 

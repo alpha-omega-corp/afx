@@ -37,7 +37,10 @@ class GuestController extends Controller
 
     public function hotel(): View
     {
-        return view('app.hotel');
+        return view('app.hotel', [
+            'page' => Page::where('name', PageEnum::HOTEL)->first(),
+            'gallery' => Gallery::where('name', GalleryEnum::HOTEL)->first(),
+        ]);
     }
 
     public function contact(): View

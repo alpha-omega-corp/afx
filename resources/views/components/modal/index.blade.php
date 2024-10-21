@@ -17,10 +17,10 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
 
-                    @if($route)
-                        <button type="submit" class="btn btn-primary text-white">Submit</button>
-                    @else
-                        {{$submit ?? ''}}
+                    @if(isset($submit))
+                        {{$submit}}
+                    @elseif($route)
+                        <button type="submit" class="btn btn-success text-white">Submit</button>
                     @endif
                 </div>
             </form>

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
@@ -23,6 +24,9 @@ Route::controller(PageController::class)
         Route::put('/{page}', 'update')->name('update');
     });
 
+
+
+
 Route::controller(AdminController::class)
     ->middleware(AdminMiddleware::class)
     ->name('admin.')
@@ -33,6 +37,14 @@ Route::controller(AdminController::class)
         Route::get('/restaurant', 'restaurant')->name('restaurant');
         Route::get('/hotel', 'hotel')->name('hotel');
 
+        Route::controller(MenuController::class)
+            ->name('menu.')
+            ->prefix('menu')
+            ->group(function() {
+                Route::delete('/', 'destroy')->name('delete');
+                Route::put('/{menu}', 'update')->name('update');
+                Route::post('/', 'create')->name('create');
+            });
     });
 
 Route::controller(GalleryController::class)

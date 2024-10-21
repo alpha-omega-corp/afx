@@ -1,7 +1,5 @@
 <x-card :title="__('app.gallery')">
 
-
-
     <div x-data="images('gallery-photo')" class="app-gallery">
         <div class="app-gallery__actions">
             <x-modal.open :name="Modal::ADMIN_GALLERY" :action="Action::CREATE" :icon="Icon::CREATE"/>

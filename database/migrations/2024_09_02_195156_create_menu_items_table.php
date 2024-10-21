@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignIdFor(MenuSection::class);
             $table->string('title');
             $table->string('description');
-            $table->float('price', 2);
+            $table->float('price', 4);
             $table->timestamps();
         });
     }

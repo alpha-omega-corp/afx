@@ -13,8 +13,6 @@ class MenuSection extends Model
 
     protected $fillable = [
         'title',
-        'description',
-        'price',
     ];
 
     protected static function newFactory(): MenuSectionFactory

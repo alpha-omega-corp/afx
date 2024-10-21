@@ -48,6 +48,51 @@
 <script>
     document.addEventListener('alpine:init', () => {
 
+        Alpine.store('repeater', {
+            removed: [],
+        })
+
+        Alpine.data('repeater', (data) => ({
+            values: [],
+            created: [],
+
+            init() {
+                if (data) {
+                    this.values = JSON.parse(data)
+                }
+                console.log(this.values)
+            },
+            add() {
+                this.values.push({
+                    item: '',
+                });
+
+                this.created.push(this.values.length - 1)
+            },
+            remove(index) {
+                console.log(this.values[index].id)
+                this.$store.repeater.removed.push(this.values[index].id)
+                this.values.splice(index, 1);
+            },
+        }))
+
+        Alpine.data('repeaterDelete', () => ({
+
+            async remove() {
+                const items = this.$store.repeater.removed
+                if (items.length === 0) return
+
+                await $.ajax({
+                    url: '{{route('admin.menu.delete')}}',
+                    type: 'DELETE',
+                    data : {
+                        "_token": $('#csrf-token')[0].content,
+                        "items": items
+                    },
+                })
+            }
+        }))
+
         Alpine.data('images', (input) => ({
             input: document.getElementById(input),
             selectables: document.querySelectorAll('.gallery-select'),

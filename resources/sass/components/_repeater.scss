@@ -1,0 +1,22 @@
+.app-repeater {
+
+    .app-repeater-header {
+        margin-top: 20px;
+        margin-bottom: 20px;
+
+
+    }
+
+    .app-repeater-item {
+        display: flex;
+        gap: 20px;
+        padding-top: 20px;
+        border-top: 1px dotted $primary;
+    }
+
+    .app-repeater-add {
+        color: #ffffff;
+        width: 100%;
+        border: 1px solid $primary;
+    }
+}

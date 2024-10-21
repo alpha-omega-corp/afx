@@ -17,6 +17,7 @@ class MenuItem extends Model
         'title',
         'description',
         'price',
+        'menu_section_id',
     ];
 
     protected static function newFactory(): MenuItemFactory

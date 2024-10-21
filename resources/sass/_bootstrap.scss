@@ -12,6 +12,7 @@
 }
 
 $primary: #efa765;
+$success: #1cc88a;
 $danger: $red-600;
 $dark: #1d1922;
 $light: #2d2d38;
@@ -21,6 +22,7 @@ $info: #4e73df;
 $theme-colors: (
     "info": $info,
     "primary": $primary,
+    "success": $success,
     "danger": $danger,
     "dark": $dark,
     "light": $light,
@@ -54,5 +56,8 @@ $modal-content-color: $gray;
 @import "../../node_modules/bootstrap/scss/utilities/api";
 
 @import "../../node_modules/@glidejs/glide/src/assets/sass/glide.core";
-@import "../../node_modules/lightgallery/scss/lightgallery";
+@import "../../node_modules/lightgallery/scss/lightgallery-core";
+@import "../../node_modules/lightgallery/scss/lg-thumbnail";
+@import "../../node_modules/lightgallery/scss/lg-zoom";
+
 

@@ -10,4 +10,6 @@ enum Icon: string
     case TITLE = 'heroicon-o-paper-clip';
     case CREATE = 'heroicon-s-plus-circle';
     case DELETE = 'heroicon-s-trash';
+    case PRICE = 'heroicon-o-currency-dollar';
+    case INFO = 'heroicon-o-information-circle';
 }

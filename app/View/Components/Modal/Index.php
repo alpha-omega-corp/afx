@@ -18,7 +18,9 @@ class Index extends Component
         public ModalEnum $name,
         public ActionEnum $action,
         public ?string $route = null,
-        public mixed $iterator = null
+        public mixed $iterator = null,
+        public ?string $func = null,
+
     )
     {
         $this->id = ModalHelper::getId($name, $action, $iterator);

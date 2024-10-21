@@ -2,6 +2,6 @@
 
 @section('content')
     <x-admin :page="$page">
-            <x-gallery :gallery="$gallery"/>
+            <x-gallery.manage :gallery="$gallery"/>
     </x-admin>
 @endsection

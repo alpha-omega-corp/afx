@@ -4,11 +4,13 @@ import * as Popper from '@popperjs/core'
 import Glide, {Autoplay, Breakpoints, Controls} from "@glidejs/glide/dist/glide.modular.esm.js";
 import Alpine from 'alpinejs';
 import focus from '@alpinejs/focus';
-import $ from "jquery";
+import $ from 'jquery';
+import PhotoSwipeLightbox from '../../node_modules/photoswipe/dist/photoswipe-lightbox.esm.js';
+import PhotoSwipe from '../../node_modules/photoswipe/src/js/photoswipe.js';
 
-import lightGallery from 'lightgallery';
-window.lightGallery = lightGallery;
+import '../../node_modules/photoswipe/src/photoswipe.css';
 
+window.Gallery = PhotoSwipeLightbox
 window.$ = $;
 window.Popper = Popper;
 window.Glide = Glide;
@@ -17,6 +19,16 @@ window.GlideControls = {Controls, Autoplay, Breakpoints};
 window.Alpine = Alpine;
 Alpine.plugin(focus);
 Alpine.start();
+
+const gallery = new PhotoSwipeLightbox({
+    gallerySelector: '#gallery',
+    children: 'a',
+    pswpModule: PhotoSwipe,
+});
+
+
+gallery.init();
+
 
 animation('animation-grow');
 
@@ -42,12 +54,6 @@ $(window).ready(function () {
             .css("transition", "0.5s");
     });
 });
-
-lightGallery(document.getElementById('lightgallery'), {
-    speed: 500,
-    thumbnail: true,
-});
-
 
 import.meta.glob([
     '../images/**',
