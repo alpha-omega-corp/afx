@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class DeleteMenuRequest extends FormRequest
+class CreateContactRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -16,7 +16,10 @@ class DeleteMenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'items' => 'required|array',
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'phone' => 'required|string',
+            'message' => 'required|string',
         ];
     }
 }

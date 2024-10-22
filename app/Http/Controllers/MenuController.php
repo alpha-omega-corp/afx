@@ -4,14 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMenuRequest;
 use App\Http\Requests\DeleteMenuRequest;
+use App\Http\Requests\DeleteMenuItemRequest;
 use App\Http\Requests\UpdateMenuRequest;
 use App\Models\MenuItem;
 use App\Models\MenuSection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
-
 class MenuController extends Controller
 {
     public function create(CreateMenuRequest $request): RedirectResponse
@@ -59,7 +57,7 @@ class MenuController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(DeleteMenuRequest $request): JsonResponse
+    public function remove(DeleteMenuItemRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -70,5 +68,12 @@ class MenuController extends Controller
         return response()->json([
             'message' => $data
         ]);
+    }
+
+    public function destroy(MenuSection $section) {
+        $section->items()->delete();
+        $section->delete();
+
+        return redirect()->back();
     }
 }

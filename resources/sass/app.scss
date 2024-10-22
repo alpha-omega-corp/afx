@@ -15,9 +15,19 @@
 @import "pages/home";
 @import "pages/menu";
 @import "pages/admin";
+@import "pages/contact";
 
 body {
     background-color: $dark;
+
+    a {
+        color: $gray;
+        text-decoration-color: $primary;
+
+        &:hover {
+            color: $primary;
+        }
+    }
 
     h2 {
         color: $primary;
@@ -30,6 +40,13 @@ body {
         color: $primary;
         font-family: "YesevaOne", sans-serif;
         font-size: 1.75rem;
+    }
+
+    table {
+        .table-item {
+            border-bottom: 1px solid #ffffff;
+            padding-bottom: 2px;
+        }
     }
 }
 

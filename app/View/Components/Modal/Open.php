@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Modal;
 
+use App\Enums\Action;
 use App\Enums\Icon;
 use App\Helpers\ModalHelper;
 use Closure;
@@ -29,7 +30,7 @@ class Open extends Component
             ActionEnum::CREATE => 'primary',
             ActionEnum::UPDATE => 'info',
             ActionEnum::DELETE => 'danger',
-            default => '',
+            ActionEnum::READ => 'secondary',
         };
     }
 

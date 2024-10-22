@@ -2,21 +2,18 @@
 
 namespace App\View\Components;
 
-use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use App\Models\Page;
 
 class Card extends Component
 {
     public function __construct(
-        public \App\Models\Page $page,
+        public Page $page,
         public string $title,
-    )
-    {
-        //
-    }
+    ) {}
 
-    public function render(): View|Closure|string
+    public function render(): View
     {
         return view('components.card');
     }

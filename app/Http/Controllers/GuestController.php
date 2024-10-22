@@ -45,6 +45,8 @@ class GuestController extends Controller
 
     public function contact(): View
     {
-        return view('app.contact');
+        return view('app.contact', [
+            'page' => Page::where('name', PageEnum::CONTACT)->first(),
+        ]);
     }
 }

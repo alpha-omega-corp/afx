@@ -20,7 +20,24 @@
                                 :icon="Icon::EDIT"
                                 :iterator="$loop->index"
                             />
+
+                            <x-modal.open
+                                :name="Modal::ADMIN_MENU"
+                                :action="Action::DELETE"
+                                :icon="Icon::DELETE"
+                                :iterator="$loop->index"
+                            />
                         </div>
+
+                        <x-modal.index
+                            :name="Modal::ADMIN_MENU"
+                            :action="Action::DELETE"
+                            :iterator="$loop->index"
+                            :route="route('admin.menu.delete', $section)"
+                            title="delete menu section"
+                        >
+                            <p class="p-4">Delete <b>{{$section->title}}</b> ?</p>
+                        </x-modal.index>
 
                         <x-modal.index
                             :name="Modal::ADMIN_MENU"
@@ -117,7 +134,6 @@
                 name="title"
                 :label="__('form.title')"
                 :icon="Icon::TITLE"
-
             />
         </div>
 

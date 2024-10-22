@@ -1,6 +1,9 @@
 <div class="app-page">
 
-    <div class="app-page__header">
+    <div @class([
+        'app-page__header',
+        'app-page__header-small' => !$isLarge
+    ])>
 
         <div style="background-image: url({{url($image)}})" class="parallax"></div>
 

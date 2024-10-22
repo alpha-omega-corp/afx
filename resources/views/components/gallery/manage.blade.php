@@ -20,9 +20,9 @@
         </x-modal.index>
 
         <x-modal.index
+            :title="__('action.delete')"
             :name="Modal::ADMIN_GALLERY"
             :action="Action::DELETE"
-            title="delete action"
         >
             <p class="p-4">Delete <span x-text="selected.length"></span> images ?</p>
 
@@ -31,13 +31,12 @@
             </x-slot:submit>
         </x-modal.index>
 
-
         <div class="app-gallery__container">
             @foreach($gallery->items as $item)
                 <div class="app-gallery__image">
                     <img src="{{asset($item->image)}}" alt="" @click="select('{{$item->id}}')">
-                    <div class="app-gallery__image-overlay">
 
+                    <div class="app-gallery__image-overlay">
                         <div class="form-check">
                             <input class="form-check-input gallery-select" id="select-{{$item->id}}" type="checkbox" value="">
                         </div>

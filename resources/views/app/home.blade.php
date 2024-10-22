@@ -1,7 +1,7 @@
 @extends('layouts.guest')
 
 @section('content')
-    <x-page image="{{$page->image}}">
+    <x-page image="{{$page->image}}" :is-large="true">
 
         <x-slot:title>
             <h1>{{$page->locale->title}}</h1>

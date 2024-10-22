@@ -31,6 +31,7 @@
 <script type="module">
     document.getElementById('imageSelect-{{$name}}').onchange = () => {
         const [file] = document.getElementById('imageSelect-{{$name}}').files
+
         if (file) {
             document.getElementById('imageLabel-{{$name}}').style.display = 'block';
             document.getElementById('imagePreview-{{$name}}').src = URL.createObjectURL(file)

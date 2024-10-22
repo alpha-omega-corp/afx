@@ -1,12 +1,22 @@
 .app-page {
 
+    .app-page__header-small {
+        height: 75vh !important;
+    }
+
+    .app-page__description {
+        text-align: center;
+        font-size: 1.5rem;
+        margin-bottom: 100px;
+        font-family: "VarelaRound", sans-serif;
+    }
 
     .app-page__header {
         position: relative;
         height: 100vh;
 
         .parallax {
-            height: 100vh;
+            height: 100%;
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
@@ -45,6 +55,7 @@
     .app-page__content {
         z-index: 3;
         color: $gray;
+        background-color: $dark;
     }
 
     .app-page__footer {

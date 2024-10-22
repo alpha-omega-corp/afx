@@ -7,7 +7,11 @@
             <h1>{{$page->locale->title}}</h1>
         </x-slot:title>
 
-            @foreach($sections as $section)
+        <div class="app-page__description container">
+            {{$page->locale->content}}
+        </div>
+
+        @foreach($sections as $section)
             <div class="menu-section">
 
                 <div class="menu-parallax" style="background-image: url({{Vite::image('afx-menu.jpg')}})">
@@ -30,8 +34,5 @@
                 </div>
             </div>
         @endforeach
-
-
     </x-page>
-
 @endsection

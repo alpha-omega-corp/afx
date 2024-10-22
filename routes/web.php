@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\LocaleController;
@@ -36,12 +37,14 @@ Route::controller(AdminController::class)
         Route::get('/menu', 'menu')->name('menu');
         Route::get('/restaurant', 'restaurant')->name('restaurant');
         Route::get('/hotel', 'hotel')->name('hotel');
+        Route::get('/contact', 'contact')->name('contact');
 
         Route::controller(MenuController::class)
             ->name('menu.')
             ->prefix('menu')
             ->group(function() {
-                Route::delete('/', 'destroy')->name('delete');
+                Route::delete('/{section}', 'destroy')->name('delete');
+                Route::delete('/', 'remove')->name('remove');
                 Route::put('/{menu}', 'update')->name('update');
                 Route::post('/', 'create')->name('create');
             });
@@ -73,5 +76,11 @@ Route::controller(GuestController::class)
             Route::get('/hotel', 'hotel')->name('hotel');
             Route::get('/contact', 'contact')->name('contact');
         });
+    });
+
+Route::controller(ContactController::class)
+    ->name('contact.')
+    ->group(function() {
+        Route::post('/', 'store')->name('store');
     });
 

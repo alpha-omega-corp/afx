@@ -1,0 +1,39 @@
+.app-contact {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    padding: 80px 20px;
+
+    &__informations {
+
+        &--title {
+            font-size: 38px;
+            margin-bottom: 60px;
+            color: $primary;
+        }
+
+        &--item {
+            margin-bottom: 20px;
+
+            svg, img {
+                width: 30px;
+                height: 30px;
+                color: $info;
+                margin-right: 20px;
+            }
+        }
+    }
+
+    &__form {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        width: 500px;
+        padding: 40px;
+    }
+
+    &__icon {
+        width: 100px;
+        height: 100px;
+        color: $primary;
+    }
+}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contact;
 use App\Models\Gallery;
 use App\Models\MenuSection;
 use App\Models\Page;
@@ -40,6 +41,14 @@ class AdminController extends Controller
         return view('app.admin.hotel', [
             'page' => Page::where('name', PageEnum::HOTEL)->first(),
             'gallery' => Gallery::where('name', GalleryEnum::HOTEL)->first(),
+        ]);
+    }
+
+    public function contact(): View
+    {
+        return view('app.admin.contact', [
+            'page' => Page::where('name', PageEnum::HOTEL)->first(),
+            'messages' => Contact::all()->reverse(),
         ]);
     }
 }

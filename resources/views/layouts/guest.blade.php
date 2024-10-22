@@ -18,4 +18,23 @@
 
 <x-footer />
 
+<script>
+    document.addEventListener('alpine:init', () => {
+
+        Alpine.data('gallery', (count) => ({
+
+            init() {
+                for (let i = 0; i < count; i++) {
+                    const image = document.getElementById(`galleryImage${i}`)
+                    image.parentElement.setAttribute('data-pswp-height', image.naturalHeight)
+                    image.parentElement.setAttribute('data-pswp-width', image.naturalWidth)
+                }
+            }
+
+        }))
+
+    });
+
+</script>
+
 </html>

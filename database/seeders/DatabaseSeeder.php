@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             PageSeeder::class,
             MenuSeeder::class,
             GallerySeeder::class,
+            ContactSeeder::class
         ]);
     }
 }

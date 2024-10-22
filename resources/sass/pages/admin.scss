@@ -20,29 +20,42 @@
     }
 
     .app-admin__navigation {
-        position: fixed;
-        left: 70px;
         z-index: 3;
         display: flex;
         flex-direction: column;
-        gap: 40px;
         height: 100vh;
         margin: 0;
-        padding: 40px 0 0;
+        width: 100%;
+        padding: 0;
+
+        .active-item {
+            background-color: rgba(0, 0, 0, 0.2);
+
+            a {
+                color: $primary;
+            }
+        }
 
         li {
             position: relative;
             list-style-type: none;
             text-align: center;
+            padding: 20px;
+
+            a {
+                text-transform: uppercase;
+                font-size: 13px;
+                color: $gray;
+                text-decoration: none;
+                font-family: "VarelaRound", sans-serif;
+
+                &:hover {
+                    color: $primary;
+                }
+            }
         }
 
-        a {
-            text-transform: uppercase;
-            font-size: 13px;
-            color: $gray;
-            text-decoration: none;
-            font-family: "VarelaRound", sans-serif;
-        }
+
     }
 
     .app-admin__content {
@@ -71,12 +84,14 @@
             position: absolute;
             top: 20px;
             right: 20px;
+            display: flex;
+            gap: 10px;
         }
 
         .admin-menu__section-title {
             color: $primary;
             font-family: "YesevaOne", sans-serif;
-            margin-bottom: 10px;
+            margin-bottom: 30px;
         }
 
         li {

@@ -2,13 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\Language;
 use Closure;
 use Illuminate\Support\Facades\Request;
 
 class LocaleMiddleware
 {
     private static string $defaultLang = 'fr';
-    private static array $languages = ['en', 'fr'];
 
     public function handle($request, Closure $next)
     {
@@ -25,7 +25,7 @@ class LocaleMiddleware
         $path = Request::path();
         $segments = explode('/', $path);
 
-        if (!empty($segments[0]) && in_array($segments[0], self::$languages)) {
+        if (!empty($segments[0]) && in_array($segments[0], Language::values())) {
             return $segments[0];
         }
 

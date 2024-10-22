@@ -1,7 +1,10 @@
 <div class="input-group mb-3">
-    <div class="input-group-text">
-        @svg($icon->value, 'w-6 h-6')
-    </div>
+    @if($icon)
+        <div class="input-group-text">
+            @svg($icon->value, 'w-6 h-6')
+        </div>
+    @endif
+
 
     <div class="form-floating">
         @if($model)

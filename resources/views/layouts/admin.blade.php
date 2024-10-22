@@ -33,6 +33,9 @@
                 <li @class(['active-item' => Request::is('admin/hotel')])>
                     <a href="{{route('admin.hotel')}}">{{__('nav.hotel')}}</a>
                 </li>
+                <li @class(['active-item' => Request::is('admin/contact')])>
+                    <a href="{{route('admin.contact')}}">{{__('nav.contact')}}</a>
+                </li>
             </ul>
         </div>
 
@@ -83,7 +86,7 @@
                 if (items.length === 0) return
 
                 await $.ajax({
-                    url: '{{route('admin.menu.delete')}}',
+                    url: '{{route('admin.menu.remove')}}',
                     type: 'DELETE',
                     data : {
                         "_token": $('#csrf-token')[0].content,
