@@ -82,5 +82,6 @@ Route::controller(ContactController::class)
     ->name('contact.')
     ->group(function() {
         Route::post('/', 'store')->name('store');
+        Route::delete('/', 'destroy')->name('delete');
     });
 

@@ -31,6 +31,7 @@
                         :name="Modal::ADMIN_CONTACT"
                         :title="__('app.contact')"
                         :action="Action::DELETE"
+                        :route="route('contact.delete', $contact)"
                         :iterator="$loop->index"
                     >
                         delete?

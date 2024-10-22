@@ -19,28 +19,26 @@
         align-items: center;
         margin: 0;
 
+        .active-item {
+            a {
+                color: $primary !important;
+            }
 
+            &:after {
+                content: "";
+                width: 10px;
+                height: 10px;
+                border-radius: 13px;
+                background: $primary;
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
 
         li {
             position: relative;
-
-            .active-item {
-                a {
-                    color: $primary !important;
-                }
-
-                &:after {
-                    content: "";
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 13px;
-                    background: $primary;
-                    position: absolute;
-                    bottom: -10px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                }
-            }
 
             a {
                 padding: 0 25px;
