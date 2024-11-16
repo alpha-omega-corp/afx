@@ -20,6 +20,8 @@ class Index extends Component
         public ?string $route = null,
         public mixed $iterator = null,
         public ?string $func = null,
+        public bool $padding = true,
+
 
     )
     {

@@ -8,4 +8,5 @@ return [
     'page' => 'Page',
     'gallery' => 'Gallery',
     'menu' => 'Menu',
+    'contact' => 'contact details'
 ];

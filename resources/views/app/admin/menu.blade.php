@@ -92,7 +92,7 @@
                                     <span @remove.window="remove()"></span>
 
                                     <button
-                                        class="btn btn-success text-white"
+                                        class="btn btn-success"
                                         type="submit"
                                         @click="$dispatch('remove')">
                                         Submit
@@ -108,7 +108,7 @@
                             {{$section->title}}
                         </h5>
 
-                        <ul>
+                        <ul class="admin-menu__section-content">
                             @foreach($section->items as $item)
                                 <li>
                                     {{$item->title}}
@@ -123,8 +123,8 @@
 
 
     <x-modal.index
-        :name="Modal::ADMIN_MENU"
         :action="Action::CREATE"
+        :name="Modal::ADMIN_MENU"
         :route="route('admin.menu.create')"
         :title="__('app.menu-create')"
     >

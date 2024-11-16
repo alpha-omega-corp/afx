@@ -8,8 +8,6 @@
             <h1>{{$page->locale->title}}</h1>
         </x-slot:title>
 
-
-
         <div class="container">
 
             <div class="app-page__description">
@@ -19,7 +17,7 @@
             <div class="app-contact">
 
                 <div class="app-contact__informations">
-                    <h3 class="app-contact__informations--title">{{__('app.coordinates')}}</h3>
+                    <h3 class="app-contact__informations--title">{{__('app.contact')}}</h3>
 
                     <div class="app-contact__informations--item">
                         @svg(Icon::PIN->value)

@@ -63,7 +63,6 @@
                 if (data) {
                     this.values = JSON.parse(data)
                 }
-                console.log(this.values)
             },
             add() {
                 this.values.push({
@@ -73,7 +72,6 @@
                 this.created.push(this.values.length - 1)
             },
             remove(index) {
-                console.log(this.values[index].id)
                 this.$store.repeater.removed.push(this.values[index].id)
                 this.values.splice(index, 1);
             },
@@ -117,7 +115,6 @@
                 })
 
                 this.selected = selected
-                console.log(this.selected)
             },
 
             select(id) {

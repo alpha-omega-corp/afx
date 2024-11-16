@@ -10,7 +10,10 @@
                 @csrf
                 @method($action->value)
 
-                <div class="modal-body">
+                <div @class([
+                    'modal-body',
+                    'p-4' => $padding
+                ])>
                     {{$slot}}
                 </div>
 

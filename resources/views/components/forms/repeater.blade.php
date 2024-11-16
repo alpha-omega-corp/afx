@@ -1,12 +1,12 @@
 <div class="app-repeater" x-data="repeater('{{json_encode($items)}}')">
-    <div class="app-repeater-header">
+    <div class="app-repeater__header">
         <h6>{{$title}}</h6>
     </div>
 
-    <div class="repeater-content">
+    <div class="app-repeater__content">
 
         <template x-for="(item, index) in values" :key="index">
-            <div class="app-repeater-item">
+            <div class="app-repeater__content--item">
                 <div class="w-100">
                     {{$slot}}
 

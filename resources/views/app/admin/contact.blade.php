@@ -22,8 +22,16 @@
                         </td>
                         <td>{{$contact->created_at}}</td>
                         <td class="d-flex justify-content-end gap-2 p-4">
-                            <x-modal.open :name="Modal::ADMIN_CONTACT" :action="Action::READ" :icon="Icon::READ" :iterator="$loop->index"/>
-                            <x-modal.open :name="Modal::ADMIN_CONTACT" :action="Action::DELETE" :icon="Icon::DELETE" :iterator="$loop->index"/>
+
+                            <x-modal.open :name="Modal::ADMIN_CONTACT"
+                                          :action="Action::READ"
+                                          :icon="Icon::READ"
+                                          :iterator="$loop->index"/>
+
+                            <x-modal.open :name="Modal::ADMIN_CONTACT"
+                                          :action="Action::DELETE"
+                                          :icon="Icon::DELETE"
+                                          :iterator="$loop->index"/>
                         </td>
                     </tr>
 
@@ -44,15 +52,11 @@
                         :iterator="$loop->index"
                     >
                         <div class="p-4 bg-white">
-
                             <p class="text-dark">{{$contact->message}}</p>
-
                         </div>
                     </x-modal.index>
                 @endforeach
             </table>
-
         </x-card>
-
     </x-admin>
 @endsection

@@ -2,7 +2,7 @@
     {{$description}}
 </div>
 
-<div class="pswp-gallery" id="gallery" x-data="gallery('{{count($gallery->items)}}')">
+<div class="pswp-gallery container" id="gallery" x-data="gallery('{{count($gallery->items)}}')">
     @foreach($gallery->items as $item)
         <div class="position-relative">
             <a class="pswp-gallery__item" href="{{$item->image}}" target="_blank">
