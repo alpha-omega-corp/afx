@@ -7,8 +7,12 @@
     .app-page__description {
         text-align: center;
         font-size: 1.5rem;
-        margin-bottom: 100px;
+        margin-bottom: 60px;
         font-family: "VarelaRound", sans-serif;
+
+        @include media-breakpoint-down(lg) {
+            font-size: 1.25rem;
+        }
     }
 
     .app-page__header {

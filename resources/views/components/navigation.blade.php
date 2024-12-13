@@ -1,54 +1,26 @@
 @php use \Illuminate\Support\Facades\Request; @endphp
 
-<div class="app-navigation">
+<div class="app-navigation" x-data="{open: false}" >
 
-    <div class="app-navigation__logo">
-        <span>Auberge De</span>
-        <span>Founex</span>
+    <div class="d-flex justify-content-between">
+        <div class="app-navigation__logo">
+            <span>Auberge De</span>
+            <span>Founex</span>
+        </div>
+
+        <div @click="open = !open" class="app-navigation__icon">
+            @svg('heroicon-o-bars-3')
+        </div>
     </div>
 
-    <div class="d-flex gap-4">
-        <ul class="app-navigation__menu">
-            <li @class(['active-item' => Request::is('/')])>
-                <a
-                   href="{{route(__('route.home'))}}">
-                    {{__('nav.home')}}
-                </a>
-            </li>
-            <li @class(['active-item' => Request::is('la-carte')])>
-                <a
-                      href="{{route(__('route.menu'))}}">
-                    {{__('nav.menu')}}
-                </a>
-            </li>
-            <li @class(['active-item' => Request::is('restaurant')])>
-                <a
-                   href="{{route(__('route.restaurant'))}}">
-                    {{__('nav.restaurant')}}
-                </a>
-            </li>
-            <li @class(['active-item' => Request::is('hotel')])>
-                <a
-                   href="{{route(__('route.hotel'))}}">
-                    {{__('nav.hotel')}}
-                </a>
-            </li>
-            <li @class(['active-item' => Request::is('contact')])>
-                <a
-                   href="{{route(__('route.contact'))}}">
-                    {{__('nav.contact')}}
-                </a>
-            </li>
-            <li @class(['active-item' => Request::is('admin/**') || Request::is('admin')])>
-                @if(\Illuminate\Support\Facades\Auth::user())
-                    <a href="{{route('admin.home')}}">Admin</a>
-                @else
-                    <x-modal.open :name="Modal::APP_LOGIN" :action="Action::CREATE" :title="__('app.login')"/>
-                @endif
-            </li>
-        </ul>
+    <ul class="app-navigation__menu-desktop">
+        @include('app.partials.navigation')
+    </ul>
 
-        <x-locale/>
+    <div class="app-navigation__menu-mobile">
+        <ul x-show="open" @click.outside="open = false">
+            @include('app.partials.navigation')
+        </ul>
     </div>
 </div>
 

@@ -16,10 +16,10 @@
 
             <div class="app-contact">
 
-                <div class="app-contact__informations">
-                    <h3 class="app-contact__informations--title">{{__('app.contact')}}</h3>
+                <div class="app-contact__information">
+                    <h3 class="app-contact__information--title">{{__('app.contact')}}</h3>
 
-                    <div class="app-contact__informations--item">
+                    <div class="app-contact__information--item">
                         @svg(Icon::PIN->value)
                         <a href="https://www.google.ch/maps/place/Grand-Rue+31,+1297+Founex/@46.3325566,6.1902006,17z/">
                             Grand'Rue 31 1297 Founex
@@ -28,14 +28,14 @@
 
                     <hr>
 
-                    <div class="app-contact__informations--item">
+                    <div class="app-contact__information--item">
                         @svg(Icon::PHONE->value)
                         <a href="tel:022 776 10 29">
                             022 776 10 29
                         </a>
                     </div>
 
-                    <div class="app-contact__informations--item">
+                    <div class="app-contact__information--item">
                         @svg(Icon::EMAIL->value)
                         <a href="mailto:aubergedefounex@bluewin.ch">
                             aubergedefounex@bluewin.ch
@@ -44,19 +44,21 @@
 
                     <hr>
 
-                    <div class="app-contact__informations--item">
+                    <div class="app-contact__information--item">
                         <img src="{{Vite::image('facebook.png')}}" alt="contact icon"/>
                         <a href="https://www.facebook.com/AubergeFounex" target="_blank">Auberge de Founex</a>
                     </div>
 
-                    <div class="app-contact__informations--item">
+                    <div class="app-contact__information--item">
                         <img src="{{Vite::image('instagram.png')}}" alt="contact icon"/>
                         <a href="https://www.instagram.com/auberge_de_founex/" target="_blank">auberge_de_founex</a>
                     </div>
 
                 </div>
 
+
                 <form method="POST" action="{{route('contact.store')}}" class="app-contact__form shadow-lg">
+                    <p class="app-contact__text">Contactez nous par téléphone ou à l'aide du formulaire ci-dessous</p>
 
                     <div class="d-flex justify-content-center pb-4">
                         <img class="app-contact__icon" src="{{Vite::image('contact.png')}}" alt="contact icon"/>

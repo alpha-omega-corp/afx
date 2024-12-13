@@ -2,9 +2,18 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: 40px;
     position: fixed;
     z-index: 3;
+    padding: 20px;
+
+    @include media-breakpoint-up(xl) {
+        padding: 40px;
+    }
+
+    @include media-breakpoint-down(xl) {
+        flex-direction: column;
+        background-color: rgba(0,0,0,0.8) !important;
+    }
 
     .app-navigation__logo {
         color: $primary;
@@ -12,12 +21,63 @@
         font-size: 1.5rem;
     }
 
-    .app-navigation__menu {
+    .app-navigation__icon {
+        cursor: pointer;
+        display: flex;
+        justify-content: flex-end;
+
+        @include media-breakpoint-up(xl) {
+            display: none;
+        }
+
+        svg {
+            color: #ffffff;
+            height: 40px;
+            width: 40px;
+        }
+    }
+
+    .app-navigation__menu-mobile {
+        width: 100%;
+
+        @include media-breakpoint-up(xl) {
+            display: none;
+        }
+
+        ul {
+            background-color: #000;
+            margin-top: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px 0 20px;
+
+            li {
+                padding-bottom: 20px;
+                list-style-type: none;
+                width: 100%;
+                text-align: center;
+                text-transform: uppercase;
+                font-size: 15px;
+                font-family: "VarelaRound", sans-serif;
+
+                a {
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+
+    .app-navigation__menu-desktop {
         list-style-type: none;
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin: 0;
+
+        @include media-breakpoint-down(xl) {
+            display: none;
+        }
 
         .active-item {
             a {
@@ -56,6 +116,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px;
+
+    @include media-breakpoint-down(xl) {
+        justify-content: center;
+        gap: 10px;
+    }
 
     a {
         text-decoration: none;
@@ -64,7 +130,6 @@
     img {
         width: 20px;
         height: 20px;
-        margin-right: 10px;
     }
 }
 

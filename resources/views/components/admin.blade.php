@@ -1,6 +1,6 @@
 <div class="row">
 
-    <div class="col-4 col-md-12">
+    <div class="col-lg-4 col-md-12">
         <x-card :title="__('app.page')">
             <x-slot:actions>
                 <x-modal.open :name="Modal::ADMIN_PAGE" :action="Action::UPDATE" :icon="Icon::EDIT"/>

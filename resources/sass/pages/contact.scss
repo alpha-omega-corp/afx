@@ -4,21 +4,41 @@
     gap: 20px;
     padding: 80px 20px;
 
-    &__informations {
+    @include media-breakpoint-down(xl) {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    &__text {
+        text-align: center;
+        color: $gray;
+        font-weight: bold;
+        font-family: "VarelaRound", sans-serif;
+        margin-bottom: 40px;
+    }
+
+    &__information {
 
         &--title {
             font-size: 38px;
             margin-bottom: 60px;
             color: $primary;
+            @include media-breakpoint-down(xl) {
+                text-align: center;
+            }
         }
 
         &--item {
             margin-bottom: 20px;
+            @include media-breakpoint-down(xl) {
+                display: flex;
+                justify-content: space-between;
+            }
 
             svg, img {
                 width: 30px;
                 height: 30px;
-                color: $info;
+                color: $primary;
                 margin-right: 20px;
             }
         }
@@ -27,8 +47,11 @@
     &__form {
         background-color: rgba(0, 0, 0, 0.2);
         border-radius: 10px;
-        width: 500px;
         padding: 40px;
+
+        @include media-breakpoint-up(xl) {
+            width: 500px;
+        }
     }
 
     &__icon {

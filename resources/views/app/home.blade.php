@@ -13,17 +13,18 @@
             </div>
         </x-slot:title>
 
+
         <x-section :color="Color::DARK">
             <div class="description">
 
                 <div class="description-image animation-grow">
-                    <img src="{{Vite::image('afx-building.png')}}" alt="{{$page->image}}"/>
+                    <img class="shadow-lg" src="{{Vite::image('afx-building.png')}}" alt="{{$page->image}}"/>
                 </div>
 
-                <div class="d-flex flex-column">
-                    <p>{{$page->locale->content}}</p>
-
+                <div class="d-flex justify-content-center">
+                    <p class="app-page__description">{{$page->locale->content}}</p>
                 </div>
+
             </div>
         </x-section>
 
@@ -49,31 +50,3 @@
     </x-page>
 @endsection
 
-<script>
-    document.addEventListener('alpine:init', () => {
-
-        Alpine.data('carousel', (name, count) => ({
-            init() {
-                const glide = new Glide(`#${name}`, {
-                    type: 'carousel',
-                    perView: count,
-                    breakpoints: {
-                        1900: {
-                            perView: count - 1,
-                        },
-                        1300: {
-                            perView: count - 2,
-                        },
-                        900: {
-                            perView: 1,
-                        },
-                    },
-                })
-
-                this.$nextTick(() => {
-                    glide.mount(GlideControls)
-                })
-            },
-        }))
-    });
-</script>

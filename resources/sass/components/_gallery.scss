@@ -6,13 +6,16 @@
     }
 
     @media screen and (min-width: 400px) {
-        column-count: 2;
+        column-count: 1;
     }
 
     @media screen and (min-width: 600px) {
-        column-count: 3;
+        column-count: 2;
     }
 
+    @media screen and (min-width: 900px) {
+        column-count: 3;
+    }
 
     &__item {
 
