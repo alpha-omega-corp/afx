@@ -7,7 +7,7 @@
 
             <div class="booking">
                 <a href="https://wa.me/+41786857845" >
-                    {{__('app.booking')}}
+                    {{__('app.whatsapp')}}
                 </a>
             </div>
         </x-slot:title>

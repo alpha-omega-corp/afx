@@ -56,9 +56,15 @@
                                     :value="$section->title"
                                 />
 
+                                @php
+                                $repeater = $section->items->map(function (\App\Models\MenuItem $item) {
+                                    return $item;
+                                })
+                                @endphp
+
                                 <x-forms.repeater
                                     :title="__('app.menu-section-item')"
-                                    :items="$section->items->toArray()"
+                                    :items="$repeater->toArray()"
                                 >
                                     <div class="d-flex gap-3">
 

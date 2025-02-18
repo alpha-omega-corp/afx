@@ -2,12 +2,11 @@ services:
     db:
         image: postgres
         ports:
-            - "5433:5433"
+            - "5433:5432"
         environment:
-            - POSTGRES_PASSWORD=afx
+            - POSTGRES_PASSWORD=
             - POSTGRES_USER=afx
             - POSTGRES_DB=afx
-            - PGPORT=5433
         volumes:
             - pgdata:/var/lib/postgresql/data
 
