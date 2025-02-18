@@ -14,13 +14,13 @@
 
 
         <x-section :color="Color::DARK">
-            <div class="description">
+            <div class="description animation-grow">
 
-                <div class="description-image animation-grow">
+                <div class="description-image">
                     <img class="shadow-lg" src="{{Vite::image('afx-building.png')}}" alt="{{$page->image}}"/>
                 </div>
 
-                <div class="d-flex justify-content-center">
+                <div id="home-description">
                     <p class="app-page__description">{{$page->locale->content}}</p>
                 </div>
 

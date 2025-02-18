@@ -2,7 +2,8 @@
 
 return [
     'title' => 'Auberge De Founex',
-    'booking' => 'Make a reservation via WhatsApp',
+    'booking' => 'Make a reservation via Booking',
+    'whatsapp' => 'Make a reservation via WhatsApp',
     'delicacies' => 'Featured Delicacies',
     'login' => 'Login',
     'page' => 'Page',
