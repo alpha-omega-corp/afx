@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMenuRequest;
-use App\Http\Requests\DeleteMenuRequest;
 use App\Http\Requests\DeleteMenuItemRequest;
 use App\Http\Requests\UpdateMenuRequest;
 use App\Models\MenuItem;

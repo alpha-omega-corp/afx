@@ -61,27 +61,30 @@
                                     :items="$section->items->toArray()"
                                 >
                                     <div class="d-flex gap-3">
-                                        <x-forms.input
-                                            model="item.title"
-                                            name="section_titles[]"
-                                            :label="__('app.menu-title')"
-                                            :icon="Icon::EDIT"
-                                        />
 
-                                        <x-forms.input
-                                            type="float"
-                                            model="item.price"
-                                            name="section_prices[]"
-                                            :label="__('app.menu-price')"
-                                            :icon="Icon::PRICE"
-                                        />
                                     </div>
+
+                                    <x-forms.input
+                                        model="item.title"
+                                        name="section_titles[]"
+                                        :label="__('app.menu-title')"
+                                        :icon="Icon::EDIT"
+                                    />
 
                                     <x-forms.input
                                         model="item.description"
                                         name="section_descriptions[]"
                                         :label="__('app.menu-description')"
                                         :icon="Icon::INFO"
+                                        :required="false"
+                                    />
+
+                                    <x-forms.input
+                                        type="float"
+                                        model="item.price"
+                                        name="section_prices[]"
+                                        :label="__('app.menu-price')"
+                                        :icon="Icon::PRICE"
                                     />
 
                                 </x-forms.repeater>

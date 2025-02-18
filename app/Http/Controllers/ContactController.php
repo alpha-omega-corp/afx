@@ -18,8 +18,10 @@ class ContactController extends Controller
         return redirect()->route(__('route.home'));
     }
 
-    public function destroy()
+    public function destroy(Contact $contact): RedirectResponse
     {
+        $contact->delete();
 
+        return redirect()->back();
     }
 }

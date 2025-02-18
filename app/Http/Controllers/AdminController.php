@@ -47,7 +47,7 @@ class AdminController extends Controller
     public function contact(): View
     {
         return view('app.admin.contact', [
-            'page' => Page::where('name', PageEnum::HOTEL)->first(),
+            'page' => Page::where('name', PageEnum::CONTACT)->first(),
             'messages' => Contact::all()->reverse(),
         ]);
     }

@@ -16,7 +16,6 @@
                         <span class="sr-only"></span>
                     </button>
 
-
                     <!-- Next -->
                     <button
                         class="glide__arrow glide__arrow--right pointer-events-auto disabled:opacity-50 btn"

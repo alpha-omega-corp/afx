@@ -17,7 +17,6 @@
                         <a href="tel:022 776 10 29">022 776 10 29</a>
                         <a href="mailto:aubergedefounex@bluewin.ch">aubergedefounex@bluewin.ch</a>
                     </div>
-
                 </div>
             </div>
 

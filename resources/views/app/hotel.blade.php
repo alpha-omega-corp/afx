@@ -2,7 +2,6 @@
 
 @section('content')
     <x-page :image="$page->image">
-
         <x-slot:title>
             <h1>{{$page->locale->title}}</h1>
         </x-slot:title>

@@ -8,7 +8,7 @@
 
     <div class="form-floating">
         @if($model)
-            <input required
+            <input {{$required ? 'required' : ''}}
                    type="{{$type}}"
                    value="{{$value}}"
                    name="{{$name}}"

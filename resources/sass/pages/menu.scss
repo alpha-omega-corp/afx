@@ -1,14 +1,20 @@
 .menu-section {
+    padding-bottom: 30px;
 
     .menu-section__title {
-        color: $primary;
+        color: $yellow-300;
         font-family: "YesevaOne", sans-serif;
         position: absolute;
+        text-transform: uppercase;
         top: 40%;
         text-align: center;
         width: 100%;
         font-size: 3.5rem;
         margin: 0;
+
+        @include media-breakpoint-down(md) {
+            font-size: 2rem;
+        }
     }
 
     .menu-section__item {
@@ -18,10 +24,11 @@
 
         @include media-breakpoint-down(md) {
             flex-direction: column;
+            text-align: center;
         }
 
         .menu-item__title {
-            color: $primary;
+            color: $orange-200;
             font-family: "YesevaOne", sans-serif;
         }
 
@@ -32,7 +39,8 @@
         .menu-item__content {
             .menu-item__price {
                 color: $gray;
-                font-size: 20px;
+                font-size: 17px;
+                font-family: "VarelaRound", sans-serif;
 
                 @include media-breakpoint-down(md) {
                     font-size: 13px;

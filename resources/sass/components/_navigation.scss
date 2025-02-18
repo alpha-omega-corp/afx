@@ -123,6 +123,10 @@
         gap: 10px;
     }
 
+    @include media-breakpoint-up(xl) {
+        padding-left: 30px;
+    }
+
     a {
         text-decoration: none;
     }

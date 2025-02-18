@@ -15,6 +15,7 @@ class Input extends Component
         public string $name,
         public string $label,
         public string $type = 'text',
+        public bool $required = false,
         public ?string $value = null,
         public ?Icon $icon = null,
         public ?string $model = null,

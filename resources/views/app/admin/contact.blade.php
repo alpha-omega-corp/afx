@@ -42,7 +42,7 @@
                         :route="route('contact.delete', $contact)"
                         :iterator="$loop->index"
                     >
-                        delete?
+                        delete ?
                     </x-modal.index>
 
                     <x-modal.index
