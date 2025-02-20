@@ -9,4 +9,5 @@ return [
     'phone' => 'Phone',
     'message' => 'Message',
     'submit' => 'Submit',
+    'date' => 'Date',
 ];

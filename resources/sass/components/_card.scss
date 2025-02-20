@@ -20,6 +20,11 @@
             }
         }
 
+        .card-content {
 
+            &__padding {
+                padding: 20px;
+            }
+        }
     }
 }

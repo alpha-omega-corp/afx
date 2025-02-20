@@ -17,6 +17,13 @@
 @import "pages/admin";
 @import "pages/contact";
 
+.app-locale-active {
+    border: 2px solid #ffffff !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+}
+
 body {
     background-color: $dark;
 

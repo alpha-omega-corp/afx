@@ -13,7 +13,7 @@
                 </div>
 
                 <h1 class="admin-page__title">{{$page->locale->title}}</h1>
-                <p class="pt-4">{{$page->locale->content}}</p>
+                <p class="p-4">{{$page->locale->content}}</p>
             </div>
         </x-card>
     </div>

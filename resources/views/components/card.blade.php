@@ -11,8 +11,15 @@
             @endif
         </div>
 
-        <div class="p-4">
-            {{$slot}}
+        <div class="card-content">
+
+            @if($padding)
+                <div class="card-content__padding">
+                    {{$slot}}
+                </div>
+            @else
+                {{$slot}}
+            @endif
         </div>
     </div>
 </div>

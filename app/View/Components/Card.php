@@ -11,6 +11,7 @@ class Card extends Component
     public function __construct(
         public Page $page,
         public string $title,
+        public bool $padding = false
     ) {}
 
     public function render(): View

@@ -17,28 +17,7 @@
     <div class="app-admin__header">
     </div>
 
-    <div class="d-flex">
-
-        <div class="app-admin__navigation-container">
-            <ul class="app-admin__navigation">
-                <li @class(['active-item' => Request::is('admin/home')])>
-                    <a href="{{route('admin.home')}}">{{__('nav.home')}}</a>
-                </li>
-                <li @class(['active-item' => Request::is('admin/menu')])>
-                    <a href="{{route('admin.menu')}}">{{__('nav.menu')}}</a>
-                </li>
-                <li @class(['active-item' => Request::is('admin/restaurant')])>
-                    <a href="{{route('admin.restaurant')}}">{{__('nav.restaurant')}}</a>
-                </li>
-                <li @class(['active-item' => Request::is('admin/hotel')])>
-                    <a href="{{route('admin.hotel')}}">{{__('nav.hotel')}}</a>
-                </li>
-                <li @class(['active-item' => Request::is('admin/contact')])>
-                    <a href="{{route('admin.contact')}}">{{__('nav.contact')}}</a>
-                </li>
-            </ul>
-        </div>
-
+    <div class="app-admin__container">
         <main class="app-admin__content">
             @yield('content')
         </main>

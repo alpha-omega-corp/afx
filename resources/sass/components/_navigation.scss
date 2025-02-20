@@ -15,6 +15,11 @@
         background-color: rgba(0,0,0,0.8) !important;
     }
 
+    .dropdown-item {
+        color: #000000 !important;
+        padding: 10px !important;
+    }
+
     .app-navigation__logo {
         color: $yellow;
         font-family: "YesevaOne", sans-serif;
@@ -128,7 +133,10 @@
     }
 
     a {
-        text-decoration: none;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
     }
 
     img {

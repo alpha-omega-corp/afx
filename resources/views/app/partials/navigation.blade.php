@@ -28,9 +28,23 @@
         {{__('nav.contact')}}
     </a>
 </li>
-<li @class(['active-item' => Request::is('admin/**') || Request::is('admin')])>
+<li>
     @if(\Illuminate\Support\Facades\Auth::user())
-        <a href="{{route('admin.home')}}">Admin</a>
+
+        <div class="dropdown">
+            <a class="btn btn-primary text-white p-2 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Admin
+            </a>
+
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{route('admin.home')}}">{{__('nav.home')}}</a></li>
+                <li><a class="dropdown-item" href="{{route('admin.menu')}}">{{__('nav.menu')}}</a></li>
+                <li><a class="dropdown-item" href="{{route('admin.restaurant')}}">{{__('nav.restaurant')}}</a></li>
+                <li><a class="dropdown-item" href="{{route('admin.hotel')}}">{{__('nav.hotel')}}</a></li>
+                <li><a class="dropdown-item" href="{{route('admin.contact')}}">{{__('nav.contact')}}</a></li>
+            </ul>
+        </div>
+
     @else
         <x-modal.open :name="Modal::APP_LOGIN" :action="Action::CREATE" :title="__('app.login')"/>
     @endif

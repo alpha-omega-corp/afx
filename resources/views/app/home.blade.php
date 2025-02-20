@@ -16,17 +16,16 @@
             {{$page->locale->content}}
         </div>
 
-        <div class="home-link">
-            <div class="home-link__item">
+        <div class="home-link container">
+            <a href="" class="home-link__item">
                 @svg('heroicon-s-book-open')
-                <a href="">Menu</a>
-            </div>
+                <span>Menu</span>
+            </a>
 
-            <div class="home-link__item">
+            <a href="" class="home-link__item">
                 @svg('heroicon-s-building-office-2')
-                <a href="">Hotel</a>
-            </div>
-
+                <span>Hotel</span>
+            </a>
         </div>
 
 

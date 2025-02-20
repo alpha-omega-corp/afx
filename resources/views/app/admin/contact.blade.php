@@ -3,7 +3,7 @@
 @section('content')
     <x-admin :page="$page">
 
-        <x-card :title="__('app.contact')">
+        <x-card :title="__('app.contact')" :padding="true">
             <table class="w-100">
                 <tr>
                     <th scope="col">#</th>
