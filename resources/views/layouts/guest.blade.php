@@ -44,7 +44,7 @@
                             perView: count - 2,
                         },
                         900: {
-                            perView: 2,
+                            perView: 1,
                         },
                     },
                 })

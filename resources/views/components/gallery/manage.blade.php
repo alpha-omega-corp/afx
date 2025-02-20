@@ -31,12 +31,12 @@
             </x-slot:submit>
         </x-modal.index>
 
-        <div class="app-gallery__container">
+        <div class="pswp-gallery">
             @foreach($gallery->items as $item)
-                <div class="app-gallery__image">
-                    <img src="{{asset($item->image)}}" alt="" @click="select('{{$item->id}}')">
+                <div class="pswp-gallery__item position-relative">
+                    <img class="pswp-gallery__image" src="{{asset($item->image)}}" @click="select('{{$item->id}}')" alt="">
 
-                    <div class="app-gallery__image-overlay">
+                    <div class="app-gallery__item-overlay">
                         <div class="form-check">
                             <input class="form-check-input gallery-select" id="select-{{$item->id}}" type="checkbox" value="">
                         </div>

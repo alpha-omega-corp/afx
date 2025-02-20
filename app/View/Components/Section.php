@@ -10,7 +10,6 @@ use Illuminate\View\Component;
 class Section extends Component
 {
     public function __construct(
-        public Color $color,
         public ?string $title = null,
         public bool $padding = false
     ) {}

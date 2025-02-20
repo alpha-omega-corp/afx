@@ -49,9 +49,20 @@
             text-align: center;
             z-index: 2;
 
+
+
             h1 {
-                font-size: 75px;
-                font-family: "YesevaOne", sans-serif;
+                @include media-breakpoint-up(xl) {
+                    font-size: 75px;
+                    font-family: "YesevaOne", sans-serif;
+                }
+
+                @include media-breakpoint-down(xl) {
+                    font-size: 50px;
+                    font-family: "YesevaOne", sans-serif;
+                }
+
+
             }
         }
     }

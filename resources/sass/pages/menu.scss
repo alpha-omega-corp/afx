@@ -2,7 +2,7 @@
     padding-bottom: 30px;
 
     .menu-section__title {
-        color: $yellow-300;
+        color: $primary;
         font-family: "YesevaOne", sans-serif;
         position: absolute;
         text-transform: uppercase;
@@ -30,10 +30,12 @@
         .menu-item__title {
             color: $orange-200;
             font-family: "YesevaOne", sans-serif;
+            text-transform: capitalize;
         }
 
         .menu-item__description {
             color: $gray;
+            text-transform: capitalize;
         }
 
         .menu-item__content {

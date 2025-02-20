@@ -1,9 +1,9 @@
-<section class="app-section bg-{{$color}}">
+<section class="app-section">
         @if($title)
-            <h2 @class(['section-padding' => $padding])>{{$title}}</h2>
+            <h2 class="app-section__title">{{$title}}</h2>
         @endif
 
-        <div class="container">
+        <div class="app-section__content">
             {{$slot}}
         </div>
 </section>

@@ -3,7 +3,7 @@
 @section('content')
     <x-page image="{{$page->image}}" :is-large="true">
         <x-slot:title>
-            <h1>{{$page->locale->title}}</h1>
+            <h1 class="animation-grow">{{$page->locale->title}}</h1>
 
             <div class="booking">
                 <a href="https://wa.me/+41786857845" >
@@ -12,38 +12,34 @@
             </div>
         </x-slot:title>
 
+        <div class="app-page__description container">
+            {{$page->locale->content}}
+        </div>
 
-        <x-section :color="Color::DARK">
-            <div class="description animation-grow">
-
-                <div class="description-image">
-                    <img class="shadow-lg" src="{{Vite::image('afx-building.png')}}" alt="{{$page->image}}"/>
-                </div>
-
-                <div id="home-description">
-                    <p class="app-page__description">{{$page->locale->content}}</p>
-                </div>
-
+        <div class="home-link">
+            <div class="home-link__item">
+                @svg('heroicon-s-book-open')
+                <a href="">Menu</a>
             </div>
-        </x-section>
 
-
-        <x-section
-            :color="Color::LIGHT"
-            :title="__('app.delicacies')"
-            :padding="true"
-        >
-            <div class="animation-grow">
-                <x-carousel name="foods" :count="4">
-                    @foreach($gallery->items as $item)
-                        <li class="glide__slide">
-                            <div class="delicacies">
-                                <img src="{{asset($item->image)}}" alt=""/>
-                            </div>
-                        </li>
-                    @endforeach
-                </x-carousel>
+            <div class="home-link__item">
+                @svg('heroicon-s-building-office-2')
+                <a href="">Hotel</a>
             </div>
+
+        </div>
+
+
+        <x-section :title="__('app.delicacies')">
+            <x-carousel name="foods" :count="4">
+                @foreach($gallery->items as $item)
+                    <li class="glide__slide">
+                        <div class="delicacies">
+                            <img src="{{asset($item->image)}}" alt=""/>
+                        </div>
+                    </li>
+                @endforeach
+            </x-carousel>
         </x-section>
 
     </x-page>

@@ -22,8 +22,8 @@
                     @foreach($section->items as $item)
                             <div class="menu-section__item">
                                 <div>
-                                    <h4 class="menu-item__title">{{ucfirst($item->title)}}</h4>
-                                    <p class="menu-item__description">{{ucfirst($item->description)}}</p>
+                                    <h4 class="menu-item__title">{{$item->title}}</h4>
+                                    <p class="menu-item__description">{{$item->description}}</p>
                                 </div>
                                 <div class="menu-item__content">
                                     <span class="menu-item__price">CHF {{number_format($item->price,2,'.', ',')}}</span>

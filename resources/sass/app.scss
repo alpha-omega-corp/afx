@@ -32,14 +32,14 @@ body {
     h2 {
         color: $primary;
         font-family: "YesevaOne", sans-serif;
-        font-size: 3rem;
+        font-size: 35px;
         text-align: center;
     }
 
     h3 {
         color: $primary;
         font-family: "YesevaOne", sans-serif;
-        font-size: 1.75rem;
+        font-size: 30px;
     }
 
     table {
@@ -51,22 +51,22 @@ body {
 }
 
 .app-section {
-    padding: 20px 20px 40px;
 
     @include media-breakpoint-up(xl) {
-        padding: 40px;
+        padding: 100px 0;
     }
 
-    h2 {
-        margin-bottom: 80px;
+    @include media-breakpoint-down(xl) {
+
     }
 
-    .section-padding {
-        padding-top: 100px;
+    &__title {
+        color: $primary;
+        margin-bottom: 40px;
+    }
 
-        @include media-breakpoint-up(xl) {
-            padding-top: 450px;
-        }
+    &__content {
+
     }
 }
 

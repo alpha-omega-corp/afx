@@ -6,8 +6,8 @@
             <h1>{{$page->locale->title}}</h1>
 
             <div class="booking">
-                <a href="https://www.booking.com/hotel/ch/auberge-de-founex.fr.html" >
-                    {{__('app.booking')}}
+                <a href="https://wa.me/+41786857845" >
+                    {{__('app.whatsapp')}}
                 </a>
             </div>
         </x-slot:title>
