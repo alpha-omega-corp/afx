@@ -17,12 +17,12 @@
         </div>
 
         <div class="home-link container">
-            <a href="" class="home-link__item">
+            <a href="{{route(__('route.menu'))}}" class="home-link__item">
                 @svg('heroicon-s-book-open')
                 <span>Menu</span>
             </a>
 
-            <a href="" class="home-link__item">
+            <a href="{{route(__('route.hotel'))}}" class="home-link__item">
                 @svg('heroicon-s-building-office-2')
                 <span>Hotel</span>
             </a>

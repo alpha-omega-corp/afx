@@ -11,7 +11,7 @@
                     @svg(Icon::ZOOM->value)
                 </div>
 
-                <img id="galleryImage{{$loop->index}}" class="pswp-gallery__image" src="{{$item->image}}" alt="" />
+                <img id="galleryImage{{$loop->index}}" class="pswp-gallery__image" src="{{config('app.url').$item->image}}" alt="" />
             </a>
         </div>
 

@@ -1,28 +1,28 @@
-<li @class(['active-item' => Request::is('/')])>
+<li @class(['active-item' => Request::is('/') || Request::is('en')])>
     <a
         href="{{route(__('route.home'))}}">
         {{__('nav.home')}}
     </a>
 </li>
-<li @class(['active-item' => Request::is('la-carte')])>
+<li @class(['active-item' => Request::is('la-carte') || Request::is('en/menu')])>
     <a
         href="{{route(__('route.menu'))}}">
         {{__('nav.menu')}}
     </a>
 </li>
-<li @class(['active-item' => Request::is('restaurant')])>
+<li @class(['active-item' => Request::is('restaurant') || Request::is('en/restaurant')])>
     <a
         href="{{route(__('route.restaurant'))}}">
         {{__('nav.restaurant')}}
     </a>
 </li>
-<li @class(['active-item' => Request::is('hotel')])>
+<li @class(['active-item' => Request::is('hotel') || Request::is('en/hotel')])>
     <a
         href="{{route(__('route.hotel'))}}">
         {{__('nav.hotel')}}
     </a>
 </li>
-<li @class(['active-item' => Request::is('contact')])>
+<li @class(['active-item' => Request::is('contact') || Request::is('en/contact')])>
     <a
         href="{{route(__('route.contact'))}}">
         {{__('nav.contact')}}
