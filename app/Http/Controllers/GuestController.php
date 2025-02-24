@@ -23,7 +23,7 @@ class GuestController extends Controller
     {
         return view('app.menu', [
             'page' => Page::where('name', PageEnum::MENU)->first(),
-            'sections' => MenuSection::all(),
+            'sections' => MenuSection::orderBy('position')->get(),
         ]);
     }
 
