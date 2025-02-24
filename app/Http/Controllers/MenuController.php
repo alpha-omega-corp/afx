@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMenuRequest;
 use App\Http\Requests\DeleteMenuItemRequest;
+use App\Http\Requests\SortMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
 use App\Models\MenuItem;
 use App\Models\MenuSection;
@@ -15,8 +16,11 @@ class MenuController extends Controller
     {
         $data = $request->validated();
 
+        $position = MenuSection::all()->sortBy('position')->reverse()->get(0)->position + 1;
+
         MenuSection::create([
             'title' => $data['title'],
+            'position' => $position
         ]);
 
         return redirect()->back();
@@ -74,5 +78,26 @@ class MenuController extends Controller
         $section->delete();
 
         return redirect()->back();
+    }
+
+    public function sort(SortMenuRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        $section = MenuSection::find($data['id']);
+        $previousPosition = $section->position;
+
+        MenuSection::where('position', $data['position'])->update([
+            'position' => $previousPosition,
+        ]);
+
+        $section->update(['position' => $data['position']]);
+
+
+
+
+        return response()->json([
+            'message' => $data
+        ]);
     }
 }

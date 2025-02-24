@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('menu_sections', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->integer('position');
             $table->timestamps();
         });
     }

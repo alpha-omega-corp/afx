@@ -4,6 +4,7 @@ import * as Popper from '@popperjs/core'
 import Glide, {Autoplay, Breakpoints, Controls} from "@glidejs/glide/dist/glide.modular.esm.js";
 import Alpine from 'alpinejs';
 import focus from '@alpinejs/focus';
+import sort from '@alpinejs/sort';
 import $ from 'jquery';
 import PhotoSwipeLightbox from '../../node_modules/photoswipe/dist/photoswipe-lightbox.esm.js';
 import PhotoSwipe from '../../node_modules/photoswipe/src/js/photoswipe.js';
@@ -18,6 +19,7 @@ window.GlideControls = {Controls, Autoplay, Breakpoints};
 
 window.Alpine = Alpine;
 Alpine.plugin(focus);
+Alpine.plugin(sort);
 Alpine.start();
 
 const gallery = new PhotoSwipeLightbox({

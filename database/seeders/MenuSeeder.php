@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\MenuSection;
-use App\Models\MenuItem;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
 class MenuSeeder extends Seeder
@@ -12,7 +12,9 @@ class MenuSeeder extends Seeder
     {
         MenuSection::factory()
         ->count(5)
-        ->has(MenuItem::factory()->count(5), 'items')
+        ->state(new Sequence(
+            fn (Sequence $sequence) => ['position' => $sequence->index],
+        ))
         ->create();
     }
 }

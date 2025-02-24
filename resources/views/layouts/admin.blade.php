@@ -30,6 +30,25 @@
 <script>
     document.addEventListener('alpine:init', () => {
 
+        Alpine.data('sort', () => ({
+
+            async handle(id, position) {
+
+                console.log(id, position)
+                const result = await $.ajax({
+                    url: '{{route('admin.menu.sort')}}',
+                    type: 'PUT',
+                    data : {
+                        "_token": $('#csrf-token')[0].content,
+                        "id": id,
+                        "position": position
+                    },
+                })
+
+                console.log(result)
+            }
+        }))
+
         Alpine.store('repeater', {
             removed: [],
         })

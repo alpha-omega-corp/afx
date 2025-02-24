@@ -47,6 +47,7 @@ Route::controller(AdminController::class)
                 Route::delete('/', 'remove')->name('remove');
                 Route::put('/{menu}', 'update')->name('update');
                 Route::post('/', 'create')->name('create');
+                Route::put('/sort/section', 'sort')->name('sort');
             });
     });
 

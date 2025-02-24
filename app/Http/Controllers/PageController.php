@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Language;
 use App\Http\Requests\PageRequest;
-use App\Interfaces\IFileService;
 use App\Models\Page;
-use App\Services\FileService;
-use Illuminate\Http\File;
 use Illuminate\Support\Facades\Redirect;
 
 class PageController extends Controller
