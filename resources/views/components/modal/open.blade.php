@@ -3,7 +3,7 @@
         @svg($icon->value)
     </button>
 @else
-    <button type="button" class="btn btn-{{$color}} modal-open" data-bs-toggle="modal" data-bs-target="#{{$id}}">
+    <button type="button" class="btn btn-{{$color}} modal-open text-white" data-bs-toggle="modal" data-bs-target="#{{$id}}">
         {{$title}}
     </button>
 @endif

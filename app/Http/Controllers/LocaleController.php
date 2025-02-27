@@ -15,7 +15,11 @@ class LocaleController extends Controller
         $segments = explode('/', $target);
 
         $route = match (true) {
-            Str::contains($target, ['a-propos-de-nous', 'about-us']) => route(__('route.about')),
+            Str::contains($target, ['la-carte', 'menu']) => route(__('route.menu')),
+            Str::contains($target, ['restaurant', 'restaurant']) => route(__('route.restaurant')),
+            Str::contains($target, ['hotel', 'hotel']) => route(__('route.hotel')),
+            Str::contains($target, ['contact', 'contact']) => route(__('route.contact')),
+
 
             default => route(__('route.home')),
         };

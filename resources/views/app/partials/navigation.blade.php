@@ -50,4 +50,7 @@
     @endif
 </li>
 
-<x-locale/>
+@if(!Request::is('admin/*'))
+    <x-locale/>
+@endif
+

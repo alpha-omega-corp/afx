@@ -20,6 +20,7 @@
     &__information {
 
         &--title {
+            text-transform: capitalize;
             font-size: 38px;
             margin-bottom: 60px;
             color: $primary;
