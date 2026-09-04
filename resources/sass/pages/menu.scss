@@ -3,7 +3,7 @@
 
     .menu-section__title {
         color: $primary;
-        font-family: "YesevaOne", sans-serif;
+        font-family: $font-heading;
         position: absolute;
         text-transform: uppercase;
         top: 40%;
@@ -29,7 +29,7 @@
 
         .menu-item__title {
             color: $orange-200;
-            font-family: "YesevaOne", sans-serif;
+            font-family: $font-heading;
             text-transform: capitalize;
         }
 
@@ -42,7 +42,7 @@
             .menu-item__price {
                 color: $gray;
                 font-size: 17px;
-                font-family: "VarelaRound", sans-serif;
+                font-family: $font-body;
 
                 @include media-breakpoint-down(md) {
                     font-size: 13px;

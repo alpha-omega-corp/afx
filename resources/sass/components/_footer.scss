@@ -17,14 +17,14 @@
 
         h3 {
             color: $primary;
-            font-family: "YesevaOne", sans-serif;
+            font-family: $font-heading;
         }
 
         p, a  {
             color: $gray;
             font-size: 1rem;
             text-decoration: none;
-            font-family: "VarelaRound", sans-serif;
+            font-family: $font-body;
             font-weight: bold;
         }
     }

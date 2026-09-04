@@ -8,7 +8,7 @@
         border-bottom: 1px solid #ffffff;
 
         .app-admin__title {
-            font-family: YesevaOne, sans-serif;
+            font-family: $font-heading;
             color: $primary;
         }
     }
@@ -69,7 +69,7 @@
                 font-size: 13px;
                 color: $gray;
                 text-decoration: none;
-                font-family: "VarelaRound", sans-serif;
+                font-family: $font-body;
 
                 &:hover {
                     color: $primary;
@@ -132,7 +132,7 @@
 
         .admin-menu__section-title {
             color: $primary;
-            font-family: "YesevaOne", sans-serif;
+            font-family: $font-heading;
             margin-bottom: 30px;
             text-align: center;
         }

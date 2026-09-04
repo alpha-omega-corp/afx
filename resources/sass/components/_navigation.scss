@@ -22,7 +22,7 @@
 
     .app-navigation__logo {
         color: $yellow;
-        font-family: "YesevaOne", sans-serif;
+        font-family: $font-heading;
         font-size: 1.5rem;
     }
 
@@ -64,7 +64,7 @@
                 text-align: center;
                 text-transform: uppercase;
                 font-size: 15px;
-                font-family: "VarelaRound", sans-serif;
+                font-family: $font-body;
 
                 a {
                     text-decoration: none;
@@ -108,7 +108,7 @@
             a {
                 padding: 0 25px;
                 font-size: 13px;
-                font-family: "VarelaRound", sans-serif;
+                font-family: $font-body;
                 text-transform: uppercase;
                 text-decoration: none;
                 color: #fff;
