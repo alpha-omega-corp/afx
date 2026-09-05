@@ -76,16 +76,41 @@
         svg { width: 18px; height: 18px; }
     }
 
+    &__hours {
+        margin-top: clamp(2rem, 4vw, 3rem);
+        padding-top: 1.5rem;
+        border-top: 1px solid $line;
+
+        .app-footer__title { margin-bottom: 0.5rem; }
+    }
+
+    &__hours-lines {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1.75rem;
+        margin: 0;
+        color: $paper-2;
+        font-size: $fs-small;
+
+        span { display: block; }
+    }
+
     &__bottom {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         gap: 1rem;
-        margin-top: clamp(2rem, 4vw, 3rem);
-        padding-top: 1.5rem;
-        border-top: 1px solid $line;
+        margin-top: 1.75rem;
         color: $paper-2;
         font-size: $fs-small;
+    }
+
+    // Staff links: present when signed in, never loud.
+    &__admin-nav {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem 1rem;
     }
 
     &__admin {
@@ -97,5 +122,11 @@
         font-family: $font-body;
 
         &:hover { color: $ember; }
+
+        &--out {
+            color: $line-strong;
+
+            &:hover { color: $ember; }
+        }
     }
 }

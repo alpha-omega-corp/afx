@@ -41,11 +41,30 @@
             </div>
         </div>
 
+        {{-- The schedule closes the footer: the last thing read before the
+             copyright, and the thing a guest most often comes back for. --}}
+        <div class="app-footer__hours">
+            <h2 class="app-footer__title">{{ __('footer.hours') }}</h2>
+
+            <p class="app-footer__hours-lines">
+                <span>{{ __('footer.hours_week') }}</span>
+                <span>{{ __('footer.hours_closed') }}</span>
+            </p>
+        </div>
+
         <div class="app-footer__bottom">
             <span>&copy; {{ date('Y') }} {{ __('app.title') }}</span>
 
             @auth
-                <a class="app-footer__admin" href="{{ route('admin.home') }}">Admin</a>
+                {{-- The back office lives here rather than in the guest
+                     navigation: it is a staff door, not a page of the site. --}}
+                <nav class="app-footer__admin-nav" aria-label="{{ __('admin.title') }}">
+                    @foreach(\App\Support\AdminSections::all() as $section)
+                        <a class="app-footer__admin" href="{{ route($section['route']) }}">{{ ucfirst($section['label']) }}</a>
+                    @endforeach
+
+                    <a class="app-footer__admin app-footer__admin--out" href="{{ route('auth.logout') }}">{{ ucfirst(__('nav.logout')) }}</a>
+                </nav>
             @else
                 <button type="button" class="app-footer__admin"
                         data-bs-toggle="modal"

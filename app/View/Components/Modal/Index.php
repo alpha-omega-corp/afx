@@ -2,16 +2,15 @@
 
 namespace App\View\Components\Modal;
 
+use App\Enums\Action as ActionEnum;
+use App\Enums\Modal as ModalEnum;
 use App\Helpers\ModalHelper;
-use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
-use App\Enums\Modal as ModalEnum;
-use App\Enums\Action as ActionEnum;
 
 class Index extends Component
 {
-    public mixed $id;
+    public string $id;
 
     public function __construct(
         public string $title,
@@ -19,19 +18,13 @@ class Index extends Component
         public ActionEnum $action,
         public ?string $route = null,
         public mixed $iterator = null,
-        public ?string $func = null,
         public bool $padding = true,
-
-
-    )
-    {
+    ) {
         $this->id = ModalHelper::getId($name, $action, $iterator);
     }
 
-    public function render(): View|Closure|string
+    public function render(): View
     {
         return view('components.modal.index');
     }
-
-
 }

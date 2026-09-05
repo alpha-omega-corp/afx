@@ -3,12 +3,14 @@
 namespace App\View\Components\Forms;
 
 use App\Enums\Icon;
-use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Input extends Component
 {
+    /** Distinguishes inputs that share a name across modals on one page. */
+    private static int $sequence = 0;
+
     public string $id;
 
     public function __construct(
@@ -20,12 +22,11 @@ class Input extends Component
         public ?Icon $icon = null,
         public ?string $model = null,
         public ?string $index = null,
-    )
-    {
-        $this->id = $index ? "$index" : $name;
+    ) {
+        $this->id = 'input-' . preg_replace('/[^a-z0-9]+/i', '-', $index ?? $name) . '-' . ++self::$sequence;
     }
 
-    public function render(): View|Closure|string
+    public function render(): View
     {
         return view('components.forms.input');
     }

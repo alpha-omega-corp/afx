@@ -12,14 +12,6 @@
             </div>
 
             <div>
-                <p class="visit__label">{{ __('footer.hours') }}</p>
-                <p class="visit__value">
-                    <span class="visit__line d-block">{{ __('footer.hours_week') }}</span>
-                    <span class="visit__line d-block">{{ __('footer.hours_closed') }}</span>
-                </p>
-            </div>
-
-            <div>
                 <p class="visit__label">{{ ucfirst(__('nav.contact')) }}</p>
                 <p class="visit__value">
                     <span class="visit__line d-block"><a href="tel:+41227761029">022 776 10 29</a></span>

@@ -1,5 +1,10 @@
 // =============================================================
 // Image tile — a door into a section.
+//
+// At rest the photograph is cooled and dimmed so the three read as
+// one set against the warm black. Hovering warms and opens the one
+// you are pointing at: the image lifts to full colour, an ember rule
+// draws under the name, and the arrow steps toward the page.
 // =============================================================
 
 .tile {
@@ -9,37 +14,107 @@
     border-radius: $r-panel;
     overflow: hidden;
     background-color: $ink-2;
+    isolation: isolate;
+    transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                box-shadow 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
 
     &__media {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
+        filter: saturate(0.72) brightness(0.82);
+        transform: scale(1.02);
+        transition: transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                    filter 420ms ease;
     }
 
     &__veil {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba($ink, 0.88) 0%, rgba($ink, 0.35) 45%, rgba($ink, 0.05) 100%);
+        background:
+            linear-gradient(to top, rgba($ink, 0.92) 0%, rgba($ink, 0.45) 38%, rgba($ink, 0.06) 72%);
         transition: opacity $t-fast;
     }
 
-    &__title {
+    &__body {
         position: absolute;
-        left: 1.25rem;
-        right: 1.25rem;
-        bottom: 1.1rem;
-        margin: 0;
-        color: $paper;
+        left: clamp(1rem, 2vw, 1.5rem);
+        right: clamp(1rem, 2vw, 1.5rem);
+        bottom: clamp(1rem, 2vw, 1.35rem);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        column-gap: 0.75rem;
+    }
+
+    &__title {
+        grid-column: 1;
         font-family: $font-heading;
         font-size: $fs-h3;
+        color: $paper;
         transition: color $t-fast;
     }
 
-    // No scale transform: the gradient deepens and the label warms.
+    // Draws left to right on hover. Sits on its own row so it never
+    // shifts the name.
+    &__rule {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        height: 2px;
+        margin-top: 0.6rem;
+        background-color: $ember;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    &__go {
+        grid-column: 2;
+        grid-row: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        flex: none;
+        border-radius: 50%;
+        border: 1px solid rgba($paper, 0.35);
+        color: $paper;
+        transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                    border-color $t-fast, background-color $t-fast, color $t-fast;
+
+        svg { width: 16px; height: 16px; }
+    }
+
     &:hover,
     &:focus-visible {
-        .tile__veil { opacity: 0.75; }
-        .tile__title { color: $ember-hi; }
+        transform: translateY(-6px);
+        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.55);
+
+        .tile__media {
+            filter: saturate(1) brightness(1);
+            transform: scale(1.07);
+        }
+
+        .tile__title { color: $paper; }
+        .tile__rule { transform: scaleX(1); }
+
+        .tile__go {
+            transform: translateX(4px);
+            background-color: $ember;
+            border-color: $ember;
+            color: $ink;
+        }
     }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tile,
+    .tile__media,
+    .tile__rule,
+    .tile__go { transition: none; }
+
+    .tile:hover { transform: none; }
+    .tile:hover .tile__media { transform: scale(1.02); }
 }

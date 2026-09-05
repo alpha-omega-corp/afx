@@ -1,0 +1,46 @@
+// =============================================================
+// Closed banner — the first thing a guest reads when the auberge
+// is shut. Ember ground, ink text: the one high-contrast pairing
+// the palette allows (see DESIGN_PLAN.md §3).
+// =============================================================
+
+.site-banner {
+    background-color: $ember;
+    color: $ink;
+
+    &__inner {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding-block: 0.85rem;
+    }
+
+    &__icon {
+        width: 22px;
+        height: 22px;
+        flex: 0 0 22px;
+        margin-top: 0.1rem;
+    }
+
+    &__text {
+        margin: 0;
+        font-size: $fs-small;
+        line-height: 1.5;
+    }
+
+    &__lead {
+        font-weight: 700;
+        margin-right: 0.4rem;
+    }
+
+    // $ink-soft is the one secondary tone that still clears 4.5:1 on ember.
+    &__reason,
+    &__reopen { color: $ink-soft; }
+
+    &__reason::after {
+        content: " · ";
+        color: $ink-soft;
+    }
+
+    &__reason:last-child::after { content: none; }
+}

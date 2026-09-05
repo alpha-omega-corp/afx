@@ -5,8 +5,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OpeningController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
@@ -33,11 +35,27 @@ Route::controller(AdminController::class)
     ->name('admin.')
     ->prefix('admin')
     ->group(function() {
-        Route::get('/home', 'home')->name('home');
+        Route::get('/pages', 'pages')->name('pages');
+        Route::get('/gallery/{name?}', 'gallery')->name('gallery');
         Route::get('/menu', 'menu')->name('menu');
-        Route::get('/restaurant', 'restaurant')->name('restaurant');
-        Route::get('/hotel', 'hotel')->name('hotel');
         Route::get('/contact', 'contact')->name('contact');
+
+        Route::controller(OpeningController::class)
+            ->name('opening.')
+            ->prefix('opening')
+            ->group(function() {
+                Route::get('/', 'index')->name('index');
+                Route::put('/status', 'toggle')->name('toggle');
+            });
+
+        Route::controller(HolidayController::class)
+            ->name('holiday.')
+            ->prefix('holiday')
+            ->group(function() {
+                Route::post('/', 'store')->name('create');
+                Route::put('/{holiday}', 'update')->name('update');
+                Route::delete('/{holiday}', 'destroy')->name('delete');
+            });
 
         Route::controller(MenuController::class)
             ->name('menu.')

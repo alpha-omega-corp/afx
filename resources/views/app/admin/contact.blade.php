@@ -1,62 +1,91 @@
 @extends('layouts.admin')
 
+@section('title', ucfirst(__('nav.contact')))
+
 @section('content')
-    <x-admin :page="$page">
+    <x-admin.panel
+        :title="__('admin.messages_title')"
+        :description="__('admin.messages_description')"
+        :padding="false"
+    >
+        @if($messages->isEmpty())
+            <p class="admin-empty">{{ __('admin.empty.messages') }}</p>
+        @else
+            <div class="admin-table__scroll">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ __('form.name') }}</th>
+                            <th scope="col">{{ __('form.email') }}</th>
+                            <th scope="col">{{ __('form.date') }}</th>
+                            <th scope="col"><span class="visually-hidden">{{ __('admin.nav_label') }}</span></th>
+                        </tr>
+                    </thead>
 
-        <x-card :title="__('app.contact')" :padding="true">
-            <table class="w-100">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">{{__('form.name')}}</th>
-                    <th scope="col">{{__('form.email')}}</th>
-                    <th scope="col">{{__('form.date')}}</th>
-                </tr>
-                @foreach($messages as $contact)
-                    <tr class="table-item">
-                        <th scope="row">{{$loop->index + 1}}</th>
-                        <td>{{$contact->name}}</td>
-                        <td>
-                            <a href="mailto:{{$contact->email}}">
-                                {{$contact->email}}
-                            </a>
-                        </td>
-                        <td>{{$contact->created_at}}</td>
-                        <td class="d-flex justify-content-end gap-2 p-4">
+                    <tbody>
+                        @foreach($messages as $contact)
+                            <tr>
+                                <th scope="row">{{ $contact->name }}</th>
+                                <td><a href="mailto:{{ $contact->email }}">{{ $contact->email }}</a></td>
+                                <td>{{ $contact->created_at->format('d.m.Y H:i') }}</td>
+                                <td class="admin-table__actions">
+                                    <x-admin.action
+                                        :name="Modal::ADMIN_CONTACT"
+                                        :action="Action::READ"
+                                        :iterator="$contact->id"
+                                        :compact="true"
+                                    />
 
-                            <x-modal.open :name="Modal::ADMIN_CONTACT"
-                                          :action="Action::READ"
-                                          :icon="Icon::READ"
-                                          :iterator="$loop->index"/>
+                                    <x-admin.action
+                                        :name="Modal::ADMIN_CONTACT"
+                                        :action="Action::DELETE"
+                                        :iterator="$contact->id"
+                                        :compact="true"
+                                    />
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
-                            <x-modal.open :name="Modal::ADMIN_CONTACT"
-                                          :action="Action::DELETE"
-                                          :icon="Icon::DELETE"
-                                          :iterator="$loop->index"/>
-                        </td>
-                    </tr>
+            @foreach($messages as $contact)
+                <x-modal.index
+                    :name="Modal::ADMIN_CONTACT"
+                    :action="Action::READ"
+                    :iterator="$contact->id"
+                    :title="$contact->name"
+                >
+                    <dl class="admin-message">
+                        <dt>{{ __('form.email') }}</dt>
+                        <dd><a href="mailto:{{ $contact->email }}">{{ $contact->email }}</a></dd>
 
-                    <x-modal.index
-                        :name="Modal::ADMIN_CONTACT"
-                        :title="__('app.contact')"
-                        :action="Action::DELETE"
-                        :route="route('contact.delete', $contact)"
-                        :iterator="$loop->index"
-                    >
-                        delete ?
-                    </x-modal.index>
+                        <dt>{{ __('form.date') }}</dt>
+                        <dd>{{ $contact->created_at->format('d.m.Y H:i') }}</dd>
 
-                    <x-modal.index
-                        :name="Modal::ADMIN_CONTACT"
-                        :title="__('app.contact')"
-                        :action="Action::READ"
-                        :iterator="$loop->index"
-                    >
-                        <div class="p-4 bg-white">
-                            <p class="text-dark">{{$contact->message}}</p>
-                        </div>
-                    </x-modal.index>
-                @endforeach
-            </table>
-        </x-card>
-    </x-admin>
+                        <dt>{{ __('form.message') }}</dt>
+                        <dd class="admin-message__body">{{ $contact->message }}</dd>
+                    </dl>
+                </x-modal.index>
+
+                <x-modal.index
+                    :name="Modal::ADMIN_CONTACT"
+                    :action="Action::DELETE"
+                    :iterator="$contact->id"
+                    :route="route('contact.delete', $contact)"
+                    :title="__('admin.action.delete')"
+                >
+                    <p class="admin-confirm">
+                        {{ __('admin.confirm.delete_message', ['name' => $contact->name]) }}
+                    </p>
+
+                    <x-slot:submit>
+                        <button type="submit" class="btn btn-danger">
+                            {{ __('admin.action.delete') }}
+                        </button>
+                    </x-slot:submit>
+                </x-modal.index>
+            @endforeach
+        @endif
+    </x-admin.panel>
 @endsection

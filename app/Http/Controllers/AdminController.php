@@ -12,42 +12,44 @@ use App\Enums\Gallery as GalleryEnum;
 
 class AdminController extends Controller
 {
-    public function home(): View
+    /** Every page header is edited from here, rather than one per screen. */
+    public function pages(): View
     {
-        return view('app.admin.home', [
-            'page' => Page::where('name', PageEnum::HOME)->first(),
-            'gallery' => Gallery::where('name', GalleryEnum::DELICACIES)->first(),
+        return view('app.admin.pages', [
+            'pages' => Page::whereIn('name', [
+                PageEnum::HOME,
+                PageEnum::MENU,
+                PageEnum::RESTAURANT,
+                PageEnum::HOTEL,
+                PageEnum::CONTACT,
+            ])->get(),
+        ]);
+    }
+
+    /**
+     * The three galleries are one job done three times, so they are one
+     * screen with a switch rather than three entries in the rail.
+     */
+    public function gallery(?string $name = null): View
+    {
+        $selected = GalleryEnum::tryFrom((string) $name) ?? GalleryEnum::DELICACIES;
+
+        return view('app.admin.gallery', [
+            'selected' => $selected,
+            'gallery' => Gallery::where('name', $selected)->firstOrFail(),
         ]);
     }
 
     public function menu(): View
     {
         return view('app.admin.menu', [
-            'page' => Page::where('name', PageEnum::MENU)->first(),
             'sections' => MenuSection::orderBy('position')->get(),
-        ]);
-    }
-
-    public function restaurant(): View
-    {
-        return view('app.admin.restaurant', [
-            'page' => Page::where('name', PageEnum::RESTAURANT)->first(),
-            'gallery' => Gallery::where('name', GalleryEnum::RESTAURANT)->first(),
-        ]);
-    }
-
-    public function hotel(): View
-    {
-        return view('app.admin.hotel', [
-            'page' => Page::where('name', PageEnum::HOTEL)->first(),
-            'gallery' => Gallery::where('name', GalleryEnum::HOTEL)->first(),
         ]);
     }
 
     public function contact(): View
     {
         return view('app.admin.contact', [
-            'page' => Page::where('name', PageEnum::CONTACT)->first(),
             'messages' => Contact::all()->reverse(),
         ]);
     }

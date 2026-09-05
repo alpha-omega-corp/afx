@@ -10,20 +10,33 @@
 
 @if($gallery && $gallery->items->isNotEmpty())
     <div class="container app-gallery-grid__wrap">
-        <div class="pswp-gallery app-gallery-grid" id="gallery" x-data="{
-            init() {
-                this.$el.querySelectorAll('img').forEach((img) => {
-                    const set = () => {
-                        img.closest('a')?.setAttribute('data-pswp-width', img.naturalWidth);
-                        img.closest('a')?.setAttribute('data-pswp-height', img.naturalHeight);
-                    };
-                    img.complete ? set() : img.addEventListener('load', set, { once: true });
-                });
-            }
-        }">
+        {{-- Each photograph keeps its own shape. The box is reserved from the
+             stored dimensions, so the columns balance correctly on first paint
+             and nothing shifts as the files arrive. --}}
+        <div class="pswp-gallery app-gallery-grid" id="gallery">
             @foreach($gallery->items as $item)
-                <a class="pswp-gallery__item" href="{{ asset($item->image) }}" target="_blank" rel="noopener">
-                    <img src="{{ asset($item->image) }}" alt="" loading="lazy" decoding="async"/>
+                <a
+                    class="pswp-gallery__item"
+                    href="{{ asset($item->image) }}"
+                    style="--ratio: {{ $item->ratio() }}"
+                    @if($item->isMeasured())
+                        data-pswp-width="{{ $item->width }}"
+                        data-pswp-height="{{ $item->height }}"
+                    @endif
+                    target="_blank"
+                    rel="noopener"
+                >
+                    <img
+                        src="{{ asset($item->image) }}"
+                        @if($item->isMeasured())
+                            width="{{ $item->width }}"
+                            height="{{ $item->height }}"
+                        @endif
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                    />
+
                     <span class="pswp-gallery__item--overlay" aria-hidden="true">
                         @svg(Icon::ZOOM->value)
                     </span>

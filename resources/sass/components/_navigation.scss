@@ -17,7 +17,9 @@
 .app-navigation {
     position: fixed;
     inset-inline: 0;
-    top: 0;
+    // Sits under the closed banner while it is on screen, then rises to the
+    // top with it. The offset is 0 whenever there is no banner.
+    top: var(--banner-offset, 0px);
     z-index: 30;
     min-height: $nav-h;
     display: flex;
@@ -60,6 +62,15 @@
         gap: 1.5rem;
 
         @include media-breakpoint-down(lg) { display: none; }
+    }
+
+    // Only below lg, where the rest of the bar has collapsed into the menu.
+    &__bar-locale {
+        display: none;
+        margin-left: auto;
+        margin-right: 0.75rem;
+
+        @include media-breakpoint-down(lg) { display: block; }
     }
 
     &__menu {
@@ -147,27 +158,47 @@
 }
 
 // --- Locale toggle: text, not flags -------------------------
+// A segmented control rather than two words and a slash: it reads as a
+// switch, it says which language is on, and it matches the one in the
+// back office. Sits on the transparent nav without a filled ground of its
+// own — only the chosen segment is painted.
 .app-locale {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: $fs-small;
+    display: inline-flex;
+    align-items: stretch;
+    padding: 2px;
+    border: 1px solid rgba($paper, 0.22);
+    border-radius: 999px;
     font-family: $font-body;
+    backdrop-filter: blur(2px);
 
-    a {
+    &__item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 34px;
+        padding: 0.3rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        line-height: 1.4;
         color: $paper-2;
-        padding: 0.25rem;
+        transition: background-color $t-fast, color $t-fast;
+
+        // A finger needs more than an arrow does.
+        @media (pointer: coarse) {
+            min-height: 44px;
+            padding-inline: 1.1rem;
+        }
 
         &:hover { color: $paper; }
-    }
 
-    .app-locale-active {
-        color: $paper;
-        font-weight: 600;
-    }
+        // Ink on ember: the one high-contrast pairing the palette allows.
+        &.is-current {
+            background-color: $ember;
+            color: $ink;
+        }
 
-    &__sep {
-        color: $line-strong;
-        user-select: none;
+        &.is-current:hover { color: $ink; }
     }
 }

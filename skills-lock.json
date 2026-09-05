@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "algorithmic-art": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/algorithmic-art/SKILL.md",
+      "computedHash": "b2ca295de7f9c86c444f1fa21239e22e0eb7013ced1c652169b9402cc96ff744"
+    },
+    "build-awwwards-quality-sites": {
+      "source": "MengTo/Skills",
+      "sourceType": "github",
+      "skillPath": "agent-skills/web-design/build-awwwards-quality-sites/SKILL.md",
+      "computedHash": "64017fdb07bf9b015ed25c4f286cde2238ab14b44e9a22ce2330167ee861f547"
+    },
+    "design-taste-frontend": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "computedHash": "6d838b246d0e35d0b53f4f23f98ba7a1dd561937e64f7d0c7553b0928e376c3e"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "89496d5dd00f4810205f351759594fc2742bf8eea85a2f2b2d1de59f4bd91576"
+    }
+  }
+}

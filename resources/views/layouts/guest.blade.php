@@ -16,6 +16,8 @@
 
 <a class="skip-link" href="#main">{{ __('app.skip') }}</a>
 
+<x-site-banner/>
+
 @include('components.navigation')
 
 <main id="main" class="app-main">
@@ -30,8 +32,8 @@
     :title="__('app.login')"
     :route="route('auth.login')"
 >
-    <x-forms.input :icon="Icon::EMAIL" :label="__('form.email')" name="email" type="email"/>
-    <x-forms.input :icon="Icon::PASSWORD" :label="__('form.password')" name="password" type="password"/>
+    <x-forms.input :icon="Icon::EMAIL" :label="__('form.email')" :required="true" name="email" type="email"/>
+    <x-forms.input :icon="Icon::PASSWORD" :label="__('form.password')" :required="true" name="password" type="password"/>
 </x-modal.index>
 
 </body>

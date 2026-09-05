@@ -14,6 +14,10 @@
             <x-locale/>
         </div>
 
+        <div class="app-navigation__bar-locale">
+            <x-locale/>
+        </div>
+
         <button
             type="button"
             class="app-navigation__toggle"
@@ -35,7 +39,5 @@
         <ul>
             @include('app.partials.navigation')
         </ul>
-
-        <x-locale/>
     </div>
 </nav>

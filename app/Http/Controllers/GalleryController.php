@@ -18,8 +18,15 @@ class GalleryController extends Controller
         foreach ($request->file('items') as $item) {
             $path = $item->store('public/app');
 
+            // Measured at upload, not in the browser: the gallery reserves
+            // each photograph's box before the file arrives, and PhotoSwipe
+            // needs real dimensions even for images that never loaded.
+            [$width, $height] = getimagesize($item->getRealPath()) ?: [null, null];
+
             GalleryItem::create([
                 'image' => str_replace('public', 'storage', $path),
+                'width' => $width,
+                'height' => $height,
                 'gallery_id' => $gallery->id,
             ]);
         }

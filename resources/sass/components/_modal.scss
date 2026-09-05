@@ -1,12 +1,14 @@
-.modal-open {
-    cursor: pointer;
-
-    svg {
-        width: 20px;
-        height: 20px;
-    }
-}
-
 .modal-body {
     padding: 0;
+
+    &--padded { padding: 1.5rem; }
+}
+
+.modal-footer {
+    gap: 0.5rem;
+    border-top: 1px solid $line;
+}
+
+.modal-header {
+    border-bottom: 1px solid $line;
 }

@@ -4,158 +4,80 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
-    <title>{{__('app.title')}}</title>
+    <title>{{ __('admin.title') }} — {{ __('app.title') }}</title>
+
+    {{-- Endpoints the admin behaviours call. Declared here so the JS itself
+         stays free of Blade and can live in resources/js/admin.js. --}}
+    <script>
+        window.AdminRoutes = {
+            sortMenu: @json(route('admin.menu.sort')),
+            removeMenuItems: @json(route('admin.menu.remove')),
+            deleteGalleryItems: @json(route('gallery.delete')),
+        };
+    </script>
 
     @vite(['resources/js/app.js'])
-
 </head>
-<body>
+<body class="admin">
 
-@include('components.navigation')
+<div class="admin-shell" x-data="{ nav: false }" @keydown.escape.window="nav = false">
 
-<div class="app-admin">
-    <div class="app-admin__header">
-    </div>
+    <a href="#admin-main" class="skip-link">{{ __('app.skip') }}</a>
 
-    <div class="app-admin__container">
-        <main class="app-admin__content">
+    <aside class="admin-shell__sidebar" :class="{ 'is-open': nav }">
+        <a href="{{ route(__('route.home')) }}" class="admin-shell__brand">
+            <span class="admin-shell__brand-name">{{ __('app.title') }}</span>
+            <span class="admin-shell__brand-label">{{ __('admin.title') }}</span>
+        </a>
+
+        <nav class="admin-nav" aria-label="{{ __('admin.nav_label') }}">
+            @include('app.admin.partials.navigation')
+        </nav>
+
+        <div class="admin-shell__sidebar-footer">
+            <a href="{{ route(__('route.home')) }}" class="admin-nav__link">
+                @svg('heroicon-o-arrow-top-right-on-square', 'admin-nav__icon')
+                <span>{{ __('admin.view_site') }}</span>
+            </a>
+
+            <a href="{{ route('auth.logout') }}" class="admin-nav__link">
+                @svg('heroicon-o-arrow-left-on-rectangle', 'admin-nav__icon')
+                <span>{{ ucfirst(__('nav.logout')) }}</span>
+            </a>
+        </div>
+    </aside>
+
+    {{-- Closes the drawer when the sidebar is overlaid on small screens. --}}
+    <div class="admin-shell__scrim" x-show="nav" x-cloak @click="nav = false"></div>
+
+    <div class="admin-shell__body">
+        <header class="admin-topbar">
+            <button
+                type="button"
+                class="admin-topbar__toggle"
+                @click="nav = !nav"
+                :aria-expanded="nav ? 'true' : 'false'"
+            >
+                <span class="visually-hidden">{{ __('admin.nav_toggle') }}</span>
+                @svg('heroicon-o-bars-3')
+            </button>
+
+            <div class="admin-topbar__heading">
+                <h1 class="admin-topbar__title">@yield('title')</h1>
+            </div>
+
+            @hasSection('actions')
+                <div class="admin-topbar__actions">
+                    @yield('actions')
+                </div>
+            @endif
+        </header>
+
+        <main id="admin-main" class="admin-shell__main">
             @yield('content')
         </main>
     </div>
 </div>
 
-
 </body>
-
-<script>
-    document.addEventListener('alpine:init', () => {
-
-        Alpine.data('sort', () => ({
-
-            async handle(id, position) {
-
-                console.log(id, position)
-                const result = await $.ajax({
-                    url: '{{route('admin.menu.sort')}}',
-                    type: 'PUT',
-                    data : {
-                        "_token": $('#csrf-token')[0].content,
-                        "id": id,
-                        "position": position
-                    },
-                })
-
-                console.log(result)
-            }
-        }))
-
-        Alpine.store('repeater', {
-            removed: [],
-        })
-
-        Alpine.data('repeater', (data) => ({
-            values: [],
-            created: [],
-
-            init() {
-                if (data) {
-                    this.values = JSON.parse(data)
-                }
-            },
-            add() {
-                this.values.push({
-                    item: '',
-                });
-
-                this.created.push(this.values.length - 1)
-            },
-            remove(index) {
-                this.$store.repeater.removed.push(this.values[index].id)
-                this.values.splice(index, 1);
-            },
-        }))
-
-        Alpine.data('repeaterDelete', () => ({
-
-            async remove() {
-                const items = this.$store.repeater.removed
-                if (items.length === 0) return
-
-                await $.ajax({
-                    url: '{{route('admin.menu.remove')}}',
-                    type: 'DELETE',
-                    data : {
-                        "_token": $('#csrf-token')[0].content,
-                        "items": items
-                    },
-                })
-            }
-        }))
-
-        Alpine.data('images', (input) => ({
-            input: document.getElementById(input),
-            selectables: document.querySelectorAll('.gallery-select'),
-            selected: [],
-
-            init() {
-                this.input.files = null
-                this.upload()
-                this.selectables.forEach(item => {
-                    item.checked = false
-                })
-            },
-
-            actions() {
-                let selected = []
-
-                this.selectables.forEach(item => {
-                    if(item.checked) selected.push(item.id)
-                })
-
-                this.selected = selected
-            },
-
-            select(id) {
-                let item = $(`#select-${id}`)
-                item.click()
-                this.actions()
-            },
-
-            upload() {
-                const files = this.input.files
-
-                for (let i = 0; i < files.length; i++) {
-                    let reader = new FileReader()
-
-                    reader.onload = (e) => {
-                        let img = document.createElement('img')
-                        img.src = `${e.target.result}`
-                        img.classList.add('gallery__photo')
-
-                        document.querySelector('.app-gallery__container').appendChild(img)
-                    }
-
-                    reader.readAsDataURL(files[i])
-                }
-            },
-
-            async remove() {
-                let items = this.selected.map(id => +id.split('-')[1])
-
-                await $.ajax({
-                    url: '{{route('gallery.delete')}}',
-                    type: 'DELETE',
-                    data : {
-                        "_token": $('#csrf-token')[0].content,
-                        "items": items,
-                    },
-                    success: () => window.location.reload()
-                })
-            }
-        }))
-    })
-
-</script>
-
-
 </html>

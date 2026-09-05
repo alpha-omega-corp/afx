@@ -1,32 +1,44 @@
-<div class="modal fade" id="{{$id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+{{-- A modal is always one action on one record. It carries a form only when
+     that action posts somewhere; read-only and JS-driven modals do not. --}}
+<div class="modal fade" id="{{ $id }}" tabindex="-1" aria-labelledby="{{ $id }}-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-6 text-uppercase" id="exampleModalLabel">{{$title}}</h1>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h2 class="modal-title fs-6 text-uppercase" id="{{ $id }}-title">{{ $title }}</h2>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    aria-label="{{ __('admin.action.cancel') }}"
+                ></button>
             </div>
 
-            <form method="{{$action->value === Action::READ ? 'GET' : 'POST'}}" action="{{$route}}" enctype="multipart/form-data">
-                @csrf
-                @method($action->value)
+            @if($route)
+                <form method="POST" action="{{ $route }}" enctype="multipart/form-data">
+                    @csrf
+                    @method($action->value)
+            @endif
 
-                <div @class([
-                    'modal-body',
-                    'p-4' => $padding
-                ])>
-                    {{$slot}}
-                </div>
+            <div @class(['modal-body', 'modal-body--padded' => $padding])>
+                {{ $slot }}
+            </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">
+                    {{ __('admin.action.cancel') }}
+                </button>
 
-                    @if(isset($submit))
-                        {{$submit}}
-                    @elseif($route)
-                        <button type="submit" class="btn btn-success text-white">Submit</button>
-                    @endif
-                </div>
-            </form>
+                @isset($submit)
+                    {{ $submit }}
+                @elseif($route)
+                    <button type="submit" class="btn btn-primary">{{ __('admin.action.save') }}</button>
+                @endisset
+            </div>
+
+            @if($route)
+                </form>
+            @endif
         </div>
     </div>
 </div>

@@ -17,4 +17,7 @@ enum Icon: string
     case ZOOM = 'heroicon-o-magnifying-glass-circle';
     case PIN = 'heroicon-o-map-pin';
     case PHONE = 'heroicon-o-phone';
+    case CALENDAR = 'heroicon-o-calendar-days';
+    case OPEN = 'heroicon-o-lock-open';
+    case CLOSED = 'heroicon-o-no-symbol';
 }

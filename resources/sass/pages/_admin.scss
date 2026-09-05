@@ -1,159 +1,180 @@
-.app-admin {
-    .app-admin__header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: $light;
-        height: 200px;
-        border-bottom: 1px solid #ffffff;
+// =============================================================
+// Admin shell — a fixed section rail on the left, a sticky header
+// carrying the screen's primary action, and the panels below it.
+// =============================================================
 
-        .app-admin__title {
-            font-family: $font-heading;
-            color: $primary;
-        }
-    }
+$admin-rail: 260px;
 
-    .app-admin__container {
-        display: flex;
-
-        @include media-breakpoint-down(xl) {
-            flex-direction: column;
-        }
-    }
-
-    .app-admin__navigation-container {
-        position: relative;
-        background-color: $light;
-
-        @include media-breakpoint-down(xl) {
-            width: 100%;
-        }
-
-        @include media-breakpoint-up(xl) {
-            width: 250px;
-        }
-    }
-
-    .app-admin__navigation {
-        z-index: 3;
-        display: flex;
-        flex-direction: column;
-        margin: 0;
-        width: 100%;
-        padding: 0;
-
-        @include media-breakpoint-down(xl) {
-            flex-direction: row;
-        }
-
-        @include media-breakpoint-up(xl) {
-            height: 100vh;
-        }
-
-        .active-item {
-            background-color: rgba(0, 0, 0, 0.2);
-
-            a {
-                color: $primary;
-            }
-        }
-
-        li {
-            position: relative;
-            list-style-type: none;
-            text-align: center;
-            padding: 20px;
-
-            a {
-                text-transform: uppercase;
-                font-size: 13px;
-                color: $gray;
-                text-decoration: none;
-                font-family: $font-body;
-
-                &:hover {
-                    color: $primary;
-                }
-            }
-        }
-
-
-    }
-
-    .app-admin__content {
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.22);
-        border-left:1px solid $dark;
-
-        @include media-breakpoint-up(xl) {
-            padding: 40px;
-        }
-
-        @include media-breakpoint-down(xl) {
-            padding: 10px;
-        }
-    }
-}
-
-.admin-menu {
-    padding: 20px;
-
-    .admin-menu__section {
-        position: relative;
-        padding: 20px;
-        border: 1px solid $gray;
-        border-radius: 10px;
-        flex-grow: 1;
-        list-style-type: none;
-        margin-bottom: 20px;
-
-        .sort-handle {
-            cursor: pointer;
-
-            svg {
-                width: 20px;
-                height: 20px;
-
-                &:hover {
-                    transform: scale(1.2);
-                    transition: .2s;
-                }
-            }
-
-        }
-
-        .admin-menu__section-actions {
-            display: flex;
-            justify-content: end;
-            gap: 10px;
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-        }
-
-        .admin-menu__section-title {
-            color: $primary;
-            font-family: $font-heading;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .admin-menu__section-content {
-
-        }
-
-        li {
-            color: $gray;
-
-            &::marker {
-                color: $primary;
-            }
-        }
-
-    }
-}
-
-
-.admin-layout {
+.admin-shell {
     display: flex;
+    min-height: 100vh;
+    background-color: $ink;
+}
 
+// --- Section rail --------------------------------------------
+.admin-shell__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: $admin-rail;
+    flex: 0 0 $admin-rail;
+    padding: 1.5rem 1rem;
+    background-color: $ink-2;
+    border-right: 1px solid $line;
+
+    @include media-breakpoint-up(lg) {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    // Below lg the rail becomes a drawer over the content.
+    @include media-breakpoint-down(lg) {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 1045;
+        transform: translateX(-100%);
+        transition: transform $t-fast;
+
+        &.is-open { transform: translateX(0); }
+    }
+}
+
+.admin-shell__scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 1040;
+    background-color: rgba($ink, 0.6);
+
+    @include media-breakpoint-up(lg) { display: none; }
+}
+
+.admin-shell__brand {
+    display: block;
+    padding: 0.5rem 0.75rem 1.25rem;
+    border-bottom: 1px solid $line;
+
+    &:hover .admin-shell__brand-name { color: $ember-hi; }
+}
+
+.admin-shell__brand-name {
+    display: block;
+    font-family: $font-heading;
+    font-size: 1.125rem;
+    color: $paper;
+    transition: color $t-fast;
+}
+
+.admin-shell__brand-label {
+    display: block;
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $ember;
+}
+
+.admin-shell__sidebar-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid $line;
+}
+
+// --- Rail links ----------------------------------------------
+.admin-nav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: $r-control;
+    font-size: $fs-small;
+    color: $paper-2;
+    transition: background-color $t-fast, color $t-fast;
+
+    &:hover {
+        background-color: rgba($paper, 0.06);
+        color: $paper;
+    }
+
+    &.is-current {
+        background-color: rgba($ember, 0.14);
+        color: $ember;
+        font-weight: 600;
+    }
+}
+
+.admin-nav__icon {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+}
+
+// --- Header + content ----------------------------------------
+.admin-shell__body {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.35rem $gutter;
+    background-color: rgba($ink, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid $line;
+}
+
+.admin-topbar__toggle {
+    display: none;
+    padding: 0.5rem;
+    border: 1px solid $line-strong;
+    border-radius: $r-control;
+    background: none;
+    color: $paper;
+
+    svg { width: 20px; height: 20px; }
+
+    @include media-breakpoint-down(lg) { display: inline-flex; }
+}
+
+.admin-topbar__heading { min-width: 0; }
+
+.admin-topbar__eyebrow {
+    margin: 0;
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $paper-2;
+}
+
+.admin-topbar__title {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.2;
+}
+
+.admin-topbar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.admin-shell__main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem $gutter 4rem;
 }

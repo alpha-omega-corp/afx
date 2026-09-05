@@ -55,6 +55,7 @@ class PageFactory extends Factory
     {
         return $this->state([
             'name' => \App\Enums\Page::MENU,
+            'image' => 'storage/mock/carte.jpg',
         ]);
     }
 
@@ -62,6 +63,7 @@ class PageFactory extends Factory
     {
         return $this->state([
             'name' => \App\Enums\Page::RESTAURANT,
+            'image' => 'storage/mock/restaurant.jpg',
         ]);
     }
 
@@ -69,6 +71,7 @@ class PageFactory extends Factory
     {
         return $this->state([
             'name' => \App\Enums\Page::HOTEL,
+            'image' => 'storage/mock/hotel.jpg',
         ]);
     }
 

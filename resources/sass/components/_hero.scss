@@ -19,6 +19,21 @@
         max-height: 860px;
     }
 
+    // No photograph: the type sits on warm black over firelight. Centred
+    // rather than bottom-anchored, because there is no image edge to sit on.
+    &--bare {
+        align-items: center;
+        background-color: $ink;
+
+        .hero__inner {
+            padding-block: clamp(3rem, 8vw, 6rem);
+        }
+
+        .hero__title {
+            max-width: 20ch;
+        }
+    }
+
     &__media {
         position: absolute;
         inset: 0;
@@ -35,6 +50,37 @@
         inset: 0;
         background:
             linear-gradient(to top, $ink 0%, rgba($ink, 0.72) 28%, rgba($ink, 0.30) 62%, rgba($ink, 0.45) 100%);
+    }
+
+    // Warm light from above: the gradient begins at the very top of the page,
+    // behind the navigation, and has burned down to nothing by the time the
+    // cards arrive. The motes rise into it.
+    &__hearth {
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 78%;
+        background:
+            radial-gradient(78% 100% at 50% 0%, rgba($ember, 0.34) 0%, rgba($ember-lo, 0.15) 38%, rgba($ink, 0) 72%);
+        pointer-events: none;
+    }
+
+    &__embers {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    // The hero does not stop, it fades: the last of the firelight dissolves
+    // into the page so the band below begins without an edge.
+    &__fade {
+        position: absolute;
+        inset: auto 0 0 0;
+        height: clamp(6rem, 14vh, 11rem);
+        background: linear-gradient(to bottom, rgba($ink, 0) 0%, rgba($ink, 0.65) 55%, $ink 100%);
+        pointer-events: none;
+        z-index: 1;
     }
 
     &__inner {

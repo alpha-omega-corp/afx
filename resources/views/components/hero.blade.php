@@ -4,9 +4,10 @@
     'lead' => null,
     'tall' => false,
     'priority' => false,
+    'embers' => false,
 ])
 
-<header @class(['hero', 'hero--tall' => $tall])>
+<header @class(['hero', 'hero--tall' => $tall, 'hero--bare' => ! $image])>
     @if($image)
         <img
             class="hero__media"
@@ -16,9 +17,18 @@
             {{ $priority ? 'fetchpriority=high' : 'loading=lazy' }}
             decoding="async"
         />
+
+        <div class="hero__veil"></div>
     @endif
 
-    <div class="hero__veil"></div>
+    @if($embers)
+        {{-- An auberge is a hearth. The embers rise off the bottom edge and
+             burn out before the type, so the page opens with firelight
+             rather than a photograph. --}}
+        <div class="hero__hearth" aria-hidden="true"></div>
+        <canvas class="hero__embers" data-embers aria-hidden="true"></canvas>
+        <div class="hero__fade" aria-hidden="true"></div>
+    @endif
 
     <div class="hero__inner">
         <div class="container">

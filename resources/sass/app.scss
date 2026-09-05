@@ -1,4 +1,5 @@
 // Components
+@import "components/site-banner";
 @import "components/navigation";
 @import "components/hero";
 @import "components/page";
@@ -8,7 +9,6 @@
 @import "components/footer";
 @import "components/input";
 @import "components/file";
-@import "components/card";
 @import "components/modal";
 @import "components/tab";
 @import "components/gallery";
@@ -30,6 +30,9 @@
 *::after { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
+
+// Alpine hides these until it has booted.
+[x-cloak] { display: none !important; }
 
 body {
     background-color: $ink;
