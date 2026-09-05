@@ -1,0 +1,111 @@
+// =============================================================
+// La carte — a list you can read, not a stack of parallax banners.
+// =============================================================
+
+.menu-anchors {
+    position: sticky;
+    top: $nav-h;
+    z-index: 10;
+    background-color: rgba($ink, 0.94);
+    backdrop-filter: blur(8px);
+    border-block: 1px solid $line;
+
+    &__track {
+        display: flex;
+        gap: 0.25rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        &::-webkit-scrollbar { display: none; }
+    }
+
+    a {
+        display: block;
+        white-space: nowrap;
+        padding: 1rem 0.85rem;
+        font-family: $font-body;
+        font-size: $fs-small;
+        color: $paper-2;
+        border-bottom: 2px solid transparent;
+
+        &:hover { color: $paper; }
+
+        &.is-current {
+            color: $ember;
+            border-bottom-color: $ember;
+        }
+    }
+}
+
+.menu-list {
+    padding-block-end: $section-gap;
+}
+
+.menu-section {
+    padding-block-start: $section-gap;
+
+    &__title {
+        margin-bottom: 1.75rem;
+
+        &::after {
+            content: "";
+            display: block;
+            width: 56px;
+            height: 3px;
+            background: $ember;
+            margin-top: 1rem;
+        }
+    }
+
+    &__list {
+        max-width: 760px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.menu-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem 1.5rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid $line;
+
+    &:last-child { border-bottom: 0; }
+
+    &__title {
+        margin: 0;
+        font-family: $font-heading;
+        font-size: $fs-h3;
+        font-weight: 600;
+        color: $paper;
+    }
+
+    &__description {
+        grid-column: 1 / -1;
+        margin: 0.35rem 0 0;
+        color: $paper-2;
+        font-size: $fs-small;
+        max-width: 56ch;
+    }
+
+    // Lining figures so the prices form a clean column.
+    &__price {
+        font-family: $font-body;
+        font-variant-numeric: tabular-nums;
+        color: $paper;
+        white-space: nowrap;
+        align-self: start;
+        padding-top: 0.15rem;
+    }
+
+    &__currency {
+        color: $paper-2;
+        font-size: $fs-small;
+        margin-right: 0.25rem;
+    }
+}

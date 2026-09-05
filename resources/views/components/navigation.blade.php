@@ -1,52 +1,41 @@
-@php use \Illuminate\Support\Facades\Request; @endphp
+<div class="nav-sentinel" aria-hidden="true"></div>
 
-<div class="app-navigation" x-data="{open: false}" >
+<nav class="app-navigation" x-data="{ open: false }" :class="{ 'is-open': open }" aria-label="{{ __('nav.primary') }}">
+    <div class="container app-navigation__inner">
+        <a href="{{ route(__('route.home')) }}" class="app-navigation__logo">
+            {{ __('app.title') }}
+        </a>
 
-    <div class="d-flex justify-content-between">
-        <div class="app-navigation__logo">
-            <span>Auberge De</span>
-            <span>Founex</span>
+        <div class="app-navigation__right">
+            <ul class="app-navigation__menu">
+                @include('app.partials.navigation')
+            </ul>
+
+            <x-locale/>
         </div>
 
-        <div @click="open = !open" class="app-navigation__icon">
-            @svg('heroicon-o-bars-3')
-        </div>
+        <button
+            type="button"
+            class="app-navigation__toggle"
+            @click="open = !open"
+            :aria-expanded="open ? 'true' : 'false'"
+            aria-controls="mobile-nav"
+        >
+            <span class="visually-hidden">{{ __('nav.menu_toggle') }}</span>
+            <template x-if="!open">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            </template>
+            <template x-if="open">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+            </template>
+        </button>
     </div>
 
-    <ul class="app-navigation__menu-desktop">
-        @include('app.partials.navigation')
-    </ul>
-
-    <div class="app-navigation__menu-mobile">
-        <ul x-show="open" @click.outside="open = false">
+    <div class="app-navigation__panel" id="mobile-nav" x-show="open" x-cloak @keydown.escape.window="open = false">
+        <ul>
             @include('app.partials.navigation')
         </ul>
+
+        <x-locale/>
     </div>
-</div>
-
-<x-modal.index
-    :name="Modal::APP_LOGIN"
-    :action="Action::CREATE"
-    :title="__('app.login')"
-    :route="route('auth.login')"
->
-
-    <div class="p-4">
-        <x-forms.input
-            :icon="Icon::EMAIL"
-            :label="__('form.email')"
-            name="email"
-            type="email"
-        />
-
-        <x-forms.input
-            :icon="Icon::PASSWORD"
-            :label="__('form.password')"
-            name="password"
-            type="password"
-        />
-    </div>
-
-</x-modal.index>
-
-
+</nav>

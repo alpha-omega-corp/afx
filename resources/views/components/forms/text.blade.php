@@ -1,5 +1,8 @@
-<div class="form-floating">
-    <textarea class="form-control" id="floatingTextarea2" name="{{$name}}" style="height: 100px">{{$value}}</textarea>
+<div class="form-floating mb-3">
+    <textarea class="form-control app-textarea"
+              id="floatingTextarea{{ $name }}"
+              name="{{ $name }}"
+              placeholder=" ">{{ $value }}</textarea>
 
-    <label for="floatingTextarea2">{{$label}}</label>
+    <label for="floatingTextarea{{ $name }}">{{ $label }}</label>
 </div>

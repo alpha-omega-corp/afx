@@ -1,31 +1,101 @@
+// =============================================================
+// Footer
+// =============================================================
+
 .app-footer {
-    position: relative;
-    background-color: #1d1922;
-    color: #fff;
-    padding: 40px;
-    text-align: center;
-    font-size: 13px;
-    z-index: 2;
+    background-color: $ink;
+    border-top: 1px solid $line;
+    padding-block: clamp(2.5rem, 5vw, 4rem) 2rem;
+    font-family: $font-body;
 
-    .app-footer__section {
-        text-align: center;
-        margin-bottom: 40px;
+    &__grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1fr 1fr;
+        gap: clamp(1.5rem, 4vw, 3rem);
 
-        li {
-            list-style-type: none;
+        @include media-breakpoint-down(lg) { grid-template-columns: 1fr 1fr; }
+        @include media-breakpoint-down(sm) { grid-template-columns: 1fr; }
+    }
+
+    &__wordmark {
+        font-family: $font-heading;
+        font-size: 1.375rem;
+        color: $paper;
+        margin: 0 0 0.75rem;
+    }
+
+    &__blurb {
+        color: $paper-2;
+        font-size: $fs-small;
+        max-width: 32ch;
+        margin: 0;
+    }
+
+    &__title {
+        font-family: $font-heading;
+        font-size: 1rem;
+        font-weight: 600;
+        color: $paper;
+        margin: 0 0 0.9rem;
+    }
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li + li { margin-top: 0.45rem; }
+
+    &__link {
+        color: $paper-2;
+        font-size: $fs-small;
+
+        &:hover { color: $ember; }
+    }
+
+    &__social {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+
+        a {
+            display: inline-flex;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid $line-strong;
+            border-radius: 50%;
+            color: $paper-2;
+            transition: border-color $t-fast, color $t-fast;
+
+            &:hover { border-color: $ember; color: $ember; }
         }
 
-        h3 {
-            color: $primary;
-            font-family: $font-heading;
-        }
+        svg { width: 18px; height: 18px; }
+    }
 
-        p, a  {
-            color: $gray;
-            font-size: 1rem;
-            text-decoration: none;
-            font-family: $font-body;
-            font-weight: bold;
-        }
+    &__bottom {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: clamp(2rem, 4vw, 3rem);
+        padding-top: 1.5rem;
+        border-top: 1px solid $line;
+        color: $paper-2;
+        font-size: $fs-small;
+    }
+
+    &__admin {
+        background: none;
+        border: 0;
+        padding: 0;
+        color: $paper-2;
+        font-size: $fs-small;
+        font-family: $font-body;
+
+        &:hover { color: $ember; }
     }
 }

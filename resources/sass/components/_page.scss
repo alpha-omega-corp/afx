@@ -1,100 +1,19 @@
+// =============================================================
+// Page shell. The parallax stack is gone: one hero image per
+// page, a content column, then the visit band.
+// =============================================================
+
 .app-page {
-
-    .app-page__header-small {
-        height: 75vh !important;
+    &__content {
+        background-color: $ink;
+        color: $paper;
     }
 
-    .app-page__description {
-        text-align: center;
-        font-size: 1.5rem;
-        margin-bottom: 60px;
-        font-family: $font-body;
-
-        @include media-breakpoint-down(lg) {
-            font-size: 1.25rem;
-        }
+    // Intro paragraph under a hero. Only a top gap: whatever follows
+    // brings its own, so the two never stack into a void.
+    &__intro {
+        padding-block: $section-gap 0;
     }
-
-    .app-page__header {
-        position: relative;
-        height: 100vh;
-
-        .parallax {
-            height: 100%;
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-
-        .parallax-overlay {
-            background-color: transparent;
-            background-image: linear-gradient(180deg, rgba(29, 25, 34, 0.5098039216) 0%, #1d1922 98%);
-            opacity: 1;
-            position: absolute;
-            top: 0;
-            right: 0;
-            z-index: 1;
-            height: 100%;
-            width: 100%;
-        }
-
-        .app-page__title {
-            position: absolute;
-            right: 0;
-            bottom: 50%;
-            top: 50%;
-            width: 100%;
-            color: #efa765;
-            text-align: center;
-            z-index: 2;
-
-
-
-            h1 {
-                @include media-breakpoint-up(xl) {
-                    font-size: 75px;
-                    font-family: $font-heading;
-                }
-
-                @include media-breakpoint-down(xl) {
-                    font-size: 50px;
-                    font-family: $font-heading;
-                }
-
-
-            }
-        }
-    }
-
-    .app-page__content {
-        z-index: 3;
-        color: $gray;
-        background-color: $dark;
-    }
-
-    .app-page__footer {
-        position: relative;
-
-        .parallax {
-            height: 600px;
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-
-        .parallax-overlay {
-            background-color: transparent;
-            background-image: linear-gradient(180deg, rgba(29, 25, 34, 0.5098039216) 0%, #1d1922 98%);
-            opacity: 1;
-            position: absolute;
-            top: 0;
-            right: 0;
-            z-index: 1;
-            height: 100%;
-            width: 100%;
-        }
-    }
-
 }
+
+.app-main { min-height: 60vh; }

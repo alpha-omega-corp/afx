@@ -1,7 +1,10 @@
+// Components
 @import "components/navigation";
+@import "components/hero";
 @import "components/page";
-@import "components/carousel";
-@import "components/animation";
+@import "components/tile";
+@import "components/strip";
+@import "components/visit-band";
 @import "components/footer";
 @import "components/input";
 @import "components/file";
@@ -12,71 +15,187 @@
 @import "components/repeater";
 @import "components/admin";
 
+// Pages
 @import "pages/home";
 @import "pages/menu";
-@import "pages/admin";
 @import "pages/contact";
+@import "pages/admin";
 
-.app-locale-active {
-    border: 2px solid #ffffff !important;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-}
+// =============================================================
+// Base
+// =============================================================
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 body {
-    background-color: $dark;
+    background-color: $ink;
+    color: $paper;
+    font-family: $font-body;
+    font-size: $fs-body;
+    line-height: $lh-body;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+}
 
-    a {
-        color: $gray;
-        text-decoration-color: $info;
+// --- Headings ------------------------------------------------
+// Playfair carries the headlines; Inter does everything else.
+h1, h2, h3, h4 {
+    font-family: $font-heading;
+    color: $paper;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+}
 
-        &:hover {
-            color: $primary;
-        }
-    }
+h1 { font-size: $fs-display; line-height: $lh-display; }
+h2 { font-size: $fs-h2;      line-height: $lh-h2; }
+h3 { font-size: $fs-h3;      line-height: $lh-h3; font-weight: 600; }
 
-    h2 {
-        color: $primary;
-        font-family: $font-heading;
-        font-size: 35px;
-        text-align: center;
-    }
+p { margin-bottom: 1rem; }
 
-    h3 {
-        color: $primary;
-        font-family: $font-heading;
-        font-size: 30px;
-    }
+// --- Links ---------------------------------------------------
+a {
+    color: $ember;
+    text-decoration: none;
+    transition: color $t-fast;
 
-    table {
-        .table-item {
-            border-bottom: 1px solid #ffffff;
-            padding-bottom: 2px;
-        }
+    &:hover { color: $ember-hi; }
+}
+
+// --- Focus ---------------------------------------------------
+// One visible treatment everywhere, never removed.
+:focus-visible {
+    outline: 2px solid $ember-hi;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+.skip-link {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -120%);
+    z-index: 100;
+    background: $ember;
+    color: $ink;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0 0 $r-control $r-control;
+
+    &:focus {
+        transform: translate(-50%, 0);
+        color: $ink;
     }
 }
 
+// =============================================================
+// Layout primitives
+// =============================================================
+
+.container {
+    width: 100%;
+    max-width: $container;
+    margin-inline: auto;
+    padding-inline: $gutter;
+}
+
+// Vertical rhythm lives here and nowhere else, so sections
+// can never fight each other over margins.
 .app-section {
+    padding-block: $section-gap;
 
-    @include media-breakpoint-up(xl) {
-        padding: 100px 0;
-    }
-
-    @include media-breakpoint-down(xl) {
-
-    }
+    + .app-section { padding-block-start: 0; }
 
     &__title {
-        color: $primary;
-        margin-bottom: 40px;
-    }
+        margin-bottom: 1.75rem;
 
-    &__content {
-
+        // The one piece of decoration on the site: an ember bar
+        // that marks a section the way a brand mark would.
+        &::after {
+            content: "";
+            display: block;
+            width: 56px;
+            height: 3px;
+            background: $ember;
+            margin-top: 1rem;
+        }
     }
 }
 
+// Prose is capped at a comfortable measure rather than the full grid.
+.prose {
+    max-width: $measure;
+    color: $paper-2;
+    font-size: $fs-lead;
+    line-height: $lh-lead;
 
+    a { text-decoration: underline; text-underline-offset: 3px; }
+}
 
+.text-muted-2 { color: $paper-2; }
 
+// =============================================================
+// Buttons
+// =============================================================
+
+.btn {
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: $fs-small;
+    letter-spacing: 0.01em;
+    padding: 0.9rem 1.5rem;
+    border-radius: $r-control;
+    border: 1px solid transparent;
+    transition: background-color $t-fast, border-color $t-fast, color $t-fast;
+}
+
+// Ink on ember: 6.1:1. White on ember would be 3:1 and fail.
+.btn-primary {
+    background-color: $ember;
+    border-color: $ember;
+    color: $ink;
+
+    &:hover,
+    &:focus-visible {
+        background-color: $ember-hi;
+        border-color: $ember-hi;
+        color: $ink;
+    }
+
+    &:active { background-color: $ember-lo; border-color: $ember-lo; color: $paper; }
+}
+
+.btn-ghost {
+    background-color: transparent;
+    border-color: $paper;
+    color: $paper;
+
+    &:hover,
+    &:focus-visible {
+        border-color: $ember;
+        color: $ember;
+    }
+}
+
+// =============================================================
+// Motion
+// =============================================================
+// One page-load moment on the hero lockup. Nothing animates on
+// scroll. Everything else is a hover or focus response.
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}

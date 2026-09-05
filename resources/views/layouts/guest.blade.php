@@ -3,60 +3,36 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#141210">
 
-    <title>{{__('app.title')}}</title>
+    <title>@yield('title', __('app.title'))</title>
+    <meta name="description" content="@yield('description', __('footer.blurb'))">
+
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
 
     @vite(['resources/js/app.js'])
-
 </head>
 <body>
 
+<a class="skip-link" href="#main">{{ __('app.skip') }}</a>
+
 @include('components.navigation')
-@yield('content')
+
+<main id="main" class="app-main">
+    @yield('content')
+</main>
+
+<x-footer/>
+
+<x-modal.index
+    :name="Modal::APP_LOGIN"
+    :action="Action::CREATE"
+    :title="__('app.login')"
+    :route="route('auth.login')"
+>
+    <x-forms.input :icon="Icon::EMAIL" :label="__('form.email')" name="email" type="email"/>
+    <x-forms.input :icon="Icon::PASSWORD" :label="__('form.password')" name="password" type="password"/>
+</x-modal.index>
 
 </body>
-
-<x-footer />
-
-<script>
-    document.addEventListener('alpine:init', () => {
-
-        Alpine.data('gallery', (count) => ({
-            init() {
-                for (let i = 0; i < count; i++) {
-                    const image = document.getElementById(`galleryImage${i}`)
-                    image.parentElement.setAttribute('data-pswp-height', image.naturalHeight)
-                    image.parentElement.setAttribute('data-pswp-width', image.naturalWidth)
-                }
-            }
-        }))
-
-        Alpine.data('carousel', (name, count) => ({
-            init() {
-                const glide = new Glide(`#${name}`, {
-                    type: 'carousel',
-                    perView: count,
-                    breakpoints: {
-                        1900: {
-                            perView: count - 1,
-                        },
-                        1300: {
-                            perView: count - 2,
-                        },
-                        900: {
-                            perView: 1,
-                        },
-                    },
-                })
-
-                this.$nextTick(() => {
-                    glide.mount(GlideControls)
-                })
-            },
-        }))
-
-    });
-
-</script>
-
 </html>

@@ -18,3 +18,9 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# compiled sass artifacts
+resources/sass/**/*.css
+resources/sass/**/*.css.map
+resources/sass/*.css
+resources/sass/*.css.map

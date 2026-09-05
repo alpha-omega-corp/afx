@@ -16,6 +16,11 @@ class GuestController extends Controller
         return view('app.home', [
             'page' => Page::where('name', PageEnum::HOME)->first(),
             'gallery' => Gallery::where('name', GalleryEnum::DELICACIES)->first(),
+            'doors' => Page::whereIn('name', [
+                PageEnum::RESTAURANT,
+                PageEnum::MENU,
+                PageEnum::HOTEL,
+            ])->get()->keyBy('name'),
         ]);
     }
 

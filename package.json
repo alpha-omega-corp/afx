@@ -15,7 +15,6 @@
     "dependencies": {
         "@alpinejs/focus": "^3.14.1",
         "@alpinejs/sort": "^3.14.8",
-        "@glidejs/glide": "^3.6.2",
         "@popperjs/core": "^2.11.8",
         "@rollup/plugin-inject": "^5.0.5",
         "alpinejs": "^3.14.1",

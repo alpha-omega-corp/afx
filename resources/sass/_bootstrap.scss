@@ -1,6 +1,9 @@
+@import "tokens";
+
 @import "../../node_modules/bootstrap/scss/functions";
 @import "../../node_modules/bootstrap/scss/variables";
 
+// --- Self-hosted faces ---------------------------------------
 // Body / UI face: Inter (variable, 400-700)
 @font-face {
     font-family: 'Inter';
@@ -39,40 +42,92 @@
     unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-// Single source of truth for typography. Swap these two to change the site font.
-$font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-$font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
-
-// Make Bootstrap's reboot use the body face, so unstyled text stops
-// falling back to the system stack.
-$font-family-base:    $font-body;
+// --- Bootstrap mapping (tokens are the source of truth) -------
+$font-family-base:     $font-body;
 $headings-font-family: $font-heading;
+$font-size-base:       1.0625rem;
+$line-height-base:     $lh-body;
 
-$primary: #efa765;
-$secondary: #8a2be2;
-$success: #1cc88a;
-$danger: $red-600;
-$info: #4e73df;
+$primary:   $ember;
+$secondary: $paper-2;
+$success:   #3F9D6A;
+$danger:    #C4442E;
+$info:      $ember;
+$warning:   $ember-hi;
 
-$dark: #1d1922;
-$gray: #b8b8be;
-$light: #2d2d38;
+$dark:  $ink;
+$light: $ink-2;
+$gray:  $paper-2;
 
 $theme-colors: (
-    "primary": $primary,
+    "primary":   $primary,
     "secondary": $secondary,
-    "success": $success,
-    "danger": $danger,
-    "info": $info,
-
-    "dark": $dark,
-    "light": $light,
-    "gray": $gray,
+    "success":   $success,
+    "danger":    $danger,
+    "info":      $info,
+    "warning":   $warning,
+    "dark":      $dark,
+    "light":     $light,
+    "gray":      $gray,
 );
 
-$modal-content-bg: $dark;
-$modal-content-color: $gray;
+$body-bg:           $ink;
+$body-color:        $paper;
+$border-color:      $line;
+$border-radius:     $r-control;
+$border-radius-sm:  $r-control;
+$border-radius-lg:  $r-panel;
+$border-radius-xl:  $r-panel;
 
+$link-color:            $ember;
+$link-hover-color:      $ember-hi;
+$link-decoration:       none;
+$link-hover-decoration: none;
+
+$container-max-widths: (sm: 540px, md: 720px, lg: 960px, xl: $container, xxl: $container);
+$grid-gutter-width: 2rem;
+
+$headings-color:         $paper;
+$headings-font-weight:   400;
+$headings-margin-bottom: 0.5em;
+
+// Forms
+$input-bg:                    $ink-2;
+$input-disabled-bg:           $ink;
+$input-color:                 $paper;
+$input-border-color:          $line-strong;
+$input-focus-border-color:    $ember;
+$input-focus-box-shadow:      none;
+$input-placeholder-color:     $paper-2;
+$input-group-addon-bg:        $ink-2;
+$input-group-addon-color:     $paper-2;
+$input-group-addon-border-color: $line-strong;
+$form-label-color:            $paper-2;
+
+// Focus ring: one visible treatment everywhere
+$focus-ring-width:   2px;
+$focus-ring-color:   $ember-hi;
+$focus-ring-opacity: 1;
+$focus-ring-blur:    0;
+
+// Surfaces
+$modal-content-bg:    $ink-2;
+$modal-content-color: $paper;
+$modal-content-border-color: $line;
+$card-bg:             $ink-2;
+$card-color:          $paper;
+$card-border-color:   $line;
+$dropdown-bg:              $ink-2;
+$dropdown-color:           $paper;
+$dropdown-border-color:    $line;
+$dropdown-link-color:      $paper;
+$dropdown-link-hover-color: $ink;
+$dropdown-link-hover-bg:   $ember;
+
+$btn-font-weight:   600;
+$btn-padding-y:     0.9rem;
+$btn-padding-x:     1.5rem;
+$btn-font-size:     $fs-small;
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
 @import "../../node_modules/bootstrap/scss/maps";
@@ -89,16 +144,12 @@ $modal-content-color: $gray;
 @import "../../node_modules/bootstrap/scss/pagination";
 @import "../../node_modules/bootstrap/scss/tooltip";
 @import "../../node_modules/bootstrap/scss/popover";
-@import "../../node_modules/bootstrap/scss/carousel";
 @import "../../node_modules/bootstrap/scss/modal";
 @import "../../node_modules/bootstrap/scss/card";
 @import "../../node_modules/bootstrap/scss/offcanvas";
 @import "../../node_modules/bootstrap/scss/helpers";
 @import "../../node_modules/bootstrap/scss/utilities/api";
 
-@import "../../node_modules/@glidejs/glide/src/assets/sass/glide.core";
 @import "../../node_modules/lightgallery/scss/lightgallery-core";
 @import "../../node_modules/lightgallery/scss/lg-thumbnail";
 @import "../../node_modules/lightgallery/scss/lg-zoom";
-
-

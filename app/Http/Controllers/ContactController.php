@@ -15,7 +15,11 @@ class ContactController extends Controller
 
         Contact::create($data);
 
-        return redirect()->route(__('route.home'));
+        // Return to the form so the sender sees the confirmation
+        // where they submitted it.
+        return redirect()
+            ->route(__('route.contact'))
+            ->with('status', __('form.sent'));
     }
 
     public function destroy(Contact $contact): RedirectResponse

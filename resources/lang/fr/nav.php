@@ -7,4 +7,7 @@ return [
     'restaurant' => 'restaurant',
     'hotel' => 'hôtel',
     'contact' => 'contact',
+    'primary' => 'Navigation principale',
+    'menu_toggle' => 'Ouvrir le menu',
+    'logout' => 'Déconnexion',
 ];

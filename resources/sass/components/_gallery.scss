@@ -1,63 +1,57 @@
-.pswp-gallery {
-    counter-reset: item-counter;
+// =============================================================
+// Guest gallery — an even grid, not a column-count masonry that
+// reorders images unpredictably.
+// =============================================================
 
-    @media screen and (min-width: 400px) {
-        column-count: 1;
-    }
+.app-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
 
-    @media screen and (min-width: 600px) {
-        column-count: 2;
-    }
+    @include media-breakpoint-down(lg) { grid-template-columns: repeat(2, 1fr); }
+    @include media-breakpoint-down(sm) { grid-template-columns: 1fr; }
 
-    @media screen and (min-width: 900px) {
-        column-count: 3;
-    }
+    &__wrap { padding-block: $section-gap; }
+}
 
-    &__item {
+.pswp-gallery__item {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    border-radius: $r-panel;
+    overflow: hidden;
+    background-color: $ink-2;
 
-
-        &--overlay {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            justify-content: center;
-            align-items: center;
-            z-index: 1;
-            display: none;
-
-            svg {
-                width: 60px;
-                height: 60px;
-
-                @media  screen and (min-width: 600px) {
-                    width: 30px;
-                    height: 30px;
-
-                }
-
-                color: #ffffff;
-            }
-        }
-
-        &:hover {
-            .pswp-gallery__item--overlay {
-                display: flex;
-                background-color: rgba(0,0,0,0.4);
-            }
-        }
-    }
-
-    &__image {
+    img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        position: relative;
-        margin-bottom: 15px;
+        display: block;
     }
+
+    &--overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba($ink, 0.55);
+        opacity: 0;
+        transition: opacity $t-fast;
+
+        svg {
+            width: 32px;
+            height: 32px;
+            color: $paper;
+        }
+    }
+
+    &:hover .pswp-gallery__item--overlay,
+    &:focus-visible .pswp-gallery__item--overlay { opacity: 1; }
 }
 
+// --- Admin gallery manager (unchanged behaviour) --------------
 .app-gallery {
-
     .app-gallery__item-overlay {
         position: absolute;
         top: 10px;
@@ -69,7 +63,7 @@
         gap: 10px;
         position: absolute;
         top: 20px;
-        right: 20px
+        right: 20px;
     }
 
     .app-gallery__container {
@@ -93,10 +87,6 @@
                 object-position: center;
                 object-fit: cover;
             }
-
-
         }
     }
 }
-
-

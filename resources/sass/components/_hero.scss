@@ -1,0 +1,82 @@
+// =============================================================
+// Hero — one image per page, never a parallax stack.
+// A real <img> so the browser can prioritise it as the LCP element.
+// =============================================================
+
+.hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    height: 52vh;
+    min-height: 420px;
+    max-height: 620px;
+    overflow: hidden;
+    background-color: $ink-2;
+
+    &--tall {
+        height: 78vh;
+        min-height: 540px;
+        max-height: 860px;
+    }
+
+    &__media {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    // Warm veil: the image cools to soot at the bottom so the
+    // page below joins it without a seam, and the type stays legible.
+    &__veil {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(to top, $ink 0%, rgba($ink, 0.72) 28%, rgba($ink, 0.30) 62%, rgba($ink, 0.45) 100%);
+    }
+
+    &__inner {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        padding-block-end: clamp(2.5rem, 6vw, 5rem);
+        padding-block-start: calc(#{$nav-h} + 2rem);
+    }
+
+    &__title {
+        margin: 0;
+        max-width: 16ch;
+    }
+
+    &__lead {
+        margin: 1.25rem 0 0;
+        max-width: 46ch;
+        color: $paper;
+        font-size: $fs-lead;
+        line-height: $lh-lead;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+}
+
+// The single orchestrated moment on the site.
+@media (prefers-reduced-motion: no-preference) {
+    .hero__inner > * {
+        animation: hero-rise 600ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    }
+
+    .hero__lead    { animation-delay: 90ms; }
+    .hero__actions { animation-delay: 180ms; }
+}
+
+@keyframes hero-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+}

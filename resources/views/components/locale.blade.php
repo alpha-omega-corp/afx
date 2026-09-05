@@ -1,12 +1,17 @@
+@php($current = app()->getLocale())
+
 <div class="app-locale">
-    <a href="{{route('locale', ['locale' => 'fr'])}}"
-        @class(['app-locale-active' => app()->getLocale() === \App\Enums\Language::FR->value])>
-        <img src="{{Vite::image('french.png')}}" alt="French">
-    </a>
+    <a href="{{ route('locale', ['locale' => 'fr']) }}"
+       hreflang="fr"
+       @class(['app-locale-active' => $current === \App\Enums\Language::FR->value])
+       @if($current === \App\Enums\Language::FR->value) aria-current="true" @endif
+    >FR</a>
 
-    <a href="{{route('locale', ['locale' => 'en'])}}"
-        @class(['app-locale-active' => app()->getLocale() === \App\Enums\Language::EN->value])>
-        <img src="{{Vite::image('english.png')}}" alt="French">
-    </a>
+    <span class="app-locale__sep" aria-hidden="true">/</span>
 
+    <a href="{{ route('locale', ['locale' => 'en']) }}"
+       hreflang="en"
+       @class(['app-locale-active' => $current === \App\Enums\Language::EN->value])
+       @if($current === \App\Enums\Language::EN->value) aria-current="true" @endif
+    >EN</a>
 </div>

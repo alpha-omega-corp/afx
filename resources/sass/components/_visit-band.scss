@@ -1,0 +1,50 @@
+// =============================================================
+// Visit band — the orange is a material here, not an accent.
+// Full-bleed, once per page, directly above the footer.
+// Text is $ink: $paper on $ember is 2.6:1 and fails.
+// =============================================================
+
+.visit {
+    background-color: $ember;
+    color: $ink;
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: clamp(1.5rem, 4vw, 3rem);
+
+        @include media-breakpoint-down(md) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__label {
+        font-family: $font-heading;
+        font-size: $fs-h3;
+        font-weight: 600;
+        color: $ink;
+        margin: 0 0 0.5rem;
+    }
+
+    &__value {
+        margin: 0;
+        color: $ink-soft;
+        font-size: $fs-body;
+        line-height: 1.5;
+
+        a {
+            color: $ink;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+
+            &:hover { color: $ink-soft; }
+        }
+    }
+
+    a:focus-visible {
+        outline-color: $ink;
+    }
+
+    &__line + &__line { margin-top: 0.35rem; }
+}

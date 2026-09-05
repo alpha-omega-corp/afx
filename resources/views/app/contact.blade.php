@@ -1,88 +1,87 @@
 @extends('layouts.guest')
 
+@section('title', ucfirst(__('nav.contact')) . ' — ' . __('app.title'))
+
 @section('content')
+    <x-page :image="$page->image" :title="$page->locale?->title ?: ucfirst(__('nav.contact'))" :band="false">
 
-    <x-page :image="$page->image">
-        <x-slot:title>
-            <h1 class="animation-grow">{{$page->locale->title}}</h1>
-        </x-slot:title>
-
-        <div class="container">
-
-            <div class="app-page__description">
-                {{$page->locale->content}}
+        @if($page->locale?->content)
+            <div class="app-page__intro">
+                <div class="container">
+                    <p class="prose">{{ $page->locale->content }}</p>
+                </div>
             </div>
+        @endif
 
-            <div class="app-contact">
+        <div class="container app-contact">
+            <div class="app-contact__grid">
 
                 <div class="app-contact__information">
-                    <h3 class="app-contact__information--title">{{__('app.contact')}}</h3>
+                    <h2 class="app-section__title">{{ __('footer.visit') }}</h2>
 
-                    <div class="app-contact__information--item">
-                        @svg(Icon::PIN->value)
-                        <a href="https://www.google.ch/maps/place/Grand-Rue+31,+1297+Founex/@46.3325566,6.1902006,17z/">
-                            Grand'Rue 31 1297 Founex
-                        </a>
-                    </div>
+                    <dl class="app-contact__list">
+                        <div class="app-contact__row">
+                            <dt>{{ __('footer.address') }}</dt>
+                            <dd>
+                                <a href="https://www.google.ch/maps/place/Grand-Rue+31,+1297+Founex/@46.3325566,6.1902006,17z/" target="_blank" rel="noopener">
+                                    Grand'Rue 31, 1297 Founex
+                                </a>
+                            </dd>
+                        </div>
 
-                    <hr>
+                        <div class="app-contact__row">
+                            <dt>{{ __('form.phone') }}</dt>
+                            <dd><a href="tel:+41227761029">022 776 10 29</a></dd>
+                        </div>
 
-                    <div class="app-contact__information--item">
-                        @svg(Icon::PHONE->value)
-                        <a href="tel:022 776 10 29">
-                            022 776 10 29
-                        </a>
-                    </div>
+                        <div class="app-contact__row">
+                            <dt>{{ __('form.email') }}</dt>
+                            <dd><a href="mailto:aubergedefounex@bluewin.ch">aubergedefounex@bluewin.ch</a></dd>
+                        </div>
 
-                    <div class="app-contact__information--item">
-                        @svg(Icon::EMAIL->value)
-                        <a href="mailto:aubergedefounex@bluewin.ch">
-                            aubergedefounex@bluewin.ch
-                        </a>
-                    </div>
+                        <div class="app-contact__row">
+                            <dt>{{ __('footer.hours') }}</dt>
+                            <dd>
+                                {{ __('footer.hours_week') }}<br>
+                                {{ __('footer.hours_closed') }}
+                            </dd>
+                        </div>
 
-                    <hr>
-
-                    <div class="app-contact__information--item">
-                        <img src="{{Vite::image('facebook.png')}}" alt="contact icon"/>
-                        <a href="https://www.facebook.com/AubergeFounex" target="_blank">Auberge de Founex</a>
-                    </div>
-
-                    <div class="app-contact__information--item">
-                        <img src="{{Vite::image('instagram.png')}}" alt="contact icon"/>
-                        <a href="https://www.instagram.com/auberge_de_founex/" target="_blank">auberge_de_founex</a>
-                    </div>
-
+                        <div class="app-contact__row">
+                            <dt>{{ __('footer.social') }}</dt>
+                            <dd>
+                                <div class="app-contact__social">
+                                    <a href="https://www.facebook.com/AubergeFounex" target="_blank" rel="noopener">
+                                        <x-icon.facebook/> Auberge de Founex
+                                    </a>
+                                    <a href="https://www.instagram.com/auberge_de_founex/" target="_blank" rel="noopener">
+                                        <x-icon.instagram/> auberge_de_founex
+                                    </a>
+                                </div>
+                            </dd>
+                        </div>
+                    </dl>
                 </div>
 
-
-                <form method="POST" action="{{route('contact.store')}}" class="app-contact__form shadow-lg">
-                    <p class="app-contact__text">Contactez nous par téléphone ou à l'aide du formulaire ci-dessous</p>
-
-                    <div class="d-flex justify-content-center pb-4">
-                        <img class="app-contact__icon" src="{{Vite::image('contact.png')}}" alt="contact icon"/>
-                    </div>
+                <form method="POST" action="{{ route('contact.store') }}" class="app-contact__form">
                     @csrf
 
+                    <p class="app-contact__text">{{ __('form.intro') }}</p>
+
+                    @if(session('status'))
+                        <p class="app-contact__status" role="status">{{ session('status') }}</p>
+                    @endif
+
                     <x-forms.input name="name" :label="__('form.name')"/>
-
-                    <x-forms.input name="email" :label="__('form.email')"/>
-
-                    <x-forms.input name="phone" :label="__('form.phone')"/>
-
+                    <x-forms.input name="email" type="email" :label="__('form.email')"/>
+                    <x-forms.input name="phone" type="tel" :label="__('form.phone')"/>
                     <x-forms.text name="message" :label="__('form.message')"/>
 
-                    <hr>
-
-                    <button type="submit" class="btn btn-primary text-white w-100">
-                        {{__('form.submit')}}
+                    <button type="submit" class="btn btn-primary w-100">
+                        {{ __('form.send') }}
                     </button>
                 </form>
             </div>
-
-
         </div>
-
-
     </x-page>
 @endsection

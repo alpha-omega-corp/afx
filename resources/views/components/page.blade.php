@@ -1,28 +1,17 @@
+@props(['image' => null, 'title' => null, 'lead' => null, 'tall' => false, 'band' => true])
+
 <div class="app-page">
-
-    <div @class([
-        'app-page__header',
-        'app-page__header-small' => !$isLarge
-    ])>
-
-        <div style="background-image: url({{url($image)}})" class="parallax"></div>
-
-        <div class="parallax-overlay"></div>
-
-        <div class="app-page__title">
-            <div class="container">
-                {{$title}}
-            </div>
-        </div>
-    </div>
+    <x-hero :image="$image" :title="$title" :lead="$lead" :tall="$tall" :priority="true">
+        @isset($actions)
+            <x-slot:actions>{{ $actions }}</x-slot:actions>
+        @endisset
+    </x-hero>
 
     <div class="app-page__content">
-        {{$slot}}
+        {{ $slot }}
     </div>
 
-    <div class="app-page__footer">
-        <div class="parallax" style="background-image: url({{Vite::image('afx-footer.jpg')}})"></div>
-
-        <div class="parallax-overlay"></div>
-    </div>
+    @if($band)
+        <x-visit-band/>
+    @endif
 </div>

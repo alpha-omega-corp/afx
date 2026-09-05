@@ -1,20 +1,57 @@
-.input-group-text {
-    background-color: $light;
-    border-color: $light;
-
-    svg {
-        color: #ffffff;
-        height: 20px;
-        width: 20px;
-    }
-}
+// =============================================================
+// Form controls.
+// Geometry stays Bootstrap's so floating labels keep working;
+// only colour and border are ours.
+// =============================================================
 
 .form-control {
-    border: 1px solid $primary;
+    background-color: $ink-2;
+    border: 1px solid $line-strong;
+    color: $paper;
+    border-radius: $r-control;
 
     &:focus {
-        border: 1px solid $primary;
-        box-shadow: 0 0 10px $primary;
+        background-color: $ink-2;
+        border-color: $ember;
+        color: $paper;
+        box-shadow: none;
+    }
+
+    &::placeholder { color: transparent; }
+}
+
+.form-floating > .app-textarea {
+    // Bootstrap fixes a height on floating-label controls; a message
+    // box needs more room than a single line.
+    height: 160px;
+    resize: vertical;
+}
+
+.form-floating {
+    > label {
+        color: $paper-2;
+        padding: 1rem 0.9rem;
+    }
+
+    // Bootstrap paints a white pill behind the floated label; on a
+    // dark surface that has to be the surface colour instead.
+    > label::after {
+        background-color: $ink-2 !important;
+    }
+
+    > .form-control:focus ~ label,
+    > .form-control:not(:placeholder-shown) ~ label {
+        color: $paper-2;
     }
 }
 
+.input-group-text {
+    background-color: $ink-2;
+    border-color: $line-strong;
+    color: $paper-2;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+}

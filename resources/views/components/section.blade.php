@@ -1,9 +1,11 @@
-<section class="app-section">
+@props(['title' => null, 'id' => null])
+
+<section class="app-section" @if($id) id="{{ $id }}" @endif>
+    <div class="container">
         @if($title)
-            <h2 class="app-section__title">{{$title}}</h2>
+            <h2 class="app-section__title">{{ $title }}</h2>
         @endif
 
-        <div class="app-section__content">
-            {{$slot}}
-        </div>
+        {{ $slot }}
+    </div>
 </section>
