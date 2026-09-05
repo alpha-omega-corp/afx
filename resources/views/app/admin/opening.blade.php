@@ -3,6 +3,14 @@
 @section('title', __('admin.opening_title'))
 
 @section('content')
+    @unless($ready)
+        <x-admin.panel :description="__('admin.pending_migrations')">
+            <p class="admin-notice">
+                <code>php artisan migrate</code>
+            </p>
+        </x-admin.panel>
+    @endunless
+
     {{-- 1. The switch: is the auberge open right now, and why not. --}}
     <x-admin.panel
         :title="__('admin.status_title')"

@@ -75,6 +75,12 @@ class SiteStatus
 
         $this->resolved = true;
         $this->closedManually = Setting::bool(SettingKey::SITE_CLOSED);
-        $this->holiday = Holiday::covering()->with('locale')->orderBy('ends_on', 'desc')->first();
+
+        // Same reasoning as the settings table: no calendar means no banner,
+        // never a broken page.
+        $this->holiday = OptionalTable::read(
+            fn () => Holiday::covering()->with('locale')->orderBy('ends_on', 'desc')->first(),
+            null,
+        );
     }
 }

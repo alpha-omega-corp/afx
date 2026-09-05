@@ -22,6 +22,8 @@ return [
     'messages_title' => 'Received messages',
     'messages_description' => 'Messages sent through the contact form.',
 
+    'pending_migrations' => 'This section is waiting on a database migration. Run it before changing the opening state or the closures — nothing is saved until it has.',
+
     // Actions
     'action' => [
         'edit' => 'Edit',

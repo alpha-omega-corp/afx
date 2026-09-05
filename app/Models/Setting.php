@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Setting as SettingKey;
+use App\Support\OptionalTable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -20,7 +21,12 @@ class Setting extends Model
 
     public static function get(SettingKey $key, ?string $default = null): ?string
     {
-        self::$cache ??= self::pluck('value', 'key')->all();
+        // Every switch falls back to its default when the table is not there
+        // yet, so a deploy that precedes its migration still serves pages.
+        self::$cache ??= OptionalTable::read(
+            fn () => self::pluck('value', 'key')->all(),
+            [],
+        );
 
         return self::$cache[$key->value] ?? $default;
     }
@@ -32,6 +38,10 @@ class Setting extends Model
         return $value === null ? $default : filter_var($value, FILTER_VALIDATE_BOOL);
     }
 
+    /**
+     * Deliberately unguarded: a member of staff flipping a switch must see it
+     * fail rather than watch it silently do nothing.
+     */
     public static function put(SettingKey $key, string|bool $value): void
     {
         $value = is_bool($value) ? ($value ? '1' : '0') : $value;

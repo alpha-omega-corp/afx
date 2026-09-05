@@ -535,3 +535,19 @@
         &.is-current:hover { background-color: $ember-hi; color: $ink; }
     }
 }
+
+.admin-notice {
+    margin: 0;
+    color: $paper-2;
+    font-size: $fs-small;
+
+    code {
+        display: inline-block;
+        padding: 0.35rem 0.6rem;
+        border: 1px solid $line-strong;
+        border-radius: $r-control;
+        background-color: rgba($ink, 0.6);
+        color: $ember;
+        font-size: 0.8125rem;
+    }
+}

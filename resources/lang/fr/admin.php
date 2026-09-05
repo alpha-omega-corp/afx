@@ -22,6 +22,8 @@ return [
     'messages_title' => 'Messages reçus',
     'messages_description' => 'Messages envoyés depuis le formulaire de contact.',
 
+    'pending_migrations' => 'Cette section attend une migration de la base de données. Lancez-la avant de modifier les horaires ou les fermetures — rien n’est enregistré tant qu’elle n’a pas tourné.',
+
     // Actions
     'action' => [
         'edit' => 'Modifier',
