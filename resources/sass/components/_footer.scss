@@ -198,11 +198,5 @@
         font-family: $font-body;
 
         &:hover { color: $ember; }
-
-        &--out {
-            color: $line-strong;
-
-            &:hover { color: $ember; }
-        }
     }
 }

@@ -63,7 +63,13 @@
                         <a class="app-footer__admin" href="{{ route($section['route']) }}">{{ ucfirst($section['label']) }}</a>
                     @endforeach
 
-                    <a class="app-footer__admin app-footer__admin--out" href="{{ route('auth.logout') }}">{{ ucfirst(__('nav.logout')) }}</a>
+                    {{-- The way out gets the same pill as the way in, with the
+                         lock open: the two are the same door, and this one was
+                         the faintest thing on the page. --}}
+                    <a class="app-footer__login" href="{{ route('auth.logout') }}">
+                        @svg(Icon::OPEN->value, 'app-footer__login-icon')
+                        <span>{{ ucfirst(__('nav.logout')) }}</span>
+                    </a>
                 </nav>
             @else
                 {{-- The same staff door, but a door: as a bare word at the end
