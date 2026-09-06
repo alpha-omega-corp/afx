@@ -14,8 +14,12 @@
         :parallax="true"
     >
         <x-slot:actions>
+            {{-- The number is the one this button opens a conversation with,
+                 not the landline: a button that shows one number and dials
+                 another is a complaint waiting to happen. --}}
             <a href="https://wa.me/+41786857845" class="btn btn-primary" target="_blank" rel="noopener">
                 {{ __('app.reserve') }}
+                <span class="btn__aside">078 685 78 45</span>
             </a>
             <a href="{{ route(__('route.menu')) }}" class="btn btn-ghost">
                 {{ __('app.see_menu') }}

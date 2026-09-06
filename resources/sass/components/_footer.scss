@@ -148,6 +148,53 @@
         }
     }
 
+    // The copyright and the studio credit travel together at the left end of
+    // the row, so the bottom line stays two things and not three.
+    &__meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem 1.5rem;
+    }
+
+    // A credit, not an advertisement: the same size and colour as the
+    // copyright beside it, warming only on hover.
+    &__credit {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: $paper-2;
+        font-size: $fs-small;
+
+        &:hover,
+        &:focus-visible {
+            color: $ember;
+
+            .app-footer__credit-name { color: $ember; }
+        }
+    }
+
+    // Underlined, because it is the part of the credit that is a link to
+    // somewhere rather than a label.
+    &__credit-name {
+        color: $paper;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color $t-fast;
+    }
+
+    // The studio's own mark, in their own colours. It carries its own
+    // near-black ground, which all but matches this footer's — so it reads
+    // as the letters themselves rather than as a badge stuck on the page.
+    // A hair of radius keeps the square from cutting the line.
+    &__credit-logo {
+        display: block;
+        height: 18px;
+        width: 18px;
+        border-radius: 3px;
+        flex: none;
+    }
+
     // The way in for staff. It carries a border and a lock because the thing
     // it opens is a door — a plain muted word here is read as part of the
     // copyright and never clicked.

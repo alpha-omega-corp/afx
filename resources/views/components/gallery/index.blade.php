@@ -1,12 +1,7 @@
-@props(['gallery', 'description' => null])
-
-@if(filled($description))
-    <div class="app-page__intro">
-        <div class="container">
-            <p class="prose">{{ $description }}</p>
-        </div>
-    </div>
-@endif
+{{-- Photographs only. The paragraph above them belongs to the page, which
+     is where it is written now: it is the page's words, and the page is what
+     decides whether a call to action follows them. --}}
+@props(['gallery'])
 
 @if($gallery && $gallery->items->isNotEmpty())
     <div class="container app-gallery-grid__wrap">

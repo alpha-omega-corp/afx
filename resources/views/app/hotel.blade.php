@@ -3,13 +3,24 @@
 @section('title', ucfirst(__('nav.hotel')) . ' — ' . __('app.title'))
 
 @section('content')
-    <x-page :image="$page->image" :title="$page->locale?->title ?: ucfirst(__('nav.hotel'))">
-        <x-slot:actions>
-            <a href="https://wa.me/+41786857845" class="btn btn-primary" target="_blank" rel="noopener">
-                {{ __('app.reserve_room') }}
-            </a>
-        </x-slot:actions>
+    <x-page :image="$page->image" :title="$page->locale?->title ?: ucfirst(__('nav.hotel'))" :rule="true" embers="quiet">
+        {{-- The invitation waits until the page has made its case: the hero
+             carries the name and the photograph, and the button sits under
+             the paragraph that explains what is being booked. --}}
+        @if($page->locale?->content)
+            <div class="app-page__intro">
+                <div class="container">
+                    <p class="prose">{{ $page->locale->content }}</p>
 
-        <x-gallery.index :gallery="$gallery" :description="$page->locale?->content"/>
+                    <p class="app-page__actions">
+                        <a href="https://wa.me/+41786857845" class="btn btn-primary" target="_blank" rel="noopener">
+                            {{ __('app.reserve_room') }}
+                        </a>
+                    </p>
+                </div>
+            </div>
+        @endif
+
+        <x-gallery.index :gallery="$gallery"/>
     </x-page>
 @endsection

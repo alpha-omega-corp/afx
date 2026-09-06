@@ -1,6 +1,17 @@
 @props(['special' => null, 'sections' => null])
 
-@php($sections ??= collect())
+@php
+    // One block, not an @php(...) line and a block after it: Blade's inline
+    // form has no closing tag of its own and swallows the next @php whole.
+    $sections ??= collect();
+
+    // The day the dish is actually served, and the days nobody is in the
+    // kitchen. Both come from App\Support\Opening, which is the only place
+    // the closed days are written down.
+    $servedOn = $special?->servedOn();
+    $closedDays = App\Support\Opening::closedDays();
+    $defaultDate = ($special?->daily_on ?? App\Support\Opening::nextOpen(today()))->format('Y-m-d');
+@endphp
 
 {{-- Nothing at all when there is no special and nobody to write one: the
      page closes back up rather than leaving a hole where a dish should be. --}}
@@ -23,10 +34,13 @@
                     <p class="daily__eyebrow" id="daily-eyebrow">
                         {{ __('app.daily') }}
 
-                        {{-- The day it is for, in the visitor's language. Only
-                             when one was written: no date beats a stale one. --}}
-                        @if($special->daily_on)
-                            <span class="daily__date">{{ $special->daily_on->isoFormat('dddd D MMMM') }}</span>
+                        {{-- The day it is served, in the visitor's language.
+                             Written on a closed day, it reads as the next day
+                             the kitchen is open — see the note below the
+                             dish. Only when a date was written at all: no
+                             date beats a stale one. --}}
+                        @if($servedOn)
+                            <span class="daily__date">{{ $servedOn->isoFormat('dddd D MMMM') }}</span>
                         @endif
                     </p>
 
@@ -39,6 +53,11 @@
                     @if(filled($special->description))
                         <p class="daily__description">{{ $special->description }}</p>
                     @endif
+
+                    {{-- Which days the door is locked, said plainly and in the
+                         same breath as the invitation — and, on those days,
+                         the explanation for the date above. --}}
+                    <p class="daily__closed">{{ __('app.closed_days', ['days' => $closedDays]) }}</p>
                 </article>
             @else
                 {{-- Staff only: the card's own empty state, so the button above
@@ -80,7 +99,7 @@
                 <x-forms.date
                     name="daily_on"
                     :label="__('admin.field.daily_on')"
-                    :value="($special?->daily_on ?? today())->format('Y-m-d')"
+                    :value="$defaultDate"
                     :required="false"
                 />
 

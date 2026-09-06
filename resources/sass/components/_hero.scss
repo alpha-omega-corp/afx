@@ -35,6 +35,24 @@
         }
     }
 
+    // The ember bar that marks a section title, under the name of a page.
+    // Not on the carte, where the sticky rail already rules the page there.
+    &--rule .hero__title::after {
+        content: "";
+        display: block;
+        width: 56px;
+        height: 3px;
+        background: $ember;
+        margin-top: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    // A photograph carries these pages; the firelight is a suggestion over
+    // it rather than the whole of the hero, as it is on the home page.
+    &--quiet .hero__hearth {
+        height: 62%;
+        opacity: 0.55;
+    }
+
     // No photograph: the type sits on warm black over firelight. Centred
     // rather than bottom-anchored, because there is no image edge to sit on.
     &--bare {

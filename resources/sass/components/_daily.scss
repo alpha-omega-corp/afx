@@ -150,6 +150,18 @@
         color: $paper-2;
     }
 
+    // The days nobody is cooking. Quieter than everything above it and set
+    // apart by a hairline, so it reads as a footnote to the dish rather than
+    // as part of the offer.
+    &__closed {
+        grid-column: 1 / -1;
+        margin: clamp(0.85rem, 2vw, 1.25rem) 0 0;
+        padding-top: clamp(0.75rem, 2vw, 1rem);
+        border-top: 1px solid rgba($paper, 0.09);
+        color: $paper-2;
+        font-size: $fs-small;
+    }
+
     // A phone cannot hold a name and a price on one line: "Souris d'agneau
     // confite au Pinot Noir de Founex" would be three words a line beside
     // five characters. The price drops under the name instead.

@@ -76,6 +76,22 @@
         max-width: 46ch;
     }
 
+    // Why the message did not go. Shares the status note's shape so the two
+    // read as the same voice, in the one colour the palette keeps for wrong.
+    &__errors {
+        background-color: rgba(#C4442E, 0.14);
+        border-left: 3px solid #C4442E;
+        color: $paper;
+        padding: 0.85rem 1rem;
+        border-radius: 0 $r-control $r-control 0;
+        margin-bottom: 1.5rem;
+        font-size: $fs-small;
+
+        p { margin: 0 0 0.35rem; font-weight: 600; }
+
+        ul { margin: 0; padding-left: 1.1rem; }
+    }
+
     &__status {
         background-color: rgba($ember, 0.12);
         border-left: 3px solid $ember;
@@ -83,5 +99,66 @@
         padding: 0.85rem 1rem;
         border-radius: 0 $r-control $r-control 0;
         margin-bottom: 1.5rem;
+    }
+}
+
+// =============================================================
+// Map
+// =============================================================
+// The street itself, and one tap to being taken there. The frame is a fixed
+// shape rather than an aspect ratio: a map is useful at 360px tall on a
+// phone and no more useful at 900px on a laptop.
+
+.app-map {
+    margin-top: $section-gap;
+    border: 1px solid $line;
+    border-radius: $r-panel;
+    overflow: hidden;
+    background-color: $ink-2;
+
+    &__frame {
+        height: clamp(260px, 38vh, 420px);
+
+        iframe {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            // Google's map is a white slab in the middle of a warm-black
+            // page. Cooled and dimmed slightly, it sits in the page instead
+            // of on top of it, and stays perfectly readable.
+            filter: saturate(0.85) brightness(0.92) contrast(1.02);
+        }
+    }
+
+    &__bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: clamp(1rem, 2.5vw, 1.35rem) clamp(1rem, 2.5vw, 1.5rem);
+        border-top: 1px solid $line;
+    }
+
+    &__address {
+        margin: 0;
+        color: $paper;
+        font-size: $fs-small;
+    }
+
+    &__go {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        svg { width: 18px; height: 18px; }
+
+        // A thumb gets the whole width rather than a button hanging off one
+        // end of a row it no longer shares with anything.
+        @include media-breakpoint-down(sm) {
+            width: 100%;
+            justify-content: center;
+        }
     }
 }

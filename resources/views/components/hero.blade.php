@@ -6,9 +6,12 @@
     'priority' => false,
     'embers' => false,
     'parallax' => false,
+    'rule' => false,
 ])
 
-<header @class(['hero', 'hero--tall' => $tall, 'hero--bare' => ! $image])>
+@php($quiet = $embers === 'quiet')
+
+<header @class(['hero', 'hero--tall' => $tall, 'hero--bare' => ! $image, 'hero--rule' => $rule, 'hero--quiet' => $quiet])>
     @if($image)
         <img
             class="hero__media"
@@ -28,7 +31,7 @@
              burn out before the type, so the page opens with firelight
              rather than a photograph. --}}
         <div class="hero__hearth" aria-hidden="true"></div>
-        <canvas class="hero__embers" data-embers aria-hidden="true"></canvas>
+        <canvas class="hero__embers" data-embers="{{ $quiet ? 'quiet' : 'full' }}" aria-hidden="true"></canvas>
         <div class="hero__fade" aria-hidden="true"></div>
     @endif
 

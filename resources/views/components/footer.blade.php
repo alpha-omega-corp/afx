@@ -53,7 +53,29 @@
         </div>
 
         <div class="app-footer__bottom">
-            <span>&copy; {{ date('Y') }} {{ __('app.title') }}</span>
+            <div class="app-footer__meta">
+                <span>&copy; {{ date('Y') }} {{ __('app.title') }}</span>
+
+                {{-- Who built the site. The mark is their own, unmodified and
+                     served from public/ so it can be replaced without a
+                     rebuild; the domain beside it does the reading, since a
+                     mark at footer size cannot. --}}
+                <a class="app-footer__credit" href="https://apdigital.ch" target="_blank" rel="noopener">
+                    <span>{{ __('footer.credit') }}</span>
+
+                    @if(file_exists(public_path('apdigital.svg')))
+                        <img
+                            class="app-footer__credit-logo"
+                            src="{{ asset('apdigital.svg') }}"
+                            alt=""
+                            width="16"
+                            height="16"
+                        >
+                    @endif
+
+                    <span class="app-footer__credit-name">apdigital.ch</span>
+                </a>
+            </div>
 
             @auth
                 {{-- The back office lives here rather than in the guest

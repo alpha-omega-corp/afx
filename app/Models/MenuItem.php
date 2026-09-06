@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Support\Opening;
 use App\Traits\HasLocaleScope;
+use Carbon\CarbonInterface;
 use Database\Factories\MenuItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -39,6 +41,25 @@ class MenuItem extends Model
     public function section(): BelongsTo
     {
         return $this->belongsTo(MenuSection::class);
+    }
+
+    /**
+     * The day the special is actually served.
+     *
+     * The date is stored as it was written; this is the day a guest can come
+     * and eat it. Written on a Saturday, the dish is Monday's — nobody is in
+     * the kitchen in between, and a card offering today's special on a day
+     * the door is locked is worse than no card.
+     */
+    public function servedOn(): ?CarbonInterface
+    {
+        return $this->daily_on ? Opening::nextOpen($this->daily_on) : null;
+    }
+
+    /** True when the written date had to move to reach an open day. */
+    public function movedFromClosedDay(): bool
+    {
+        return $this->daily_on !== null && ! $this->daily_on->isSameDay($this->servedOn());
     }
 
     /** Today's special: at most one dish carries the flag. */

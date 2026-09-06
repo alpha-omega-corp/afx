@@ -103,6 +103,15 @@ if (document.querySelector('#gallery')) {
     if (!ctx) return;
 
     const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    // Every hero but the home page's has a photograph doing the work, so the
+    // firelight over it is a suggestion rather than the whole effect: fewer
+    // motes, spread thinner, and dimmer with it.
+    const quiet = canvas.dataset.embers === 'quiet';
+    const AREA_PER_MOTE = quiet ? 19000 : 8500;
+    const MOST_MOTES = quiet ? 55 : 150;
+    const GLOW = quiet ? 0.6 : 1;
+
     const EMBER = [
         [242, 107, 29],  // $ember
         [255, 138, 61],  // $ember-hi
@@ -156,7 +165,7 @@ if (document.querySelector('#gallery')) {
         canvas.height = Math.round(height * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-        const count = Math.round(Math.min(150, (width * height) / 8500));
+        const count = Math.round(Math.min(MOST_MOTES, (width * height) / AREA_PER_MOTE));
         motes = Array.from({ length: count }, () => mote(true));
     };
 
@@ -175,7 +184,7 @@ if (document.querySelector('#gallery')) {
             // The field fades at the sides, and thins toward the top so the
             // motes dissolve into the light rather than crowding the wordmark.
             const edge = falloff(x, width, width * 0.16) * falloff(m.y, height * 2, height * 0.55);
-            const alpha = Math.max(0, fade) * pulse * edge;
+            const alpha = Math.max(0, fade) * pulse * edge * GLOW;
 
             if (alpha <= 0.002) continue;
             const [r, g, b] = m.tint;
@@ -360,6 +369,23 @@ document.querySelectorAll('[data-strip]').forEach((strip) => {
     window.addEventListener('resize', sync, { passive: true });
     sync();
 });
+
+// --- Directions ----------------------------------------------
+// The link ships with the Google Maps directions URL, which every browser
+// can open and which Android hands to the Maps app. On an Apple device the
+// equivalent Apple Maps URL opens Maps itself, so the href is swapped there
+// — and only there, so a visitor without JS still gets a working link.
+(() => {
+    const link = document.querySelector('[data-directions]');
+    if (!link?.dataset.apple) return;
+
+    // iPadOS reports itself as a Mac, which is why the touch check is here.
+    const apple = /iPhone|iPad|iPod/.test(navigator.userAgent)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+        || /Mac/.test(navigator.userAgent);
+
+    if (apple) link.href = link.dataset.apple;
+})();
 
 // --- Menu section anchors ------------------------------------
 // Highlights the section currently in view in the sticky menu nav.

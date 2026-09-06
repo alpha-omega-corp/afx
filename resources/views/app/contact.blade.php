@@ -3,7 +3,7 @@
 @section('title', ucfirst(__('nav.contact')) . ' — ' . __('app.title'))
 
 @section('content')
-    <x-page :image="$page->image" :title="$page->locale?->title ?: ucfirst(__('nav.contact'))" :band="false">
+    <x-page :image="$page->image" :title="$page->locale?->title ?: ucfirst(__('nav.contact'))" :band="false" :rule="true" embers="quiet">
 
         @if($page->locale?->content)
             <div class="app-page__intro">
@@ -72,16 +72,37 @@
                         <p class="app-contact__status" role="status">{{ session('status') }}</p>
                     @endif
 
-                    <x-forms.input name="name" :label="__('form.name')"/>
-                    <x-forms.input name="email" type="email" :label="__('form.email')"/>
-                    <x-forms.input name="phone" type="tel" :label="__('form.phone')"/>
-                    <x-forms.text name="message" :label="__('form.message')"/>
+                    {{-- Before the captcha nothing could fail here, so nothing
+                         said so and nothing was kept. Now that a question can
+                         be got wrong, a rejected message has to come back with
+                         its reason and with every word the sender typed. --}}
+                    @if($errors->any())
+                        <div class="app-contact__errors" role="alert">
+                            <p>{{ __('form.errors') }}</p>
+
+                            <ul>
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <x-forms.input name="name" :label="__('form.name')" :value="old('name')"/>
+                    <x-forms.input name="email" type="email" :label="__('form.email')" :value="old('email')"/>
+                    <x-forms.input name="phone" type="tel" :label="__('form.phone')" :value="old('phone')"/>
+                    <x-forms.text name="message" :label="__('form.message')" :value="old('message')"/>
+
+                    <x-forms.captcha/>
 
                     <button type="submit" class="btn btn-primary w-100">
                         {{ __('form.send') }}
                     </button>
                 </form>
             </div>
+
+            {{-- The street, and one tap to being taken there. --}}
+            <x-map/>
         </div>
     </x-page>
 @endsection

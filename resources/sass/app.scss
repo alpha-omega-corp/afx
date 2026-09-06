@@ -193,6 +193,27 @@ a {
     transition: background-color $t-fast, border-color $t-fast, color $t-fast;
 }
 
+// A number, or anything else the button says in a quieter voice than its
+// verb. Same line where there is room for one; its own line where there is
+// not, rather than a label that wraps mid-number.
+.btn__aside {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.72;
+
+    &::before {
+        content: "·";
+        margin-inline: 0.5rem;
+        opacity: 0.6;
+    }
+
+    @include media-breakpoint-down(sm) {
+        display: block;
+        margin-top: 0.15rem;
+
+        &::before { content: none; }
+    }
+}
+
 // Ink on ember: 6.1:1. White on ember would be 3:1 and fail.
 .btn-primary {
     background-color: $ember;

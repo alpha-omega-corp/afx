@@ -14,6 +14,12 @@
     &__intro {
         padding-block: $section-gap 0;
     }
+
+    // Whatever the page asks the reader to do, under the paragraph that
+    // explains it rather than over the photograph above it.
+    &__actions {
+        margin: clamp(1.5rem, 3vw, 2rem) 0 0;
+    }
 }
 
 .app-main { min-height: 60vh; }

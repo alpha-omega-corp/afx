@@ -61,3 +61,41 @@
         height: 20px;
     }
 }
+
+// =============================================================
+// Contact form spam guard
+// =============================================================
+// The question reads as a question rather than as another field label: it
+// sits above its answer, at body size, and the answer box is only as wide as
+// a single digit needs.
+
+.app-captcha {
+    margin-bottom: 1.5rem;
+
+    &__question {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: $paper;
+        font-size: $fs-small;
+    }
+
+    &__hint {
+        display: block;
+        color: $paper-2;
+        font-size: 0.8125rem;
+    }
+
+    &__answer {
+        max-width: 7rem;
+    }
+
+    // Off the page rather than display:none — a script reading the DOM finds
+    // the field either way, but a person can neither see nor tab to it.
+    &__trap {
+        position: absolute;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+    }
+}

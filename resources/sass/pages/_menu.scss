@@ -12,8 +12,19 @@
     backdrop-filter: blur(8px);
     border-block: 1px solid $line;
 
+    // A rail that can scroll and a button that cannot: the button has to stay
+    // reachable at every width, so it sits outside the scrolling box.
+    &__inner {
+        position: relative;
+        display: flex;
+        align-items: stretch;
+        gap: 0.25rem;
+    }
+
     &__track {
         display: flex;
+        flex: 1;
+        min-width: 0;
         gap: 0.25rem;
         overflow-x: auto;
         scrollbar-width: none;
@@ -23,28 +34,107 @@
 
         &::-webkit-scrollbar { display: none; }
 
-        // On a phone the rail is always wider than the screen. Two things
-        // follow: it has to run to the edges rather than stop inside the
-        // container's padding — otherwise the last visible label is cut off
-        // by a gutter with nothing beyond it — and the cut has to look like a
-        // cut, so the right edge fades instead of chopping a word in half.
+        // Both ends fade, at every width — nine sections overflow a desktop
+        // rail too, and there it used to stop mid-word with nothing to say
+        // so. The script clears whichever end has nothing beyond it, so a
+        // fade always means "there is more that way" rather than permanently
+        // dimming the last section on the rail.
+        mask-image: linear-gradient(to right, transparent 0, #000 2.25rem, #000 calc(100% - 2.25rem), transparent 100%);
+
+        &.is-start        { mask-image: linear-gradient(to right, #000 calc(100% - 2.25rem), transparent 100%); }
+        &.is-end          { mask-image: linear-gradient(to right, transparent 0, #000 2.25rem, #000 100%); }
+        &.is-start.is-end { mask-image: none; }
+
+        // On a phone the rail runs to both screen edges rather than stopping
+        // inside the container's padding: otherwise the last visible label is
+        // cut off by a gutter with nothing beyond it. The left inset is given
+        // back as padding so the first section still lines up with the page.
         @include media-breakpoint-down(lg) {
-            margin-inline: calc(#{$gutter} * -1);
-            padding-inline: $gutter;
-            scroll-padding-inline: $gutter;
-
-            // Both ends fade; the script clears whichever one has nothing
-            // beyond it, so the fade always means "there is more that way"
-            // instead of permanently dimming the last section on the rail.
-            mask-image: linear-gradient(to right, transparent 0, #000 2.25rem, #000 calc(100% - 2.25rem), transparent 100%);
-
-            &.is-start        { mask-image: linear-gradient(to right, #000 calc(100% - 2.25rem), transparent 100%); }
-            &.is-end          { mask-image: linear-gradient(to right, transparent 0, #000 2.25rem, #000 100%); }
-            &.is-start.is-end { mask-image: none; }
+            margin-inline-start: calc(#{$gutter} * -1);
+            padding-inline-start: $gutter;
+            scroll-padding-inline-start: $gutter;
         }
     }
 
-    a {
+    // The way to the sections the rail cannot show. Sits against the right
+    // edge of the bar, behind a hairline, at a full tap target.
+    &__more {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: $tap;
+        padding: 0;
+        background: none;
+        border: 0;
+        border-left: 1px solid $line;
+        color: $paper-2;
+        transition: color $t-fast;
+
+        svg { width: 22px; height: 22px; }
+
+        &:hover,
+        &.is-open { color: $ember; }
+    }
+
+    // Opens under the bar at its right edge, as a list rather than a rail:
+    // every section at once, which is the point of it.
+    &__panel {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        z-index: 11;
+        min-width: 15rem;
+        max-height: 60vh;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        margin-top: 1px;
+        padding: 0.75rem 0;
+        background-color: $ink-2;
+        border: 1px solid $line;
+        border-radius: 0 0 $r-panel $r-panel;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+
+        // At phone width it is the whole bar wide: a 15rem panel hanging off
+        // one corner of a 360px screen reads as something that came loose.
+        @include media-breakpoint-down(md) {
+            left: 0;
+            right: 0;
+            min-width: 0;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            display: block;
+            padding: 0.6rem 1.1rem;
+            color: $paper;
+            font-size: $fs-small;
+
+            @media (pointer: coarse) { padding-block: 0.75rem; }
+
+            &:hover { color: $ember; background-color: rgba($paper, 0.04); }
+        }
+    }
+
+    &__panel-title {
+        margin: 0 0 0.35rem;
+        padding: 0 1.1rem;
+        color: $paper-2;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+
+    // Scoped to the rail: the dropdown below has its own list, and a row in
+    // it is not a tab — it should not inherit the tab's underline, its
+    // nowrap or its height.
+    &__track a {
         display: flex;
         align-items: center;
         white-space: nowrap;
