@@ -206,9 +206,16 @@ a {
         opacity: 0.6;
     }
 
+    // On a phone it drops under the verb, and drops in size with it: at the
+    // same size as the label it read as a second instruction rather than as
+    // the number you are about to reach.
     @include media-breakpoint-down(sm) {
         display: block;
-        margin-top: 0.15rem;
+        margin-top: 0.2rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        opacity: 0.8;
 
         &::before { content: none; }
     }

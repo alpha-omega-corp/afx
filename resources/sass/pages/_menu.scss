@@ -273,3 +273,65 @@
         margin-right: 0.25rem;
     }
 }
+
+// =============================================================
+// Truncated copy
+// =============================================================
+// A native <details>: the short version lives in the summary, the full one
+// in the body, and the browser swaps them. No script, so no flash of the
+// wrong state before one boots and nothing lost if none ever does.
+
+.prose-more {
+    // A summary is always the first child of its details, so once open the
+    // label sat above the paragraph it had just revealed. Flex order puts it
+    // back underneath, where it was when closed and where the eye leaves the
+    // text.
+    display: flex;
+    flex-direction: column;
+
+    &[open] &__summary { order: 1; }
+
+    &__summary {
+        display: block;
+        cursor: pointer;
+        list-style: none;
+
+        // Safari draws its own triangle unless both of these are set.
+        &::-webkit-details-marker { display: none; }
+        &::marker { content: ''; }
+
+        &:focus-visible {
+            outline: 2px solid $ember-hi;
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+    }
+
+    &__short { display: block; }
+
+    &__full { margin: 0; }
+
+    // The label reads as a control: ember, and underlined the way every
+    // other in-prose link on the site is.
+    &__toggle {
+        display: inline-block;
+        margin-top: 0.6rem;
+        color: $ember;
+        font-family: $font-body;
+        font-size: $fs-small;
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color $t-fast;
+    }
+
+    &__summary:hover &__toggle { color: $ember-hi; }
+
+    // One state at a time: closed shows the short copy and "read more";
+    // open shows the paragraph and "show less".
+    &__less { display: none; }
+
+    &[open] &__short { display: none; }
+    &[open] &__more  { display: none; }
+    &[open] &__less  { display: inline; }
+}

@@ -25,6 +25,8 @@ return [
     'closed_days' => 'Fermé :days.',
     'itinerary' => 'Itinéraire',
     'map_title' => 'Carte : Auberge de Founex, Grand’Rue 31, 1297 Founex',
+    'show_more' => 'Lire la suite',
+    'show_less' => 'Réduire',
     'skip' => 'Aller au contenu',
     'previous' => 'Précédent',
     'next' => 'Suivant',

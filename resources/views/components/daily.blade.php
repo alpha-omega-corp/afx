@@ -1,4 +1,4 @@
-@props(['special' => null, 'sections' => null])
+@props(['special' => null, 'sections' => null, 'tuck' => true])
 
 @php
     // One block, not an @php(...) line and a block after it: Blade's inline
@@ -16,7 +16,10 @@
 {{-- Nothing at all when there is no special and nobody to write one: the
      page closes back up rather than leaving a hole where a dish should be. --}}
 @if($special || auth()->check())
-    <section class="home-special" @if($special) aria-labelledby="daily-eyebrow" @endif>
+    {{-- `tuck` is the climb into the hero's fade. True on the home page,
+         where the card sits directly under the firelight; false anywhere it
+         follows something else. --}}
+    <section @class(['home-special', 'home-special--flat' => ! $tuck]) @if($special) aria-labelledby="daily-eyebrow" @endif>
         <div class="container">
             @auth
                 {{-- Directly above the card, and only ever seen by staff. --}}

@@ -18,6 +18,17 @@
     overflow: hidden;
     background-color: $ink-2;
 
+    // A phone has one scarce axis. These heroes carry a name and a rule and
+    // nothing else, so they can give a third of their height back to the
+    // page and still read as an arrival. The home page is the exception and
+    // keeps its own size, below.
+    @include media-breakpoint-down(md) {
+        height: 40vh;
+        height: 40svh;
+        min-height: 300px;
+        max-height: 460px;
+    }
+
     &--tall {
         height: 78vh;
         height: 78svh;
@@ -91,13 +102,29 @@
         will-change: transform;
     }
 
-    // Warm veil: the image cools to soot at the bottom so the
-    // page below joins it without a seam, and the type stays legible.
+    // Warm veil: the image cools to soot at the bottom so the page below
+    // joins it without a seam, and the type stays legible.
+    //
+    // Weighted rather than uniform. The old veil was heavy enough at 62% to
+    // grey out the middle of every photograph; the darkness now sits in the
+    // band the lockup actually occupies and lifts fast above it, so the
+    // picture reads and the type keeps its ground.
     &__veil {
         position: absolute;
         inset: 0;
         background:
-            linear-gradient(to top, $ink 0%, rgba($ink, 0.72) 28%, rgba($ink, 0.30) 62%, rgba($ink, 0.45) 100%);
+            linear-gradient(to top,
+                $ink 0%,
+                rgba($ink, 0.82) 18%,
+                rgba($ink, 0.46) 38%,
+                rgba($ink, 0.10) 66%,
+                // The bar is transparent until it sticks, so the top of the
+                // hero has to carry it: on a bright sky the links and the
+                // language switch had nothing to sit on. A short scrim, over
+                // the bar's own height only, rather than a heavier veil over
+                // the whole photograph.
+                rgba($ink, 0.16) 80%,
+                rgba($ink, 0.58) 100%);
     }
 
     // Warm light from above: the gradient begins at the very top of the page,

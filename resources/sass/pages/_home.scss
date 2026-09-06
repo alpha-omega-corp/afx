@@ -63,6 +63,26 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
     &__text {
         margin: 0 0 clamp(2rem, 4vw, 2.75rem);
     }
+
+    // On a phone the title has the width to itself and nothing to align
+    // with: centred, it reads as the opening of a chapter rather than as a
+    // label stuck to the left edge. The rule follows it to the middle.
+    @include media-breakpoint-down(md) {
+        .app-section__title {
+            text-align: center;
+
+            &::after { margin-inline: auto; }
+        }
+
+        // Justified under the centred title, so the block reads as one shape
+        // with two clean edges. Hyphenation is what makes that safe: at this
+        // measure, French sets rivers between the words without it, and the
+        // page declares its language so the browser breaks correctly in both.
+        &__text {
+            text-align: justify;
+            hyphens: auto;
+        }
+    }
 }
 
 // --- Scroll reveal -------------------------------------------

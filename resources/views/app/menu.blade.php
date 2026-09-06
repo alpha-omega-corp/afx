@@ -3,9 +3,11 @@
 @section('title', ucfirst(__('nav.menu')) . ' — ' . __('app.title'))
 
 @section('content')
-    {{-- No rule under this title: the sticky section rail sits directly under
-     the hero and already draws a line across the page there. --}}
-<x-page :image="$page->image" :title="$page->locale?->title ?: ucfirst(__('nav.menu'))" embers="quiet">
+    {{-- The same rule as every other page title. It is also what makes this
+         hero measure the same as the restaurant's and the hotel's: the
+         lockup is anchored to the bottom edge, so the rule's height is the
+         25px that had the title sitting lower here than anywhere else. --}}
+    <x-page :image="$page->image" :title="$page->locale?->title ?: ucfirst(__('nav.menu'))" :rule="true" embers="quiet">
 
         @if($sections->isNotEmpty())
             {{-- Nine sections never fit the rail, on any screen. The rail
@@ -62,10 +64,14 @@
             </nav>
         @endif
 
+        {{-- The dish of the day heads the carte it belongs to, above the
+             words about the carte in general. --}}
+        <x-daily :special="$special" :sections="$sections" :tuck="false"/>
+
         @if($page->locale?->content)
             <div class="app-page__intro">
                 <div class="container">
-                    <p class="prose">{{ $page->locale->content }}</p>
+                    <x-prose-more :text="$page->locale->content"/>
                 </div>
             </div>
         @endif

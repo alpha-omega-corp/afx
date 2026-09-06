@@ -39,6 +39,20 @@
         pointer-events: none;
     }
 
+    // In a page rather than under a hero: no climb, and a section's own gap
+    // above it. The bloom goes with the tuck — it belongs to the firelight.
+    &--flat {
+        margin-top: 0;
+        padding-top: $section-gap;
+        // Whatever follows brings its own top gap — the intro paragraph on
+        // the carte does — and two section gaps stacked leave a void.
+        padding-bottom: 0;
+
+        &::before { content: none; }
+
+        @include media-breakpoint-down(md) { margin-top: 0; }
+    }
+
     // Directly above the card, at the end of the row: over the price rather
     // than over the name of the dish.
     &__admin {

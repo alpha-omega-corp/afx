@@ -37,6 +37,9 @@ class GuestController extends Controller
         return view('app.menu', [
             'page' => Page::where('name', PageEnum::MENU)->first(),
             'sections' => MenuSection::orderBy('position')->get(),
+            // The same dish the home page shows, at the head of the carte it
+            // belongs to. One record, two places it is read from.
+            'special' => MenuItem::special(),
         ]);
     }
 
