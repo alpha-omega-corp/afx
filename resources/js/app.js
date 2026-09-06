@@ -289,7 +289,13 @@ document.querySelectorAll('[data-strip]').forEach((strip) => {
     const next = strip.querySelector('[data-strip-next]');
     if (!track || !prev || !next) return;
 
-    const step = () => track.querySelector('.strip__item')?.offsetWidth + 16 || track.clientWidth * 0.8;
+    // One photograph plus one gap, measured rather than assumed: the gap
+    // is not the same number at every width.
+    const step = () => {
+        const items = track.querySelectorAll('.strip__item');
+        if (items.length > 1) return items[1].offsetLeft - items[0].offsetLeft;
+        return items[0]?.offsetWidth || track.clientWidth * 0.8;
+    };
 
     const sync = () => {
         const max = track.scrollWidth - track.clientWidth - 2;
@@ -310,6 +316,24 @@ document.querySelectorAll('[data-strip]').forEach((strip) => {
     const links = document.querySelectorAll('[data-menu-anchor]');
     if (!links.length) return;
 
+    const track = document.querySelector('.menu-anchors__track');
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    // The rail is wider than a phone. Its fades say which way there is more
+    // to see, so they have to be cleared at whichever end has been reached.
+    const edges = () => {
+        if (!track) return;
+        const max = track.scrollWidth - track.clientWidth;
+        track.classList.toggle('is-start', track.scrollLeft <= 2);
+        track.classList.toggle('is-end', track.scrollLeft >= max - 2);
+    };
+
+    if (track) {
+        track.addEventListener('scroll', edges, { passive: true });
+        window.addEventListener('resize', edges, { passive: true });
+        edges();
+    }
+
     const byId = new Map([...links].map((a) => [a.getAttribute('href').slice(1), a]));
     const sections = [...byId.keys()].map((id) => document.getElementById(id)).filter(Boolean);
 
@@ -318,7 +342,27 @@ document.querySelectorAll('[data-strip]').forEach((strip) => {
             entries.forEach((entry) => {
                 if (!entry.isIntersecting) return;
                 links.forEach((a) => a.classList.remove('is-current'));
-                byId.get(entry.target.id)?.classList.add('is-current');
+
+                const link = byId.get(entry.target.id);
+                if (!link) return;
+
+                link.classList.add('is-current');
+
+                // On a phone the current section is usually off the end of the
+                // rail; without this the highlight marks something the guest
+                // cannot see. Scrolled by hand rather than with
+                // scrollIntoView, which walks every scroll ancestor — touching
+                // the document scroller here cancels the smooth jump that a
+                // tap on one of these links just started.
+                if (!track) return;
+
+                const rail = track.getBoundingClientRect();
+                const box = link.getBoundingClientRect();
+
+                track.scrollBy({
+                    left: (box.left + box.width / 2) - (rail.left + rail.width / 2),
+                    behavior: still.matches ? 'auto' : 'smooth',
+                });
             });
         },
         { rootMargin: '-40% 0px -55% 0px' },

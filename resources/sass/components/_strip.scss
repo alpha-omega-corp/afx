@@ -4,20 +4,16 @@
 // =============================================================
 
 .strip {
-    &__head {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 1rem;
-    }
-
+    // Its own row, right-aligned, immediately above the track: the arrows
+    // belong to the photographs and sit against the same edge they scroll to.
     &__nav {
         display: flex;
+        justify-content: flex-end;
         gap: 0.5rem;
-        flex: none;
-        // Sits level with the rule under the section title.
-        padding-bottom: 1.75rem;
+        padding-bottom: 0.875rem;
 
+        // A finger drags the track; two 44px buttons would only take the
+        // width the photographs need.
         @include media-breakpoint-down(md) { display: none; }
     }
 
@@ -57,7 +53,21 @@
         &::-webkit-scrollbar { display: none; }
 
         @include media-breakpoint-down(lg) { grid-auto-columns: minmax(280px, 52%); }
-        @include media-breakpoint-down(md) { grid-auto-columns: 84%; }
+
+        // A phone gets the whole screen width to scroll in. Inside the
+        // container the second photograph was cut off at the page padding,
+        // which reads as a broken grid rather than as a strip that
+        // continues — a track has to run off the edge of the screen to say
+        // there is more of it. The negative margin takes it to both edges;
+        // the padding and matching scroll-padding put the first and last
+        // photograph back in line with everything else on the page.
+        @include media-breakpoint-down(md) {
+            margin-inline: calc(#{$gutter} * -1);
+            padding-inline: $gutter;
+            scroll-padding-inline: $gutter;
+            grid-auto-columns: 86%;
+            gap: 0.75rem;
+        }
     }
 
     &__item {
@@ -66,6 +76,12 @@
         border-radius: $r-panel;
         overflow: hidden;
         background-color: $ink-2;
+
+        // 4:3 at 86% of a phone is a 200px-tall postcard sitting under a
+        // headline twice its weight. Square gives the photographs the same
+        // presence as the cards above them, and still leaves a wide sliver
+        // of the next one showing.
+        @include media-breakpoint-down(md) { aspect-ratio: 1 / 1; }
 
         img {
             width: 100%;

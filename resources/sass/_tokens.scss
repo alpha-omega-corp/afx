@@ -18,7 +18,7 @@ $ember-hi:   #FF8A3D; // hover, focus ring — 8.0:1 on $ink
 $ember-lo:   #B84A0E; // pressed state and borders only, never small text
 
 $paper:      #F3EDE4; // primary text on dark — 16:1 on $ink
-$paper-2:    #A39B90; // secondary text — 6.8:1 on $ink
+$paper-2:    #B0A79B; // secondary text — 7.9:1 on $ink
 
 // Text on an ember surface is always $ink. $paper on $ember is 2.6:1 and fails.
 
@@ -26,26 +26,49 @@ $paper-2:    #A39B90; // secondary text — 6.8:1 on $ink
 $font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 $font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
 
-$fs-display: clamp(2.75rem, 6vw, 5.5rem);
-$fs-h2:      clamp(1.875rem, 3vw, 2.75rem);
+// The floors are what a phone actually gets: 6vw never reaches 2.75rem until
+// ~733px, so the small end of every clamp here is a fixed size chosen for a
+// 360–390px screen, not a number the viewport ever interpolates towards.
+$fs-display: clamp(2.375rem, 6vw, 5.5rem);
+$fs-h2:      clamp(1.75rem, 3vw, 2.75rem);
 $fs-h3:      1.375rem;
 $fs-lead:    1.25rem;
 $fs-body:    1.0625rem;
-$fs-small:   0.875rem;
+$fs-small:   0.9375rem;
+
+// Both faces are variable 400-700, so a heavier phone setting costs no extra
+// download. 400 Inter and 400 Playfair on warm black go to grey haze at phone
+// size and in daylight; every text weight steps up one notch below md.
+$fw-body:      400;
+$fw-body-sm:   450;   // body copy on a phone
+$fw-head:      400;
+$fw-head-sm:   600;   // Playfair headlines on a phone
 
 $lh-display: 1.02;
 $lh-h2:      1.1;
 $lh-h3:      1.25;
-$lh-lead:    1.55;
-$lh-body:    1.6;
+$lh-lead:    1.6;
+$lh-body:    1.65;
 
 $measure:    68ch;
 
 // --- Space --------------------------------------------------
-$gutter:      clamp(1.25rem, 4vw, 3rem);
-$section-gap: clamp(4rem, 9vw, 7.5rem);
-$nav-h:       72px;
+// 20px of edge on a 390px screen reads as a page that ran out of room. 24px
+// is the floor a phone needs before the inset looks chosen rather than left over.
+$gutter:      clamp(1.5rem, 4vw, 3rem);
+$section-gap: clamp(3.25rem, 9vw, 7.5rem);
 $container:   1200px;
+
+// The bar is shorter on a phone, where vertical space is the scarce axis.
+// Everything that has to clear it — the mobile panel, the sticky carte bar,
+// the hero's top padding, anchor landings — reads `--nav-h`, set in app.scss,
+// rather than one of these two numbers.
+$nav-h:       72px;
+$nav-h-sm:    60px;
+
+// Smallest comfortable touch target. Anything a finger has to hit on a
+// coarse pointer gets at least this.
+$tap:         44px;
 
 // --- Shape --------------------------------------------------
 $r-control: 4px;  // buttons, inputs

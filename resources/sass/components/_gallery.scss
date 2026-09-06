@@ -56,6 +56,11 @@
         }
     }
 
-    &:hover .pswp-gallery__item--overlay,
+    // Guarded, or a tapped photograph keeps the dark veil and the zoom glyph
+    // over it after the lightbox closes.
+    @media (hover: hover) {
+        &:hover .pswp-gallery__item--overlay { opacity: 1; }
+    }
+
     &:focus-visible .pswp-gallery__item--overlay { opacity: 1; }
 }

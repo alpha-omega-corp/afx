@@ -7,6 +7,27 @@
 // draws under the name, and the arrow steps toward the page.
 // =============================================================
 
+// The open state of a tile, shared by hover and keyboard focus.
+@mixin tile-open {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.55);
+
+    .tile__media {
+        filter: saturate(1) brightness(1);
+        transform: scale(1.07);
+    }
+
+    .tile__title { color: $paper; }
+    .tile__rule { transform: scaleX(1); }
+
+    .tile__go {
+        transform: translateX(4px);
+        background-color: $ember;
+        border-color: $ember;
+        color: $ink;
+    }
+}
+
 .tile {
     position: relative;
     display: block;
@@ -54,6 +75,10 @@
         font-size: $fs-h3;
         color: $paper;
         transition: color $t-fast;
+
+        // The name sits on a photograph, not on the page: it needs the
+        // extra weight even more than a heading on flat ink does.
+        @include media-breakpoint-down(md) { font-weight: $fw-head-sm; }
     }
 
     // Draws left to right on hover. Sits on its own row so it never
@@ -87,25 +112,19 @@
         svg { width: 16px; height: 16px; }
     }
 
-    &:hover,
-    &:focus-visible {
-        transform: translateY(-6px);
-        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.55);
+    // A touch device has no hover to give back: a tapped tile would keep the
+    // lifted, brightened state until the page unloads. So the open state is
+    // reserved for pointers that can actually leave, and a finger gets the
+    // whole thing at rest instead — full colour, rule drawn, arrow filled.
+    @media (hover: hover) {
+        &:hover { @include tile-open; }
+    }
 
-        .tile__media {
-            filter: saturate(1) brightness(1);
-            transform: scale(1.07);
-        }
+    &:focus-visible { @include tile-open; }
 
-        .tile__title { color: $paper; }
-        .tile__rule { transform: scaleX(1); }
-
-        .tile__go {
-            transform: translateX(4px);
-            background-color: $ember;
-            border-color: $ember;
-            color: $ink;
-        }
+    @media (hover: none) {
+        .tile__media { filter: saturate(0.92) brightness(0.94); }
+        .tile__rule  { transform: scaleX(1); }
     }
 }
 

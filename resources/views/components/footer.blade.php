@@ -66,10 +66,15 @@
                     <a class="app-footer__admin app-footer__admin--out" href="{{ route('auth.logout') }}">{{ ucfirst(__('nav.logout')) }}</a>
                 </nav>
             @else
-                <button type="button" class="app-footer__admin"
+                {{-- The same staff door, but a door: as a bare word at the end
+                     of the copyright line it read as fine print and went
+                     unfound. Quiet enough to stay out of a guest's way, drawn
+                     clearly enough to be seen when it is looked for. --}}
+                <button type="button" class="app-footer__login"
                         data-bs-toggle="modal"
                         data-bs-target="#{{ \App\Helpers\ModalHelper::getId(Modal::APP_LOGIN, Action::CREATE, null) }}">
-                    {{ __('app.login') }}
+                    @svg(Icon::PASSWORD->value, 'app-footer__login-icon')
+                    <span>{{ __('app.login') }}</span>
                 </button>
             @endauth
         </div>

@@ -38,6 +38,9 @@
         dd {
             margin: 0;
             color: $paper;
+            // The email address is one long unbreakable word; on a narrow
+            // phone it has to be allowed to fold rather than widen the page.
+            overflow-wrap: anywhere;
 
             a { color: $paper; text-decoration: underline; text-underline-offset: 3px; }
             a:hover { color: $ember; }

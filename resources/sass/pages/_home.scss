@@ -7,7 +7,7 @@
 // surface, so the page reads in chapters instead of one long scroll.
 // =============================================================
 
-$home-gap: clamp(5rem, 11vw, 9.5rem);
+$home-gap: clamp(3.75rem, 11vw, 9.5rem);
 
 // --- The doors -----------------------------------------------
 // Pulled up into the hero. No seam, no rule, no gap: the firelight
@@ -17,6 +17,12 @@ $home-gap: clamp(5rem, 11vw, 9.5rem);
     margin-top: clamp(-9rem, -9vw, -4.5rem);
     padding-bottom: $home-gap;
     z-index: 1;
+
+    // The pull is a proportion of a wide hero, not of a tall narrow one: at
+    // phone width -4.5rem climbs past the buttons instead of into the
+    // firelight below them. A smaller step keeps the seam closed without
+    // colliding with the lockup.
+    @include media-breakpoint-down(md) { margin-top: -2rem; }
 
     &__grid {
         display: grid;
@@ -38,70 +44,19 @@ $home-gap: clamp(5rem, 11vw, 9.5rem);
 }
 
 // --- The house -----------------------------------------------
-// A raised surface with hairlines top and bottom: the one chapter
-// break on the page.
+// One raised band with hairlines top and bottom: the one chapter break on
+// the page. It holds the welcome and the photograph strip together —
+// the words, then the look around.
 .home-lede {
     padding-block: $home-gap;
     background-color: $ink-2;
     border-block: 1px solid $line;
 
-    &__grid {
-        display: grid;
-        grid-template-columns: 5fr 6fr;
-        gap: clamp(2rem, 5vw, 4.5rem);
-        // A heading row that hugs the paragraph, then the paragraph itself.
-        grid-template-rows: auto auto;
-        align-content: center;
-        row-gap: 0;
-
-        @include media-breakpoint-down(lg) {
-            grid-template-columns: 1fr;
-            gap: clamp(2rem, 5vw, 3rem);
-            align-items: start;
-
-            .home-lede__title,
-            .home-lede__text,
-            .home-lede__media { grid-column: 1; grid-row: auto; }
-        }
-    }
-
-    // The heading owns the left column above the paragraph; the photograph
-    // spans both rows beside them.
-    &__title {
-        grid-column: 1;
-        grid-row: 1;
-        align-self: end;
-        margin: 0;
-    }
-
+    // The copy keeps its own measure under the full-width title, and the
+    // gap below it is the only thing separating it from the photographs.
     &__text {
-        grid-column: 1;
-        grid-row: 2;
-        margin: 0;
+        margin: 0 0 clamp(2rem, 4vw, 2.75rem);
     }
-
-    &__media {
-        grid-column: 2;
-        grid-row: 1 / span 2;
-    }
-
-    &__media {
-        margin: 0;
-
-        img {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            object-fit: cover;
-            border-radius: $r-panel;
-            display: block;
-        }
-    }
-}
-
-// --- The house -----------------------------------------------
-// A look around the auberge itself. Nothing to do with the carte.
-.home-house {
-    padding-block: $home-gap;
 }
 
 // --- Scroll reveal -------------------------------------------

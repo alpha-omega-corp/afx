@@ -10,8 +10,4 @@
     <div class="app-page__content">
         {{ $slot }}
     </div>
-
-    @if($band)
-        <x-visit-band/>
-    @endif
 </div>

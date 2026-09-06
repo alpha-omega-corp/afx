@@ -13,5 +13,6 @@ return [
     'language' => 'Language',
     'primary' => 'Primary navigation',
     'menu_toggle' => 'Open menu',
+    'menu_close' => 'Close the menu',
     'logout' => 'Log out',
 ];

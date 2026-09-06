@@ -31,47 +31,48 @@
             </div>
         </section>
 
-        {{-- The house in its own words, beside its own photograph. Raised off
-             the page so it reads as its own chapter. --}}
+        {{-- One chapter, not two: the house in its own words and the look
+             around it were the same subject under two headings, and on a
+             phone the second title arrived before the first photograph had
+             finished being looked at. The words open the band, the
+             photographs run under them, and the house itself is the frame
+             the strip opens on. Raised off the page, as one movement. --}}
+        @php($photos = $gallery?->items ?? collect())
+
         <section class="home-lede">
-            <div class="container home-lede__grid">
-                <h2 class="app-section__title home-lede__title">{{ __('app.welcome') }}</h2>
+            <div class="container" data-strip>
+                <h2 class="app-section__title">{{ __('app.welcome') }}</h2>
 
                 <p class="prose home-lede__text">{{ $page->locale?->content }}</p>
 
-                <figure class="home-lede__media">
-                    <img src="{{ Vite::image('afx-building.jpg') }}" alt="{{ __('app.title') }}" loading="lazy" decoding="async"/>
-                </figure>
+                {{-- Directly above the track: beside the heading these read as
+                     decoration on the words rather than as controls for the
+                     photographs three lines below them. --}}
+                @if($photos->isNotEmpty())
+                    <div class="strip__nav">
+                        <button type="button" class="strip__btn" data-strip-prev>
+                            <span class="visually-hidden">{{ __('app.previous') }}</span>
+                            <x-icon.chevron-left/>
+                        </button>
+                        <button type="button" class="strip__btn" data-strip-next>
+                            <span class="visually-hidden">{{ __('app.next') }}</span>
+                            <x-icon.chevron-right/>
+                        </button>
+                    </div>
+                @endif
+
+                <ul class="strip__track" data-strip-track>
+                    <li class="strip__item">
+                        <img src="{{ Vite::image('afx-building.jpg') }}" alt="{{ __('app.title') }}" loading="lazy" decoding="async"/>
+                    </li>
+
+                    @foreach($photos as $item)
+                        <li class="strip__item">
+                            <img src="{{ asset($item->image) }}" alt="" loading="lazy" decoding="async"/>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
         </section>
-
-        @if($gallery && $gallery->items->isNotEmpty())
-            <section class="app-section home-house">
-                <div class="container" data-strip>
-                    <div class="strip__head">
-                        <h2 class="app-section__title">{{ __('app.our_auberge') }}</h2>
-
-                        <div class="strip__nav">
-                            <button type="button" class="strip__btn" data-strip-prev>
-                                <span class="visually-hidden">{{ __('app.previous') }}</span>
-                                <x-icon.chevron-left/>
-                            </button>
-                            <button type="button" class="strip__btn" data-strip-next>
-                                <span class="visually-hidden">{{ __('app.next') }}</span>
-                                <x-icon.chevron-right/>
-                            </button>
-                        </div>
-                    </div>
-
-                    <ul class="strip__track" data-strip-track>
-                        @foreach($gallery->items as $item)
-                            <li class="strip__item">
-                                <img src="{{ asset($item->image) }}" alt="" loading="lazy" decoding="async"/>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </section>
-        @endif
     </x-page>
 @endsection

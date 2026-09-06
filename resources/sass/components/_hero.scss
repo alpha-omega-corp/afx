@@ -7,7 +7,11 @@
     position: relative;
     display: flex;
     align-items: flex-end;
+    // svh is the viewport with the mobile browser's bars showing, so the hero
+    // does not jump by 60-odd pixels the first time the address bar retracts.
+    // vh stays as the fallback for anything that does not know the unit.
     height: 52vh;
+    height: 52svh;
     min-height: 420px;
     max-height: 620px;
     overflow: hidden;
@@ -15,8 +19,19 @@
 
     &--tall {
         height: 78vh;
+        height: 78svh;
         min-height: 540px;
         max-height: 860px;
+
+        // 78svh of a phone is the whole screen, and a 540px floor is more
+        // than a small one has: the page opens with nothing but the hero and
+        // the cards below never hint at themselves. Shorter here, so the
+        // first card shows an edge above the fold.
+        @include media-breakpoint-down(md) {
+            height: 62vh;
+            height: 62svh;
+            min-height: 420px;
+        }
     }
 
     // No photograph: the type sits on warm black over firelight. Centred
@@ -87,8 +102,14 @@
         position: relative;
         z-index: 1;
         width: 100%;
-        padding-block-end: clamp(2.5rem, 6vw, 5rem);
-        padding-block-start: calc(#{$nav-h} + 2rem);
+        // The cards on the home page climb into this edge; the bottom pad has
+        // to stay clear of them, so it is larger on a phone than 6vw gives.
+        padding-block-end: clamp(3.25rem, 6vw, 5rem);
+        padding-block-start: calc(var(--nav-h) + 2rem);
+
+        @include media-breakpoint-down(md) {
+            padding-block-start: calc(var(--nav-h) + 1.25rem);
+        }
     }
 
     &__title {
@@ -102,6 +123,11 @@
         color: $paper;
         font-size: $fs-lead;
         line-height: $lh-lead;
+
+        @include media-breakpoint-down(md) {
+            margin-top: 1rem;
+            font-size: $fs-body;
+        }
     }
 
     &__actions {
@@ -109,6 +135,19 @@
         flex-wrap: wrap;
         gap: 0.75rem;
         margin-top: 2rem;
+
+        // Two buttons side by side do not fit a 360px screen, and wrapping
+        // leaves a short one hanging under a long one. Full width stacks them
+        // as a pair of equal, thumb-sized rows instead.
+        @include media-breakpoint-down(sm) {
+            margin-top: 1.75rem;
+            gap: 0.625rem;
+
+            .btn {
+                flex: 1 0 100%;
+                text-align: center;
+            }
+        }
     }
 }
 

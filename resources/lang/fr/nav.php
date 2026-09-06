@@ -13,5 +13,6 @@ return [
     'language' => 'Langue',
     'primary' => 'Navigation principale',
     'menu_toggle' => 'Ouvrir le menu',
+    'menu_close' => 'Fermer le menu',
     'logout' => 'Déconnexion',
 ];

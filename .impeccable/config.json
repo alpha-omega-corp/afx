@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "resources/sass/pages/_contact.scss"
+        ],
+        "createdAt": "2026-09-05T20:27:48.910Z",
+        "reason": "Assistant decided: .app-contact__status is a transient form-status alert, not a content card. A leading accent rule is the conventional, non-colour-only marker for alerts (cf. Bootstrap alert variants) and at 3px it is a hairline, not a slab. Pre-existing from the redesign; this session only touched overflow-wrap in this file. Not user confirmed."
+      }
+    ]
+  }
+}

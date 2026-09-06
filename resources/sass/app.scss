@@ -29,7 +29,21 @@
 *::before,
 *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+// The height of the fixed bar, in one place. Every component that has to
+// clear it — the mobile menu panel, the sticky carte bar, the hero's top
+// padding, the landing position of an anchor — reads this, so the bar can
+// be shorter on a phone without any of them drifting out of step.
+:root {
+    --nav-h: #{$nav-h-sm};
+
+    @include media-breakpoint-up(lg) { --nav-h: #{$nav-h}; }
+}
+
+html {
+    scroll-behavior: smooth;
+    // An in-page anchor must land below the bar, not underneath it.
+    scroll-padding-top: calc(var(--nav-h) + 1rem);
+}
 
 // Alpine hides these until it has booted.
 [x-cloak] { display: none !important; }
@@ -39,6 +53,7 @@ body {
     color: $paper;
     font-family: $font-body;
     font-size: $fs-body;
+    font-weight: $fw-body;
     line-height: $lh-body;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -50,7 +65,7 @@ body {
 h1, h2, h3, h4 {
     font-family: $font-heading;
     color: $paper;
-    font-weight: 400;
+    font-weight: $fw-head;
     letter-spacing: -0.01em;
     text-wrap: balance;
 }
@@ -127,6 +142,18 @@ a {
             background: $ember;
             margin-top: 1rem;
         }
+
+        // A title, a 16px gap, a rule, then 28px of nothing before the first
+        // line is three separate gaps on a screen that has no room for them.
+        // The lockup tightens and the space goes back to the section itself.
+        @include media-breakpoint-down(md) {
+            margin-bottom: 1.25rem;
+
+            &::after {
+                width: 48px;
+                margin-top: 0.75rem;
+            }
+        }
     }
 }
 
@@ -136,6 +163,14 @@ a {
     color: $paper-2;
     font-size: $fs-lead;
     line-height: $lh-lead;
+
+    // 20px over a 350px column is barely six words a line, and a paragraph
+    // turns into a tall thin ribbon. A step down buys back two words a line
+    // without dropping to body size.
+    @include media-breakpoint-down(md) {
+        font-size: 1.125rem;
+        line-height: 1.55;
+    }
 
     a { text-decoration: underline; text-underline-offset: 3px; }
 }
@@ -183,6 +218,26 @@ a {
         border-color: $ember;
         color: $ember;
     }
+}
+
+// =============================================================
+// Phone type
+// =============================================================
+// One place, one rule: below md every weight steps up a notch. A phone
+// renders this type at roughly half the physical size of a laptop and
+// often outdoors, where 400-weight strokes on warm black stop being
+// black-on-paper contrast and start being grey. Both faces are variable,
+// so none of this costs a byte more than the page already pays.
+
+@include media-breakpoint-down(md) {
+    body { font-weight: $fw-body-sm; }
+
+    h1, h2 { font-weight: $fw-head-sm; }
+    h3, h4 { font-weight: 700; }
+
+    .prose { font-weight: $fw-body-sm; }
+
+    .btn { font-weight: 700; }
 }
 
 // =============================================================

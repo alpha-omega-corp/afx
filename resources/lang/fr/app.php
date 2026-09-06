@@ -9,7 +9,6 @@ return [
     'reserve_room' => 'Réserver une chambre',
     'see_menu' => 'Voir la carte',
     'welcome' => 'Bienvenue',
-    'our_auberge' => 'Notre Auberge',
     'discover' => 'Découvrir',
     'login' => 'Connexion',
     'page' => 'Page',

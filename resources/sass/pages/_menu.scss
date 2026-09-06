@@ -4,7 +4,9 @@
 
 .menu-anchors {
     position: sticky;
-    top: $nav-h;
+    // Under the bar, and under the closed banner while that is still on
+    // screen — the bar itself is offset by the same amount.
+    top: calc(var(--banner-offset, 0px) + var(--nav-h));
     z-index: 10;
     background-color: rgba($ink, 0.94);
     backdrop-filter: blur(8px);
@@ -20,16 +22,46 @@
         padding: 0;
 
         &::-webkit-scrollbar { display: none; }
+
+        // On a phone the rail is always wider than the screen. Two things
+        // follow: it has to run to the edges rather than stop inside the
+        // container's padding — otherwise the last visible label is cut off
+        // by a gutter with nothing beyond it — and the cut has to look like a
+        // cut, so the right edge fades instead of chopping a word in half.
+        @include media-breakpoint-down(lg) {
+            margin-inline: calc(#{$gutter} * -1);
+            padding-inline: $gutter;
+            scroll-padding-inline: $gutter;
+
+            // Both ends fade; the script clears whichever one has nothing
+            // beyond it, so the fade always means "there is more that way"
+            // instead of permanently dimming the last section on the rail.
+            mask-image: linear-gradient(to right, transparent 0, #000 2.25rem, #000 calc(100% - 2.25rem), transparent 100%);
+
+            &.is-start        { mask-image: linear-gradient(to right, #000 calc(100% - 2.25rem), transparent 100%); }
+            &.is-end          { mask-image: linear-gradient(to right, transparent 0, #000 2.25rem, #000 100%); }
+            &.is-start.is-end { mask-image: none; }
+        }
     }
 
     a {
-        display: block;
+        display: flex;
+        align-items: center;
         white-space: nowrap;
         padding: 1rem 0.85rem;
         font-family: $font-body;
         font-size: $fs-small;
         color: $paper-2;
         border-bottom: 2px solid transparent;
+
+        // A sticky bar under a sticky nav costs a phone real estate, but a
+        // row of one-tap targets still has to be tappable: shorter, not
+        // small enough to miss.
+        @include media-breakpoint-down(md) {
+            min-height: $tap;
+            padding: 0.5rem 0.7rem;
+            font-size: 0.875rem;
+        }
 
         &:hover { color: $paper; }
 
@@ -42,10 +74,18 @@
 
 .menu-list {
     padding-block-end: $section-gap;
+
+    // Roughly the height of the sticky anchors bar above; a section jumped to
+    // from that bar has to land below both it and the navigation, not behind
+    // them. Kept here rather than on :root so it travels with the bar.
+    --anchors-h: 46px;
+
+    @include media-breakpoint-up(md) { --anchors-h: 60px; }
 }
 
 .menu-section {
     padding-block-start: $section-gap;
+    scroll-margin-top: calc(var(--nav-h) + var(--anchors-h) + 0.75rem);
 
     &__title {
         margin-bottom: 1.75rem;
@@ -75,6 +115,14 @@
     padding-block: 1.25rem;
     border-bottom: 1px solid $line;
 
+    // Every centimetre the price column takes is one the name loses, and
+    // these names run long — "Souris d'agneau confite au Pinot Noir de
+    // Founex" has to fit beside a five-character price on a 360px screen.
+    @include media-breakpoint-down(md) {
+        gap: 0.35rem 0.875rem;
+        padding-block: 1rem;
+    }
+
     &:last-child { border-bottom: 0; }
 
     &__title {
@@ -83,6 +131,8 @@
         font-size: $fs-h3;
         font-weight: 600;
         color: $paper;
+
+        @include media-breakpoint-down(md) { font-size: 1.1875rem; }
     }
 
     &__description {
@@ -93,8 +143,12 @@
         max-width: 56ch;
     }
 
-    // Lining figures so the prices form a clean column.
+    // Lining figures so the prices form a clean column. The margin reset is
+    // load-bearing: this is a <p>, and the 1rem the base gives every paragraph
+    // was setting the height of the row the name sits in — a phantom gap under
+    // every dish, on every breakpoint.
     &__price {
+        margin: 0;
         font-family: $font-body;
         font-variant-numeric: tabular-nums;
         color: $paper;

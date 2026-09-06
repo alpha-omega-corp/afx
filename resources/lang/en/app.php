@@ -9,7 +9,6 @@ return [
     'reserve_room' => 'Book a room',
     'see_menu' => 'See the menu',
     'welcome' => 'Welcome',
-    'our_auberge' => 'Our Auberge',
     'discover' => 'Discover',
     'login' => 'Login',
     'page' => 'Page',

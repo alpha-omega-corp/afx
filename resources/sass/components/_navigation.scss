@@ -9,7 +9,7 @@
     // screen, and turns solid once it has scrolled away.
     position: absolute;
     top: 0;
-    height: 88px;
+    height: calc(var(--nav-h) + 16px);
     width: 100%;
     pointer-events: none;
 }
@@ -21,18 +21,28 @@
     // top with it. The offset is 0 whenever there is no banner.
     top: var(--banner-offset, 0px);
     z-index: 30;
-    min-height: $nav-h;
+    min-height: var(--nav-h);
     display: flex;
     align-items: center;
     background-color: transparent;
     border-bottom: 1px solid transparent;
     transition: background-color 250ms ease, border-color 250ms ease;
 
-    &.is-stuck,
-    &.is-open {
+    &.is-stuck {
         background-color: rgba($ink-2, 0.94);
         backdrop-filter: blur(8px);
         border-bottom-color: $line;
+    }
+
+    // Opening the panel fills the bar too, so the two read as one surface.
+    // Only below lg: above it the panel cannot open, and a stale `open` left
+    // behind by a resize must not paint the bar.
+    @include media-breakpoint-down(lg) {
+        &.is-open {
+            background-color: rgba($ink-2, 0.94);
+            backdrop-filter: blur(8px);
+            border-bottom-color: $line;
+        }
     }
 
     &__inner {
@@ -41,7 +51,9 @@
         justify-content: space-between;
         gap: 1.5rem;
         width: 100%;
-        min-height: $nav-h;
+        min-height: var(--nav-h);
+
+        @include media-breakpoint-down(lg) { gap: 0.75rem; }
     }
 
     // One line, in paper. The wordmark is the brand, not a logotype
@@ -51,9 +63,22 @@
         font-size: 1.375rem;
         color: $paper;
         white-space: nowrap;
-        flex: none;
+        flex: 0 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         &:hover { color: $paper; }
+
+        // Yields to the picker and the toggle rather than pushing them off.
+        // At the narrow end the name is the only thing that can give, so it
+        // gives before it ellipses.
+        // Heavier, because it sits over the hero's firelight where a
+        // 400-weight serif dissolves — and no longer shrunk to make room for
+        // the language switch, which has moved into the menu. The bar below
+        // lg now holds two things, not three.
+        @include media-breakpoint-down(md) { font-size: 1.25rem; font-weight: $fw-head-sm; }
+        @media (max-width: 359.98px) { font-size: 1.125rem; }
     }
 
     &__right {
@@ -62,15 +87,6 @@
         gap: 1.5rem;
 
         @include media-breakpoint-down(lg) { display: none; }
-    }
-
-    // Only below lg, where the rest of the bar has collapsed into the menu.
-    &__bar-locale {
-        display: none;
-        margin-left: auto;
-        margin-right: 0.75rem;
-
-        @include media-breakpoint-down(lg) { display: block; }
     }
 
     &__menu {
@@ -113,8 +129,9 @@
         display: none;
         align-items: center;
         justify-content: center;
-        width: 44px;
-        height: 44px;
+        width: $tap;
+        height: $tap;
+        flex: none;
         padding: 0;
         border: 1px solid $line-strong;
         border-radius: $r-control;
@@ -128,32 +145,110 @@
 
     &__panel {
         position: fixed;
-        inset: 0;
-        top: $nav-h;
+        // Starts where the bar ends, banner or no banner.
+        inset: calc(var(--banner-offset, 0px) + var(--nav-h)) 0 0 0;
         z-index: 29;
         background-color: $ink;
-        padding: 2rem $gutter 3rem;
         overflow-y: auto;
+        overscroll-behavior: contain;
 
         @include media-breakpoint-up(lg) { display: none !important; }
+    }
 
-        ul {
-            list-style: none;
-            margin: 0 0 2rem;
-            padding: 0;
-        }
+    // The panel is a column: the pages, then the two things a guest most
+    // often opened the menu to find — a table, and the number to call.
+    //
+    // The block padding lives here rather than on the panel so `min-height`
+    // and the padding measure against the same box and a short menu never
+    // scrolls by the height of its own margins. Alpine's focus trap locks the
+    // body, so this is the only thing that scrolls; the bottom pad clears the
+    // phone's home indicator.
+    &__panel-inner {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        gap: 2rem;
+        padding-block: 1.5rem calc(2rem + env(safe-area-inset-bottom));
+    }
 
-        li + li { margin-top: 0.25rem; }
+    &__panel-nav {
+        list-style: none;
+        margin: 0;
+        padding: 0;
 
-        ul a {
-            display: block;
-            padding: 0.6rem 0;
+        // Hairlines rather than gaps: the rows read as a list, and each one
+        // is a full-width target instead of a word-shaped one.
+        li + li { border-top: 1px solid $line; }
+
+        a {
+            display: flex;
+            align-items: center;
+            min-height: 56px;
+            padding-block: 0.5rem;
             font-family: $font-heading;
-            font-size: 1.75rem;
+            font-size: 1.625rem;
+            line-height: 1.2;
             color: $paper;
         }
 
         .active-item > a { color: $ember; }
+    }
+
+    // Pushed to the bottom of the panel when the list is short, so it always
+    // sits at thumb height rather than floating under five links.
+    &__panel-foot {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+
+        .btn { width: 100%; text-align: center; }
+    }
+
+    // Where the language switch lives on a phone. Last in the column, under
+    // a hairline: the rows above it go somewhere, this one only changes how
+    // they read.
+    &__panel-locale {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        width: 100%;
+        margin-top: 0.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid $line;
+    }
+
+    // Inter at label size, like the footer's column headings — the panel's
+    // own Playfair rows are destinations and this is not one of them.
+    &__panel-label {
+        font-family: $font-body;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $paper-2;
+    }
+
+    &__panel-tel {
+        font-family: $font-heading;
+        font-size: 1.375rem;
+        color: $paper;
+        min-height: $tap;
+        display: inline-flex;
+        align-items: center;
+
+        &:hover { color: $ember; }
+    }
+
+    &__panel-hours {
+        margin: 0;
+        color: $paper-2;
+        font-size: $fs-small;
+        line-height: 1.5;
+
+        span { display: block; }
     }
 }
 
@@ -185,9 +280,13 @@
         color: $paper-2;
         transition: background-color $t-fast, color $t-fast;
 
-        // A finger needs more than an arrow does.
+        // A finger needs more than an arrow does. The min-width matters as
+        // much as the height: at 44px square the painted segment is a circle,
+        // and a lone orange dot beside the wordmark reads as a button of its
+        // own rather than as one half of a switch.
         @media (pointer: coarse) {
-            min-height: 44px;
+            min-height: $tap;
+            min-width: 3.25rem;
             padding-inline: 1.1rem;
         }
 

@@ -14,7 +14,15 @@
         gap: clamp(1.5rem, 4vw, 3rem);
 
         @include media-breakpoint-down(lg) { grid-template-columns: 1fr 1fr; }
-        @include media-breakpoint-down(sm) { grid-template-columns: 1fr; }
+
+        // Two columns all the way down. Four stacked blocks turn the footer
+        // into its own screenful of scrolling; the blurb takes the full width
+        // and the three short lists pair up under it.
+        @include media-breakpoint-down(sm) {
+            gap: 1.75rem 1.5rem;
+
+            > :first-child { grid-column: 1 / -1; }
+        }
     }
 
     &__wordmark {
@@ -22,6 +30,8 @@
         font-size: 1.375rem;
         color: $paper;
         margin: 0 0 0.75rem;
+
+        @include media-breakpoint-down(md) { font-weight: $fw-head-sm; }
     }
 
     &__blurb {
@@ -31,12 +41,16 @@
         margin: 0;
     }
 
+    // Inter, not Playfair: a high-contrast display face loses its thin
+    // strokes at label sizes, and these are labels.
     &__title {
-        font-family: $font-heading;
-        font-size: 1rem;
-        font-weight: 600;
+        font-family: $font-body;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
         color: $paper;
-        margin: 0 0 0.9rem;
+        margin: 0 0 1rem;
     }
 
     ul {
@@ -45,11 +59,23 @@
         padding: 0;
     }
 
-    li + li { margin-top: 0.45rem; }
+    li + li { margin-top: 0.15rem; }
 
+    // A 15px line is a 22px target. The padding is what makes it hittable,
+    // and it replaces the gap between rows rather than adding to it.
     &__link {
+        display: inline-block;
+        padding-block: 0.35rem;
         color: $paper-2;
         font-size: $fs-small;
+        // `aubergedefounex@bluewin.ch` is one unbreakable 190px word. Left
+        // alone it sets the minimum width of its grid column, and through it
+        // of the page: at 320px the whole site scrolled sideways by 32px.
+        // `anywhere` rather than `break-word` because only `anywhere` counts
+        // in the intrinsic minimum the grid is measuring.
+        overflow-wrap: anywhere;
+
+        @media (pointer: coarse) { padding-block: 0.5rem; }
 
         &:hover { color: $ember; }
     }
@@ -93,16 +119,66 @@
         font-size: $fs-small;
 
         span { display: block; }
+
+        // Side by side these two lines are wider than a phone; stacking them
+        // is what happens anyway, so do it without the ragged wrap.
+        @include media-breakpoint-down(md) {
+            flex-direction: column;
+            gap: 0.2rem;
+        }
     }
 
     &__bottom {
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
         justify-content: space-between;
         gap: 1rem;
         margin-top: 1.75rem;
         color: $paper-2;
         font-size: $fs-small;
+
+        // A pill and a copyright line share a row badly at phone width: one
+        // of them wraps and lands under the other looking like a mistake.
+        // Stacked deliberately instead.
+        @include media-breakpoint-down(sm) {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.25rem;
+        }
+    }
+
+    // The way in for staff. It carries a border and a lock because the thing
+    // it opens is a door — a plain muted word here is read as part of the
+    // copyright and never clicked.
+    &__login {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 40px;
+        padding: 0.4rem 1.1rem;
+        border: 1px solid $line-strong;
+        border-radius: 999px;
+        background: none;
+        color: $paper;
+        font-family: $font-body;
+        font-size: $fs-small;
+        font-weight: 600;
+        transition: border-color $t-fast, color $t-fast;
+
+        @media (pointer: coarse) { min-height: $tap; }
+
+        &:hover,
+        &:focus-visible {
+            border-color: $ember;
+            color: $ember;
+        }
+    }
+
+    &__login-icon {
+        width: 16px;
+        height: 16px;
+        flex: none;
     }
 
     // Staff links: present when signed in, never loud.
