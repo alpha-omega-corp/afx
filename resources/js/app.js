@@ -258,6 +258,57 @@ if (document.querySelector('#gallery')) {
     }, { passive: true });
 })();
 
+// --- Hero parallax -------------------------------------------
+// The photograph behind the embers drifts at a third of the page's speed as
+// the hero scrolls away. One transform per frame, computed only while the
+// hero is still on screen, and nothing at all for a visitor who has asked
+// for less motion — which is also why the class that reserves the extra
+// image height is added here rather than sitting in the markup.
+(() => {
+    const media = document.querySelector('[data-parallax]');
+    const hero = media?.closest('.hero');
+    if (!hero) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!('IntersectionObserver' in window)) return;
+
+    // The same number as the offset reserved in _hero.scss.
+    const DEPTH = 0.32;
+
+    let height = hero.offsetHeight;
+    let onScreen = true;
+    let ticking = false;
+
+    hero.classList.add('is-parallax');
+
+    const paint = () => {
+        ticking = false;
+        // Capped at the hero's own height: once it has scrolled past, the
+        // photograph has moved as far as the reserve allows.
+        const shift = Math.min(window.scrollY, height) * DEPTH;
+        media.style.transform = `translate3d(0, ${shift.toFixed(2)}px, 0)`;
+    };
+
+    const request = () => {
+        if (ticking || !onScreen) return;
+        ticking = true;
+        requestAnimationFrame(paint);
+    };
+
+    new IntersectionObserver(([entry]) => {
+        onScreen = entry.isIntersecting;
+        if (onScreen) request();
+    }).observe(hero);
+
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', () => {
+        height = hero.offsetHeight;
+        request();
+    }, { passive: true });
+
+    paint();
+})();
+
 // --- Closed banner offset ------------------------------------
 // The banner sits in the flow and scrolls away; the fixed nav follows it
 // down to the top. Its height is measured on resize only, never on scroll.

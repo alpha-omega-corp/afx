@@ -1,0 +1,179 @@
+// =============================================================
+// Plat du jour — the one thing on the page that is different tomorrow.
+//
+// The only ember-lit surface on the site, and it can afford to be: it sits
+// alone in the last of the hero's firelight, above the three doors, with
+// nothing else competing to be the brightest thing on the page. The glow is
+// built from the same two gradients the hero uses, so the card reads as a
+// piece of that light rather than as a sticker laid on top of it.
+// =============================================================
+
+.home-special {
+    position: relative;
+    // Tucks into the last of the hero's fade, exactly as the door cards do
+    // when it is not there, so the page still has no seam under the
+    // firelight. A tuck and not a climb: the hero carries a photograph and
+    // its lockup sits on the bottom edge, so anything reaching further up
+    // lands on the buttons.
+    margin-top: clamp(-2.5rem, -3vw, -1rem);
+    padding-bottom: clamp(2.25rem, 4vw, 3.5rem);
+    z-index: 2;
+
+    @include media-breakpoint-down(md) {
+        margin-top: -1rem;
+        padding-bottom: 1.75rem;
+    }
+
+    // The shine, part one: a bloom of the hero's own firelight behind the
+    // card. The hearth gradient fades out a few hundred pixels above this;
+    // here it comes back, once, for the one thing that changes.
+    &::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: -25% 0 -35%;
+        background: radial-gradient(52% 62% at 50% 45%,
+            rgba($ember, 0.20) 0%,
+            rgba($ember-lo, 0.08) 45%,
+            rgba($ember, 0) 72%);
+        pointer-events: none;
+    }
+
+    // Directly above the card, at the end of the row: over the price rather
+    // than over the name of the dish.
+    &__admin {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 0.75rem;
+    }
+}
+
+.daily {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    column-gap: clamp(1.25rem, 3vw, 2.5rem);
+    padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.35rem, 3vw, 2.5rem);
+    border: 1px solid rgba($ember, 0.34);
+    border-radius: $r-panel;
+    // Firelight caught in the top-left corner of a raised surface.
+    background:
+        radial-gradient(130% 150% at 0% 0%,
+            rgba($ember, 0.17) 0%,
+            rgba($ember-lo, 0.07) 40%,
+            rgba($ink-2, 0) 76%),
+        $ink-2;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+
+    // The shine, part two: one ember hairline along the top edge, brightest in the
+    // middle and gone by both corners. A border cannot fade out; this can.
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 1px;
+        background: linear-gradient(to right,
+            rgba($ember, 0) 0%,
+            $ember-hi 50%,
+            rgba($ember, 0) 100%);
+    }
+
+    &__eyebrow {
+        grid-column: 1 / -1;
+        margin: 0 0 0.5rem;
+        font-family: $font-body;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: $ember-hi;
+    }
+
+    // The day, after the label and quieter than it: the ember word is what
+    // the eye is meant to land on. Kept on the same line where there is room
+    // and allowed to wrap where there is not.
+    &__date {
+        color: $paper-2;
+        white-space: nowrap;
+
+        &::before {
+            content: "·";
+            margin-inline: 0.5rem;
+            color: rgba($paper-2, 0.55);
+        }
+
+        // A phone has no room for both on one line, and letting them wrap
+        // leaves the separator stranded at the head of the second line. The
+        // date takes its own line on purpose instead, and drops the dot with
+        // it — there is nothing left for it to separate.
+        @include media-breakpoint-down(md) {
+            display: block;
+            margin-top: 0.3rem;
+
+            &::before { content: none; }
+        }
+    }
+
+    &__title {
+        grid-column: 1;
+        margin: 0;
+        font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+        line-height: 1.15;
+    }
+
+    // Lining figures, and never wrapped: the price is read at a glance or
+    // it is not read at all.
+    &__price {
+        grid-column: 2;
+        margin: 0;
+        font-family: $font-body;
+        font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+        color: $paper;
+    }
+
+    &__currency {
+        margin-right: 0.3rem;
+        color: $paper-2;
+        font-size: $fs-small;
+        font-weight: 400;
+    }
+
+    &__description {
+        grid-column: 1 / -1;
+        margin: 0.6rem 0 0;
+        max-width: 56ch;
+        color: $paper-2;
+    }
+
+    // A phone cannot hold a name and a price on one line: "Souris d'agneau
+    // confite au Pinot Noir de Founex" would be three words a line beside
+    // five characters. The price drops under the name instead.
+    @include media-breakpoint-down(md) {
+        grid-template-columns: 1fr;
+
+        &__title,
+        &__price,
+        &__description { grid-column: 1; }
+
+        &__price { margin-top: 0.55rem; }
+    }
+
+    // Staff only, and only until there is a dish: the card's own empty state,
+    // so the button above it has something to explain itself against.
+    &--empty {
+        display: block;
+        border-style: dashed;
+        border-color: $line-strong;
+        background: $ink-2;
+        box-shadow: none;
+        color: $paper-2;
+        font-size: $fs-small;
+
+        &::before { display: none; }
+    }
+}

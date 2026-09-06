@@ -1,5 +1,6 @@
 // =============================================================
-// Hero — one image per page, never a parallax stack.
+// Hero — one image per page. Still one image and never a stack, but the
+// home page's does drift: see `is-parallax` below.
 // A real <img> so the browser can prioritise it as the LCP element.
 // =============================================================
 
@@ -56,6 +57,20 @@
         height: 100%;
         object-fit: cover;
         object-position: center;
+    }
+
+    // The photograph drifts at a third of the page's speed, so it needs a
+    // third of the hero's height in reserve above itself — otherwise the top
+    // edge lifts into view the moment it starts moving. The class is added by
+    // the script only when it is actually going to move something, so a
+    // visitor with no JS, or one who has asked for less motion, gets the
+    // photograph squarely in its frame instead of a crop with a gap over it.
+    // The depth here and the one in app.js are the same number twice.
+    &.is-parallax &__media {
+        top: -36%;
+        bottom: auto;
+        height: 136%;
+        will-change: transform;
     }
 
     // Warm veil: the image cools to soot at the bottom so the

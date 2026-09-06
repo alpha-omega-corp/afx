@@ -41,6 +41,7 @@ return [
         'close' => 'Fermer le site',
         'reopen' => 'Rouvrir le site',
         'reorder' => 'Réordonner',
+        'edit_daily' => 'Modifier le plat du jour',
     ],
 
     // Menu editor fields
@@ -49,6 +50,9 @@ return [
         'dish' => 'Plat',
         'description' => 'Description',
         'price' => 'Prix',
+        'daily_on' => 'Date affichée sur la carte du jour',
+        'section' => 'Section de la carte',
+        'show_on_home' => 'Afficher sur la page d’accueil',
         'starts_on' => 'Du',
         'ends_on' => 'Au',
         'reason' => 'Motif affiché aux visiteurs (optionnel)',
@@ -70,6 +74,8 @@ return [
         'gallery' => 'Aucune photo dans cette galerie.',
         'messages' => 'Aucun message reçu pour l’instant.',
         'holidays' => 'Aucune fermeture planifiée.',
+        'daily' => 'Aucun plat du jour affiché. Le bouton ci-dessus en compose un.',
+        'daily_sections' => 'Créez d’abord une section dans la carte : le plat du jour y est rangé comme n’importe quel plat.',
     ],
 
     'gallery' => [

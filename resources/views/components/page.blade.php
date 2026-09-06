@@ -1,7 +1,7 @@
-@props(['image' => null, 'title' => null, 'lead' => null, 'tall' => false, 'band' => true, 'embers' => false])
+@props(['image' => null, 'title' => null, 'lead' => null, 'tall' => false, 'band' => true, 'embers' => false, 'parallax' => false])
 
 <div class="app-page">
-    <x-hero :image="$image" :title="$title" :lead="$lead" :tall="$tall" :embers="$embers" :priority="true">
+    <x-hero :image="$image" :title="$title" :lead="$lead" :tall="$tall" :embers="$embers" :parallax="$parallax" :priority="true">
         @isset($actions)
             <x-slot:actions>{{ $actions }}</x-slot:actions>
         @endisset

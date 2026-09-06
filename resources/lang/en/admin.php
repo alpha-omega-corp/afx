@@ -41,6 +41,7 @@ return [
         'close' => 'Close the site',
         'reopen' => 'Reopen the site',
         'reorder' => 'Reorder',
+        'edit_daily' => 'Edit the daily special',
     ],
 
     // Menu editor fields
@@ -49,6 +50,9 @@ return [
         'dish' => 'Dish',
         'description' => 'Description',
         'price' => 'Price',
+        'daily_on' => 'Date shown on the card',
+        'section' => 'Menu section',
+        'show_on_home' => 'Show on the home page',
         'starts_on' => 'From',
         'ends_on' => 'To',
         'reason' => 'Reason shown to visitors (optional)',
@@ -70,6 +74,8 @@ return [
         'gallery' => 'No photos in this gallery.',
         'messages' => 'No messages received yet.',
         'holidays' => 'No closing planned.',
+        'daily' => 'No daily special on show. The button above writes one.',
+        'daily_sections' => 'Create a menu section first: the daily special is filed under one, like any other dish.'
     ],
 
     'gallery' => [

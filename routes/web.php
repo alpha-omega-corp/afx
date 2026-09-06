@@ -63,6 +63,8 @@ Route::controller(AdminController::class)
             ->group(function() {
                 Route::delete('/{section}', 'destroy')->name('delete');
                 Route::delete('/', 'remove')->name('remove');
+                // Before `/{menu}`, which would otherwise swallow it.
+                Route::put('/daily', 'daily')->name('daily');
                 Route::put('/{menu}', 'update')->name('update');
                 Route::post('/', 'create')->name('create');
                 Route::put('/sort/section', 'sort')->name('sort');

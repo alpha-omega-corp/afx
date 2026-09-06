@@ -1,9 +1,20 @@
+// Both of these are buttons now rather than divs with click handlers: they
+// open a file picker, which is a button's job, and a finger or a keyboard can
+// reach them.
 .file-upload {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    width: 100%;
+    padding: 1.5rem 1rem;
+    background: none;
+    border: 1px dashed $line-strong;
+    border-radius: $r-panel;
+    color: inherit;
     cursor: pointer;
+
+    &:hover { border-color: $ember; }
 
     svg {
         width: 40px;
@@ -51,6 +62,9 @@
     position: absolute;
     top: 10px;
     right: 15px;
+    padding: 0;
+    background: none;
+    border: 0;
     cursor: pointer;
 
     svg {

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery;
+use App\Models\MenuItem;
 use App\Models\MenuSection;
 use App\Models\Page;
 use App\Enums\Page as PageEnum;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use App\Enums\Gallery as GalleryEnum;
 
@@ -15,6 +17,12 @@ class GuestController extends Controller
     {
         return view('app.home', [
             'page' => Page::where('name', PageEnum::HOME)->first(),
+            'special' => MenuItem::special(),
+            // Only the editor needs the list of sections to file the special
+            // under; a guest never sees that field, so never pays for it.
+            'sections' => Auth::check()
+                ? MenuSection::orderBy('position')->get()
+                : collect(),
             'gallery' => Gallery::where('name', GalleryEnum::DELICACIES)->first(),
             'doors' => Page::whereIn('name', [
                 PageEnum::RESTAURANT,

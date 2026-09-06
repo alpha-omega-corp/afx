@@ -9,6 +9,7 @@ return [
     'reserve_room' => 'Book a room',
     'see_menu' => 'See the menu',
     'welcome' => 'Welcome',
+    'daily' => 'Daily special',
     'discover' => 'Discover',
     'login' => 'Login',
     'page' => 'Page',

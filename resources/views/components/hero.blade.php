@@ -5,12 +5,14 @@
     'tall' => false,
     'priority' => false,
     'embers' => false,
+    'parallax' => false,
 ])
 
 <header @class(['hero', 'hero--tall' => $tall, 'hero--bare' => ! $image])>
     @if($image)
         <img
             class="hero__media"
+            @if($parallax) data-parallax @endif
             src="{{ url($image) }}"
             alt=""
             aria-hidden="true"

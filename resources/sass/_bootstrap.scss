@@ -99,6 +99,9 @@ $input-border-color:          $line-strong;
 $input-focus-border-color:    $ember;
 $input-focus-box-shadow:      none;
 $input-placeholder-color:     $paper-2;
+// The chevron is baked into a data URI at build time, so its colour is a
+// variable rather than a rule: $gray-700 is drawn for a white field.
+$form-select-indicator-color: $paper-2;
 $input-group-addon-bg:        $ink-2;
 $input-group-addon-color:     $paper-2;
 $input-group-addon-border-color: $line-strong;

@@ -135,6 +135,26 @@
         @include media-breakpoint-down(md) { font-size: 1.1875rem; }
     }
 
+    // Today's dish, marked in the carte as well as on the home page. Ember
+    // on ink rather than ink on ember: at this size a filled tag beside a
+    // dish name reads as a button.
+    &__daily {
+        display: inline-block;
+        margin-left: 0.6rem;
+        transform: translateY(-0.15em);
+        padding: 0.15rem 0.5rem;
+        border: 1px solid rgba($ember, 0.5);
+        border-radius: 999px;
+        font-family: $font-body;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $ember-hi;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
     &__description {
         grid-column: 1 / -1;
         margin: 0.35rem 0 0;

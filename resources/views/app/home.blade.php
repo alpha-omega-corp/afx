@@ -1,13 +1,17 @@
 @extends('layouts.guest')
 
 @section('content')
-    {{-- No photograph here: the type carries the arrival and the three
-         cards below are the page's first imagery. --}}
+    {{-- The house itself, under the firelight: the embers rise over the
+         photograph, and it drifts at a third of the page's speed as the
+         hero scrolls away. The image is the home page's own, changed from
+         Administration → Pages like every other hero on the site. --}}
     <x-page
+        :image="$page->image"
         :title="__('app.title')"
         :lead="$page->locale?->title"
         :tall="true"
         :embers="true"
+        :parallax="true"
     >
         <x-slot:actions>
             <a href="https://wa.me/+41786857845" class="btn btn-primary" target="_blank" rel="noopener">
@@ -17,6 +21,11 @@
                 {{ __('app.see_menu') }}
             </a>
         </x-slot:actions>
+
+        {{-- The one thing on the page that is different tomorrow. It sits in
+             the last of the hero's firelight, above the three doors, because
+             it is the reason to come today rather than one day. --}}
+        <x-daily :special="$special" :sections="$sections"/>
 
         {{-- The three ways into the house: a table, the carte, a bed.
              This band has no top gap and no seam — the cards climb into the

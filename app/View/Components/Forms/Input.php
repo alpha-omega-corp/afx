@@ -22,6 +22,8 @@ class Input extends Component
         public ?Icon $icon = null,
         public ?string $model = null,
         public ?string $index = null,
+        /** Only meaningful on a number field; a price is not a whole number. */
+        public ?string $step = null,
     ) {
         $this->id = 'input-' . preg_replace('/[^a-z0-9]+/i', '-', $index ?? $name) . '-' . ++self::$sequence;
     }

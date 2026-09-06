@@ -35,7 +35,15 @@
                     <ul class="menu-section__list">
                         @foreach($section->items as $item)
                             <li class="menu-item">
-                                <h3 class="menu-item__title">{{ $item->title }}</h3>
+                                <h3 class="menu-item__title">
+                                    {{ $item->title }}
+
+                                    {{-- The same dish the home page is showing
+                                         today, marked where it lives. --}}
+                                    @if($item->daily)
+                                        <span class="menu-item__daily">{{ __('app.daily') }}</span>
+                                    @endif
+                                </h3>
 
                                 <p class="menu-item__price">
                                     <span class="menu-item__currency">CHF</span>{{ number_format($item->price, 2, '.', "'") }}

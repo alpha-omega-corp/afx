@@ -118,6 +118,25 @@
     color: $paper;
 }
 
+// A switch inside a modal, for a field that is a yes or a no rather than a
+// value. The whole row is the target, not the 16px box.
+.admin-check {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: $tap;
+    color: $paper;
+    font-size: $fs-small;
+    cursor: pointer;
+
+    input {
+        width: 1.15rem;
+        height: 1.15rem;
+        flex: none;
+        accent-color: $ember;
+    }
+}
+
 // --- Page header preview -------------------------------------
 .admin-preview {
     display: grid;

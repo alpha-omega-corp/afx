@@ -12,6 +12,7 @@
                  carry the row index to stay unique. --}}
             <input {{ $required ? 'required' : '' }}
                    type="{{ $type }}"
+                   @if($step) step="{{ $step }}" @endif
                    value="{{ $value }}"
                    name="{{ $name }}"
                    x-model="{{ $model }}"
@@ -22,6 +23,7 @@
         @else
             <input {{ $required ? 'required' : '' }}
                    type="{{ $type }}"
+                   @if($step) step="{{ $step }}" @endif
                    value="{{ $value }}"
                    name="{{ $name }}"
                    class="form-control"

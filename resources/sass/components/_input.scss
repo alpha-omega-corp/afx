@@ -4,7 +4,13 @@
 // only colour and border are ours.
 // =============================================================
 
-.form-control {
+// The select arrived with the plat du jour; until then no form on the site
+// had one, and Bootstrap had left it on the body background — a shade darker
+// than every input beside it. That mattered beyond the shade: the pill behind
+// a floated label (below) is painted to match an input, so over a select it
+// showed as a grey chip. One surface, one border, one kind of field.
+.form-control,
+.form-select {
     background-color: $ink-2;
     border: 1px solid $line-strong;
     color: $paper;

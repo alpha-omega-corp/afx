@@ -8,6 +8,7 @@ enum Modal {
     case ADMIN_PAGE;
     case ADMIN_GALLERY;
     case ADMIN_MENU;
+    case ADMIN_DAILY;
     case ADMIN_CONTACT;
     case ADMIN_STATUS;
     case ADMIN_HOLIDAY;

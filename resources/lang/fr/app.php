@@ -9,6 +9,7 @@ return [
     'reserve_room' => 'Réserver une chambre',
     'see_menu' => 'Voir la carte',
     'welcome' => 'Bienvenue',
+    'daily' => 'Plat du jour',
     'discover' => 'Découvrir',
     'login' => 'Connexion',
     'page' => 'Page',

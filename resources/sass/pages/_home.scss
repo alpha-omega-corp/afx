@@ -10,19 +10,25 @@
 $home-gap: clamp(3.75rem, 11vw, 9.5rem);
 
 // --- The doors -----------------------------------------------
-// Pulled up into the hero. No seam, no rule, no gap: the firelight
-// simply continues behind the top of the cards and fades out.
+// Tucked into the last of the hero's fade. No seam, no rule, no gap: the
+// firelight simply continues behind the top of the cards and dies out.
 .home-doors {
     position: relative;
-    margin-top: clamp(-9rem, -9vw, -4.5rem);
+    // The same short tuck as the plat du jour card, for the same reason: the
+    // hero carries a photograph now and its lockup sits on the bottom edge,
+    // so anything reaching further up lands on the buttons rather than on
+    // the firelight below them.
+    margin-top: clamp(-2.5rem, -3vw, -1rem);
     padding-bottom: $home-gap;
     z-index: 1;
 
-    // The pull is a proportion of a wide hero, not of a tall narrow one: at
-    // phone width -4.5rem climbs past the buttons instead of into the
-    // firelight below them. A smaller step keeps the seam closed without
-    // colliding with the lockup.
-    @include media-breakpoint-down(md) { margin-top: -2rem; }
+    @include media-breakpoint-down(md) { margin-top: -1rem; }
+
+    // Unless the plat du jour is on the page, in which case that card does
+    // the tucking and the doors simply follow it. Written as a sibling
+    // rather than a class on the section, so the layout follows what is
+    // actually rendered rather than a flag passed down beside it.
+    .home-special + & { margin-top: 0; }
 
     &__grid {
         display: grid;

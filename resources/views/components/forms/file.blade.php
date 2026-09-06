@@ -1,47 +1,40 @@
-<div class="mb-3 w-100">
-    <!-- Upload -->
-    <div id="imageUpload-{{$name}}" class="file-upload"
-         x-data="{input: document.getElementById('imageSelect-{{$name}}')}" @click="input.click()">
+{{-- The picker, the preview and the input are wired to each other through
+     Alpine refs rather than through element ids. Ids are global: this field is
+     rendered once per page row, always under the same name, so every lookup by
+     id found the first row's input and the row being edited submitted nothing.
+     A ref is scoped to its own component, which is what this always meant. --}}
+<div class="mb-3 w-100" x-data="{ preview: @js($file ? asset($file) : null) }">
+    {{-- Nothing chosen yet: the whole block is the target. --}}
+    <button type="button" class="file-upload" x-show="!preview" @click="$refs.input.click()">
         @svg('heroicon-o-cloud-arrow-down')
-        <span>{{$label}}</span>
-    </div>
+        <span>{{ $label }}</span>
+    </button>
 
-    <!-- Preview -->
-    <div id="imageLabel-{{$name}}" class="file-preview" style="display:none;">
+    {{-- Chosen, or already saved: the picture itself, with a way back to the
+         picker over it. --}}
+    <div class="file-preview" x-show="preview" x-cloak>
         <div class="file-label">
             <div class="preview-icon">
                 @svg('heroicon-o-photo')
             </div>
-            <div class="preview-label">{{$label}}</div>
+            <div class="preview-label">{{ $label }}</div>
         </div>
 
-        <a class="preview-edit" x-data="{input: document.getElementById('imageSelect-{{$name}}')}"
-           @click="input.click()">
+        <button type="button" class="preview-edit" @click="$refs.input.click()" aria-label="{{ $label }}">
             @svg(Icon::EDIT->value)
-        </a>
+        </button>
 
-        <img class="image-preview" id="imagePreview-{{$name}}" src="#" alt="your image"/>
+        <img class="image-preview" :src="preview" alt="">
     </div>
 
-    <!-- File Input -->
-    <input type="file" name="{{$name}}" value="{{$file}}" id="imageSelect-{{$name}}" class="d-none" />
-
+    <input
+        type="file"
+        name="{{ $name }}{{ $multiple ? '[]' : '' }}"
+        id="{{ $id }}"
+        class="d-none"
+        accept="image/*"
+        @if($multiple) multiple @endif
+        x-ref="input"
+        @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : preview"
+    >
 </div>
-
-<script type="module">
-    document.getElementById('imageSelect-{{$name}}').onchange = () => {
-        const [file] = document.getElementById('imageSelect-{{$name}}').files
-
-        if (file) {
-            document.getElementById('imageLabel-{{$name}}').style.display = 'block';
-            document.getElementById('imagePreview-{{$name}}').src = URL.createObjectURL(file)
-            document.getElementById('imageUpload-{{$name}}').style.display = 'none';
-        }
-    }
-
-    if ('{{$file}}') {
-        document.getElementById('imageUpload-{{$name}}').style.display = 'none';
-        document.getElementById('imagePreview-{{$name}}').src = '{{asset($file)}}';
-        document.getElementById('imageLabel-{{$name}}').style.display = 'block';
-    }
-</script>
