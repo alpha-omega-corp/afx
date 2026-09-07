@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\HolidayController;
@@ -38,7 +37,6 @@ Route::controller(AdminController::class)
         Route::get('/pages', 'pages')->name('pages');
         Route::get('/gallery/{name?}', 'gallery')->name('gallery');
         Route::get('/menu', 'menu')->name('menu');
-        Route::get('/contact', 'contact')->name('contact');
 
         Route::controller(OpeningController::class)
             ->name('opening.')
@@ -46,6 +44,7 @@ Route::controller(AdminController::class)
             ->group(function() {
                 Route::get('/', 'index')->name('index');
                 Route::put('/status', 'toggle')->name('toggle');
+                Route::put('/hours', 'hours')->name('hours');
             });
 
         Route::controller(HolidayController::class)
@@ -99,10 +98,4 @@ Route::controller(GuestController::class)
         });
     });
 
-Route::controller(ContactController::class)
-    ->name('contact.')
-    ->group(function() {
-        Route::post('/', 'store')->name('store');
-        Route::delete('/{contact}', 'destroy')->name('delete');
-    });
 

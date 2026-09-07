@@ -22,7 +22,10 @@ return [
     'day_prefix' => 'le ',
     'day_suffix' => '',
     'and' => 'et',
-    'closed_days' => 'Fermé :days.',
+    // "mardi au samedi" — the join between the ends of a run of days.
+    'to' => 'au',
+    // The clock, in the language's own notation: 11h30, 14h00.
+    'time_format' => 'H[h]mm',
     'itinerary' => 'Itinéraire',
     'map_title' => 'Carte : Auberge de Founex, Grand’Rue 31, 1297 Founex',
     'show_more' => 'Lire la suite',

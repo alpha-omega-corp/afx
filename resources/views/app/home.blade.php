@@ -4,11 +4,17 @@
     {{-- The house itself, under the firelight: the embers rise over the
          photograph, and it drifts at a third of the page's speed as the
          hero scrolls away. The image is the home page's own, changed from
-         Administration → Pages like every other hero on the site. --}}
+         Administration → Pages like every other hero on the site.
+
+         Every reference to the record is optional. A database whose pages
+         have not been seeded is a database a member of staff can still log
+         into and fix, and the hero already knows how to stand without a
+         photograph — it goes bare, on warm black. A missing row is a page
+         that reads a little plainer, never a page that will not open. --}}
     <x-page
-        :image="$page->image"
+        :image="$page?->image"
         :title="__('app.title')"
-        :lead="$page->locale?->title"
+        :lead="$page?->locale?->title"
         :tall="true"
         :embers="true"
         :parallax="true"
@@ -29,17 +35,21 @@
         {{-- The one thing on the page that is different tomorrow. It sits in
              the last of the hero's firelight, above the three doors, because
              it is the reason to come today rather than one day. --}}
-        <x-daily :special="$special" :sections="$sections"/>
+        <x-daily :specials="$specials" :sections="$sections"/>
 
         {{-- The three ways into the house: a table, the carte, a bed.
              This band has no top gap and no seam — the cards climb into the
              hero's firelight, and reveal themselves as they arrive. --}}
         <section class="home-doors">
             <div class="container">
+                {{-- `get`, not `[...]`: a collection subscript throws on a key
+                     that is not there, and these three doors must open even
+                     when the page records behind them have not been written.
+                     A tile with no photograph draws its own panel. --}}
                 <div class="home-doors__grid">
-                    <x-tile :href="route(__('route.restaurant'))" :image="$doors['restaurant']?->image" :title="ucfirst(__('nav.restaurant'))" :reveal="true"/>
-                    <x-tile :href="route(__('route.menu'))" :image="$doors['menu']?->image" :title="ucfirst(__('nav.menu'))" :reveal="true"/>
-                    <x-tile :href="route(__('route.hotel'))" :image="$doors['hotel']?->image" :title="ucfirst(__('nav.hotel'))" :reveal="true"/>
+                    <x-tile :href="route(__('route.restaurant'))" :image="$doors->get('restaurant')?->image" :title="ucfirst(__('nav.restaurant'))" :reveal="true"/>
+                    <x-tile :href="route(__('route.menu'))" :image="$doors->get('menu')?->image" :title="ucfirst(__('nav.menu'))" :reveal="true"/>
+                    <x-tile :href="route(__('route.hotel'))" :image="$doors->get('hotel')?->image" :title="ucfirst(__('nav.hotel'))" :reveal="true"/>
                 </div>
             </div>
         </section>
@@ -56,7 +66,7 @@
             <div class="container" data-strip>
                 <h2 class="app-section__title">{{ __('app.welcome') }}</h2>
 
-                <p class="prose home-lede__text">{{ $page->locale?->content }}</p>
+                <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
 
                 {{-- Directly above the track: beside the heading these read as
                      decoration on the words rather than as controls for the

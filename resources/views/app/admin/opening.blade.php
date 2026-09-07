@@ -66,7 +66,53 @@
         </x-slot:submit>
     </x-modal.index>
 
-    {{-- 2. The calendar: closures planned ahead of time. --}}
+    {{-- 2. The week: the hours printed in the footer and on the contact
+         page, and the days the plat du jour has to step over. --}}
+    <x-admin.panel
+        :title="__('admin.hours_title')"
+        :description="__('admin.hours_description')"
+        :padding="false"
+    >
+        <x-slot:actions>
+            <x-admin.action
+                :name="Modal::ADMIN_HOURS"
+                :action="Action::UPDATE"
+                :icon="Icon::CALENDAR"
+                :label="__('admin.action.edit_hours')"
+            />
+        </x-slot:actions>
+
+        <ul class="admin-hours">
+            @foreach($hours as $day)
+                <li @class(['admin-hours__row', 'is-closed' => $day->isClosed()])>
+                    <span class="admin-hours__day">{{ Str::ucfirst($day->name()) }}</span>
+
+                    <span class="admin-hours__service">
+                        {{ $day->serviceLine() ?? __('admin.status.closed') }}
+                    </span>
+                </li>
+            @endforeach
+        </ul>
+
+        {{-- The two lines a guest actually reads, shown here so a change can
+             be checked without leaving the page. --}}
+        <p class="admin-hours__preview">
+            @foreach(App\Support\Opening::schedule() as $line)
+                <span>{{ $line }}</span>
+            @endforeach
+        </p>
+    </x-admin.panel>
+
+    <x-modal.index
+        :name="Modal::ADMIN_HOURS"
+        :action="Action::UPDATE"
+        :title="__('admin.action.edit_hours')"
+        :route="route('admin.opening.hours')"
+    >
+        <x-admin.hours-fields :days="$hours"/>
+    </x-modal.index>
+
+    {{-- 3. The calendar: closures planned ahead of time. --}}
     <x-admin.panel
         :title="__('admin.holidays_title')"
         :description="__('admin.holidays_description')"

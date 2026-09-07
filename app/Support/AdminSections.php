@@ -17,7 +17,6 @@ class AdminSections
             ['route' => 'admin.pages', 'label' => __('nav.pages'), 'icon' => 'heroicon-o-document-text'],
             ['route' => 'admin.gallery', 'label' => __('nav.gallery'), 'icon' => 'heroicon-o-photo'],
             ['route' => 'admin.menu', 'label' => __('nav.menu'), 'icon' => 'heroicon-o-list-bullet'],
-            ['route' => 'admin.contact', 'label' => __('nav.contact'), 'icon' => 'heroicon-o-envelope-open'],
             ['route' => 'admin.opening.index', 'label' => __('nav.opening'), 'icon' => 'heroicon-o-calendar-days'],
         ];
     }

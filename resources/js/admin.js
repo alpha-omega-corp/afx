@@ -40,25 +40,35 @@ export function registerAdmin() {
             },
         }));
 
-        // --- Menu items inside a section -------------------------
+        // --- Rows in a repeating form ----------------------------
         // Removals are queued and flushed on submit, so an edit can be
         // abandoned by closing the modal without deleting anything.
+        //
+        // `queue` says whether a removed row's record is deleted at all. It
+        // is in the menu editor, where taking a dish out of a section removes
+        // it from the carte; it is not on the card of the day, where taking a
+        // dish off the card leaves it on the carte untouched.
         Alpine.store('repeater', { removed: [] });
 
-        Alpine.data('repeater', (data) => ({
+        // Rows and config arrive as real arrays and objects — see the note in
+        // components/forms/repeater.blade.php for why they are no longer JSON
+        // strings this had to parse.
+        Alpine.data('repeater', (data, config) => ({
             values: [],
+            options: { queue: true, defaults: {} },
 
             init() {
-                if (data) this.values = JSON.parse(data);
+                this.options = { ...this.options, ...(config ?? {}) };
+                this.values = Array.isArray(data) ? data.map((row) => ({ ...row })) : [];
             },
 
             add() {
-                this.values.push({ item: '' });
+                this.values.push({ ...this.options.defaults });
             },
 
             remove(index) {
                 const { id } = this.values[index];
-                if (id) this.$store.repeater.removed.push(id);
+                if (id && this.options.queue) this.$store.repeater.removed.push(id);
                 this.values.splice(index, 1);
             },
         }));

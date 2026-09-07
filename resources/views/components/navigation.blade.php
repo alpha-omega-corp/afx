@@ -63,8 +63,9 @@
                 <a class="app-navigation__panel-tel" href="tel:+41227761029">022 776 10 29</a>
 
                 <p class="app-navigation__panel-hours">
-                    <span>{{ __('footer.hours_week') }}</span>
-                    <span>{{ __('footer.hours_closed') }}</span>
+                    @foreach(App\Support\Opening::schedule() as $line)
+                        <span>{{ $line }}</span>
+                    @endforeach
                 </p>
 
                 {{-- The switch lives here on a phone rather than in the bar,

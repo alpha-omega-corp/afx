@@ -12,3 +12,26 @@
 .modal-header {
     border-bottom: 1px solid $line;
 }
+
+// A modal that posts wraps its body and footer in a <form>, and that form
+// broke Bootstrap's scrolling.
+//
+// `.modal-dialog-scrollable` caps `.modal-content` at the dialog's height,
+// hides its overflow and lets `.modal-body` scroll. That chain only holds
+// while the body is a direct child: with a <form> in between, the form is an
+// ordinary block that grows to its content, the body never receives a bounded
+// height to scroll inside, and everything past the bottom edge is simply
+// clipped away — which is what a seven-day opening form ran into.
+//
+// Putting the form back into the flex column, allowed to shrink, restores it.
+.modal-dialog-scrollable .modal-content > form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    // Without this a flex item refuses to shrink below its content, and the
+    // overflow reappears one level down.
+    min-height: 0;
+    overflow: hidden;
+}
+
+.modal-dialog-scrollable .modal-body { min-height: 0; }

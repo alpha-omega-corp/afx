@@ -3,33 +3,46 @@
 namespace App\Models;
 
 use App\Support\Opening;
-use App\Traits\HasLocaleScope;
+use App\Traits\HasTranslations;
 use Carbon\CarbonInterface;
 use Database\Factories\MenuItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 
 class MenuItem extends Model
 {
     use HasFactory;
-    use HasLocaleScope;
+    use HasTranslations;
 
     protected $fillable = [
-        'title',
-        'description',
         'price',
         'menu_section_id',
         'daily',
         'daily_on',
+        'daily_position',
     ];
+
+    /** The name and the line under it live in menu_item_locales. */
+    public static function localeModel(): string
+    {
+        return MenuItemLocale::class;
+    }
+
+    /** @return array<int, string> */
+    public static function translatable(): array
+    {
+        return ['title', 'description'];
+    }
 
     protected function casts(): array
     {
         return [
             'daily' => 'boolean',
             'daily_on' => 'date',
+            'daily_position' => 'integer',
         ];
     }
 
@@ -62,22 +75,27 @@ class MenuItem extends Model
         return $this->daily_on !== null && ! $this->daily_on->isSameDay($this->servedOn());
     }
 
-    /** Today's special: at most one dish carries the flag. */
+    /** The dishes on today's card: every dish carrying the flag. */
     public function scopeDaily(Builder $query): void
     {
         $query->where('daily', true);
     }
 
     /**
-     * The dish on show today, or null.
+     * The card of the day, in the order it is eaten.
      *
-     * Ordered rather than left to the database: the writer enforces one flag
-     * at a time, but if a second ever appeared — a hand-edited row, a restore
-     * — an unordered read would pick one of them at random, and the page and
-     * the editor could then be looking at different dishes.
+     * Position first, id second: a card written before the column existed —
+     * or two dishes filed at the same position by a hand-edited row — still
+     * comes back in a stable order rather than whatever the database felt
+     * like returning.
+     *
+     * @return Collection<int, self>
      */
-    public static function special(): ?self
+    public static function specials(): Collection
     {
-        return static::daily()->latest('id')->first();
+        return static::daily()
+            ->orderByRaw('daily_position IS NULL, daily_position')
+            ->orderBy('id')
+            ->get();
     }
 }

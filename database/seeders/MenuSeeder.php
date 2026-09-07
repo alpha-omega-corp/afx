@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\MenuItem;
 use App\Models\MenuSection;
+use App\Support\Translations;
 use Illuminate\Database\Seeder;
 
 class MenuSeeder extends Seeder
@@ -110,21 +111,29 @@ class MenuSeeder extends Seeder
         ],
     ];
 
+    /**
+     * The carte is seeded in French, which is the language it is written in.
+     * The English comes from the shipped glossary — every line above is in it
+     * — so a fresh database serves a complete carte in both languages without
+     * a single network call. See App\Support\Translations.
+     */
     public function run(): void
     {
         foreach (self::CARTE as $position => $section) {
-            $record = MenuSection::create([
-                'title' => $section['title'],
-                'position' => $position,
-            ]);
+            $record = MenuSection::create(['position' => $position]);
+
+            Translations::write($record, ['fr' => ['title' => $section['title']]]);
 
             foreach ($section['items'] as $item) {
-                MenuItem::create([
+                $dish = MenuItem::create([
                     'menu_section_id' => $record->id,
-                    'title' => $item[0],
                     'price' => $item[1],
-                    'description' => $item[2] ?? null,
                 ]);
+
+                Translations::write($dish, ['fr' => [
+                    'title' => $item[0],
+                    'description' => $item[2] ?? null,
+                ]]);
             }
         }
     }

@@ -30,7 +30,7 @@
                                 @svg('heroicon-o-arrows-up-down')
                             </span>
 
-                            <h3 class="admin-section__title">{{ $section->title }}</h3>
+                            <h3 class="admin-section__title">{{ $section->localeIn(Lang::FR)->title }}</h3>
 
                             <div class="admin-section__actions">
                                 <x-admin.action
@@ -51,8 +51,24 @@
 
                         <ul class="admin-section__items">
                             @foreach($section->items as $item)
+                                @php($fr = $item->localeIn(Lang::FR))
+                                @php($en = $item->localeIn(Lang::EN))
+
                                 <li class="admin-section__item">
-                                    <span class="admin-section__item-title">{{ $item->title }}</span>
+                                    <span class="admin-section__item-title">{{ $fr->title }}</span>
+
+                                    {{-- The English beside the French, and a
+                                         mark on it while it is still the
+                                         machine's: the point of the list is to
+                                         show at a glance what has been read
+                                         over and what has not. --}}
+                                    <span class="admin-section__item-en">
+                                        {{ $en->title }}
+                                        @if($en->isAuto('title'))
+                                            <span class="admin-auto" title="{{ __('admin.hint.auto') }}">{{ __('admin.auto') }}</span>
+                                        @endif
+                                    </span>
+
                                     <span class="admin-section__item-price">{{ $item->price }}</span>
                                 </li>
                             @endforeach
@@ -66,7 +82,7 @@
                             :title="__('admin.action.delete')"
                         >
                             <p class="admin-confirm">
-                                {{ __('admin.confirm.delete_section', ['name' => $section->title]) }}
+                                {{ __('admin.confirm.delete_section', ['name' => $section->localeIn(Lang::FR)->title]) }}
                             </p>
 
                             <x-slot:submit>
@@ -81,43 +97,78 @@
                             :action="Action::UPDATE"
                             :iterator="$section->id"
                             :route="route('admin.menu.update', $section)"
-                            :title="$section->title"
+                            :title="$section->localeIn(Lang::FR)->title"
                         >
                             <input type="hidden" name="section_id" value="{{ $section->id }}">
 
+                            {{-- French is the carte as the kitchen writes it.
+                                 Every English field below may be left blank,
+                                 and blank is not an omission: it hands that
+                                 one field to the translator and keeps it
+                                 following the French from then on. Type in it
+                                 and it is yours, and nothing overwrites it
+                                 again. --}}
+                            <p class="admin-hint">{{ __('admin.hint.translation') }}</p>
+
                             <x-forms.input
-                                name="title"
+                                name="title_fr"
                                 :required="true"
-                                :label="__('form.title')"
+                                :label="__('admin.field.section_title_fr')"
                                 :icon="Icon::TITLE"
-                                :value="$section->title"
+                                :value="$section->localeIn(Lang::FR)->title"
+                            />
+
+                            <x-forms.input
+                                name="title_en"
+                                :label="__('admin.field.section_title_en')"
+                                :icon="Icon::TITLE"
+                                :value="$section->localeIn(Lang::EN)->title"
                             />
 
                             <x-forms.repeater
                                 :title="__('admin.field.items')"
-                                :items="$section->items->toArray()"
+                                :items="$rows[$section->id]"
                             >
                                 <x-forms.input
-                                    model="item.title"
-                                    name="section_titles[]"
-                                    :label="__('admin.field.dish')"
+                                    model="item.title_fr"
+                                    name="section_titles_fr[]"
+                                    :label="__('admin.field.dish_fr')"
                                     :icon="Icon::EDIT"
+                                    :required="true"
                                 />
 
                                 <x-forms.input
-                                    model="item.description"
-                                    name="section_descriptions[]"
-                                    :label="__('admin.field.description')"
+                                    model="item.title_en"
+                                    name="section_titles_en[]"
+                                    :label="__('admin.field.dish_en')"
+                                    :icon="Icon::EDIT"
+                                    :required="false"
+                                />
+
+                                <x-forms.input
+                                    model="item.description_fr"
+                                    name="section_descriptions_fr[]"
+                                    :label="__('admin.field.description_fr')"
                                     :icon="Icon::INFO"
                                     :required="false"
                                 />
 
                                 <x-forms.input
-                                    type="float"
+                                    model="item.description_en"
+                                    name="section_descriptions_en[]"
+                                    :label="__('admin.field.description_en')"
+                                    :icon="Icon::INFO"
+                                    :required="false"
+                                />
+
+                                <x-forms.input
+                                    type="number"
+                                    step="0.05"
                                     model="item.price"
                                     name="section_prices[]"
                                     :label="__('admin.field.price')"
                                     :icon="Icon::PRICE"
+                                    :required="true"
                                 />
                             </x-forms.repeater>
 
@@ -146,10 +197,18 @@
         :route="route('admin.menu.create')"
         :title="__('admin.action.add_section')"
     >
+        <p class="admin-hint">{{ __('admin.hint.translation') }}</p>
+
         <x-forms.input
-            name="title"
+            name="title_fr"
             :required="true"
-            :label="__('form.title')"
+            :label="__('admin.field.section_title_fr')"
+            :icon="Icon::TITLE"
+        />
+
+        <x-forms.input
+            name="title_en"
+            :label="__('admin.field.section_title_en')"
             :icon="Icon::TITLE"
         />
     </x-modal.index>

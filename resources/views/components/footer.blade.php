@@ -1,7 +1,7 @@
 <footer class="app-footer">
     <div class="container">
         <div class="app-footer__grid">
-            <div>
+            <div class="border-bottom border-primary pb-4">
                 <p class="app-footer__wordmark">{{ __('app.title') }}</p>
                 <p class="app-footer__blurb">{{ __('footer.blurb') }}</p>
             </div>
@@ -46,9 +46,12 @@
         <div class="app-footer__hours">
             <h2 class="app-footer__title">{{ __('footer.hours') }}</h2>
 
+            {{-- Written in Administration → Ouverture, and the same list the
+                 plat du jour reads to know which days it can be served on. --}}
             <p class="app-footer__hours-lines">
-                <span>{{ __('footer.hours_week') }}</span>
-                <span>{{ __('footer.hours_closed') }}</span>
+                @foreach(App\Support\Opening::schedule() as $line)
+                    <span>{{ $line }}</span>
+                @endforeach
             </p>
         </div>
 

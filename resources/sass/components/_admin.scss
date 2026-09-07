@@ -222,68 +222,59 @@
     padding: 0.5rem 1rem 0.9rem;
 }
 
+// The French, the English and the price: three columns, so the eye can run
+// down the middle one and find the dishes nobody has read over yet.
 .admin-section__item {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
     padding: 0.35rem 0;
     font-size: $fs-small;
     color: $paper-2;
+
+    // Two languages side by side stop being two columns and start being four
+    // words a line long before a phone gets to them.
+    @include media-breakpoint-down(md) {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+}
+
+.admin-section__item-title { color: $paper; }
+
+.admin-section__item-en {
+    color: $paper-2;
+
+    @include media-breakpoint-down(md) {
+        grid-column: 1 / -1;
+        order: 3;
+    }
 }
 
 .admin-section__item-price { color: $ember; white-space: nowrap; }
 
-// --- Messages table ------------------------------------------
-.admin-table__scroll { overflow-x: auto; }
+// A translation nobody has confirmed. Quiet — it is a note to staff, not a
+// warning — but present on every line that has one.
+.admin-auto {
+    display: inline-block;
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.35rem;
+    border: 1px solid $line-strong;
+    border-radius: 999px;
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $paper-2;
+    vertical-align: 1px;
+}
 
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
+// A line of explanation at the head of a form, where a field's own label has
+// no room to say why it may be left empty.
+.admin-hint {
+    margin: 0 0 1.25rem;
+    color: $paper-2;
     font-size: $fs-small;
-
-    th, td {
-        padding: 0.85rem 1.5rem;
-        text-align: left;
-        vertical-align: middle;
-        border-bottom: 1px solid $line;
-    }
-
-    thead th {
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        font-size: 0.6875rem;
-        color: $paper-2;
-    }
-
-    tbody th { font-weight: 600; color: $paper; }
-    tbody td { color: $paper-2; }
-    tbody tr:last-child th,
-    tbody tr:last-child td { border-bottom: 0; }
-    tbody tr:hover { background-color: rgba($paper, 0.03); }
-}
-
-.admin-table__actions {
-    // A td must stay a table-cell — flex here would drop it out of the row.
-    text-align: right;
-    white-space: nowrap;
-
-    > * + * { margin-left: 0.35rem; }
-}
-
-.admin-message {
-    margin: 0;
-
-    dt {
-        font-size: 0.6875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: $paper-2;
-    }
-
-    dd { margin: 0.25rem 0 1rem; color: $paper; }
-
-    &__body { white-space: pre-line; }
+    line-height: 1.5;
 }
 
 // --- Gallery manager -----------------------------------------
@@ -444,6 +435,101 @@
         margin: 0.15rem 0 0;
         font-size: $fs-small;
         color: $paper-2;
+    }
+}
+
+// --- Opening hours -------------------------------------------
+// Seven rows read at a glance, and under them the two lines a guest will
+// actually see. The preview is the point of the panel: the week is edited a
+// day at a time and read as a sentence.
+.admin-hours {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    &__row {
+        display: grid;
+        grid-template-columns: minmax(6rem, 9rem) minmax(0, 1fr);
+        align-items: baseline;
+        gap: 0.35rem 1rem;
+        padding: 0.7rem 1.5rem;
+        border-bottom: 1px solid $line;
+
+        &:last-child { border-bottom: 0; }
+
+        @include media-breakpoint-down(sm) { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    // A shut day is still listed — the week is only legible whole — but it
+    // is not something to read twice.
+    &__row.is-closed { color: $paper-2; }
+
+    &__day {
+        font-weight: 600;
+        color: inherit;
+        font-size: $fs-small;
+    }
+
+    &__service {
+        color: $paper-2;
+        font-size: $fs-small;
+        font-variant-numeric: tabular-nums;
+    }
+
+    &__preview {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        margin: 0;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid $line;
+        background-color: rgba($ink, 0.5);
+        color: $paper;
+        font-size: $fs-small;
+    }
+}
+
+// The editor: one fieldset a day, stacked, because a modal is 500px wide and
+// four time fields on one line would each be six characters in a box.
+.admin-hours-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.admin-hours-day {
+    margin: 0;
+    padding: 1rem 0 0;
+    border: 0;
+    border-top: 1px solid $line;
+
+    &:first-child {
+        padding-top: 0;
+        border-top: 0;
+    }
+
+    // A legend is not a flex or grid item and floats out of the box model in
+    // some engines; forced back to a plain block so the fields sit under it.
+    &__name {
+        float: none;
+        width: 100%;
+        margin: 0 0 0.5rem;
+        padding: 0;
+        font-family: $font-body;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $ember-hi;
+    }
+
+    &__ranges {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 0.75rem;
+        margin-top: 0.75rem;
+
+        @include media-breakpoint-down(sm) { grid-template-columns: 1fr; }
     }
 }
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * A dish's name and the line under it, in one language.
+ * A section heading in one language.
  *
  * `auto` lists the fields a machine wrote, so the two can be told apart one
  * field at a time: machine text follows its French source whenever that
@@ -15,13 +15,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * the name of a dish therefore does not freeze its description.
  * See App\Support\Translations.
  */
-class MenuItemLocale extends Model
+class MenuSectionLocale extends Model
 {
     protected $fillable = [
-        'menu_item_id',
+        'menu_section_id',
         'lang',
         'title',
-        'description',
         'auto',
     ];
 
@@ -41,8 +40,8 @@ class MenuItemLocale extends Model
         static::addGlobalScope(new LocaleScope());
     }
 
-    public function item(): BelongsTo
+    public function section(): BelongsTo
     {
-        return $this->belongsTo(MenuItem::class);
+        return $this->belongsTo(MenuSection::class);
     }
 }

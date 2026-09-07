@@ -1,7 +1,15 @@
 @props(['href', 'image' => null, 'title', 'reveal' => false])
 
 <a href="{{ $href }}" class="tile" @if($reveal) data-reveal @endif>
-    <img class="tile__media" src="{{ url($image) }}" alt="" loading="lazy" decoding="async" />
+    {{-- No photograph yet — a page whose image has never been set from
+         Administration → Pages. The tile keeps its own dark panel, its veil
+         and its name, exactly as the hero goes bare: `url(null)` returns the
+         generator rather than a path, and printing that is what took the home
+         page down. --}}
+    @if($image)
+        <img class="tile__media" src="{{ url($image) }}" alt="" loading="lazy" decoding="async" />
+    @endif
+
     <span class="tile__veil"></span>
 
     <span class="tile__body">

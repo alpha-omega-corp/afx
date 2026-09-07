@@ -22,7 +22,10 @@ return [
     'day_prefix' => '',
     'day_suffix' => 's',
     'and' => 'and',
-    'closed_days' => 'Closed on :days.',
+    // "Tuesday to Saturday" — the join between the ends of a run of days.
+    'to' => 'to',
+    // The clock, in the language's own notation: 11:30am, 2:00pm.
+    'time_format' => 'h:mma',
     'itinerary' => 'Directions',
     'map_title' => 'Map: Auberge de Founex, Grand’Rue 31, 1297 Founex',
     'show_more' => 'Read more',

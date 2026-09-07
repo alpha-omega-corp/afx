@@ -5,15 +5,11 @@
 .app-contact {
     padding-block-end: $section-gap;
 
-    &__grid {
-        display: grid;
-        grid-template-columns: 5fr 7fr;
-        gap: clamp(2rem, 5vw, 4rem);
-        align-items: start;
-
-        @include media-breakpoint-down(lg) {
-            grid-template-columns: 1fr;
-        }
+    // The details used to share the row with a message form. On their own
+    // they are a short list, and a short list read across the full grid is a
+    // line of type with a metre of nothing after it.
+    &__information {
+        max-width: 34rem;
     }
 
     &__list {
@@ -63,43 +59,6 @@
         a:hover svg { color: $ember; }
     }
 
-    &__form {
-        background-color: $ink-2;
-        border: 1px solid $line;
-        border-radius: $r-panel;
-        padding: clamp(1.5rem, 4vw, 2.5rem);
-    }
-
-    &__text {
-        color: $paper-2;
-        margin-bottom: 1.75rem;
-        max-width: 46ch;
-    }
-
-    // Why the message did not go. Shares the status note's shape so the two
-    // read as the same voice, in the one colour the palette keeps for wrong.
-    &__errors {
-        background-color: rgba(#C4442E, 0.14);
-        border-left: 3px solid #C4442E;
-        color: $paper;
-        padding: 0.85rem 1rem;
-        border-radius: 0 $r-control $r-control 0;
-        margin-bottom: 1.5rem;
-        font-size: $fs-small;
-
-        p { margin: 0 0 0.35rem; font-weight: 600; }
-
-        ul { margin: 0; padding-left: 1.1rem; }
-    }
-
-    &__status {
-        background-color: rgba($ember, 0.12);
-        border-left: 3px solid $ember;
-        color: $paper;
-        padding: 0.85rem 1rem;
-        border-radius: 0 $r-control $r-control 0;
-        margin-bottom: 1.5rem;
-    }
 }
 
 // =============================================================

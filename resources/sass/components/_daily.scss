@@ -64,10 +64,6 @@
 
 .daily {
     position: relative;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: baseline;
-    column-gap: clamp(1.25rem, 3vw, 2.5rem);
     padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.35rem, 3vw, 2.5rem);
     border: 1px solid rgba($ember, 0.34);
     border-radius: $r-panel;
@@ -95,11 +91,11 @@
     }
 
     &__eyebrow {
-        grid-column: 1 / -1;
-        margin: 0 0 0.5rem;
+        margin: 0 0 clamp(0.9rem, 2vw, 1.25rem);
         font-family: $font-body;
         font-size: 0.75rem;
         font-weight: 700;
+        line-height: 1.4;
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: $ember-hi;
@@ -130,11 +126,37 @@
         }
     }
 
+    &__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    // One dish: a name, a price on the same baseline, and a line about it
+    // underneath. A card can hold a whole meal, and the courses are separated
+    // by the same hairline that sets the closing note apart — quieter than a
+    // border, enough to stop two names reading as one.
+    &__dish {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: baseline;
+        column-gap: clamp(1.25rem, 3vw, 2.5rem);
+
+        + .daily__dish {
+            margin-top: clamp(0.9rem, 2vw, 1.35rem);
+            padding-top: clamp(0.9rem, 2vw, 1.35rem);
+            border-top: 1px solid rgba($paper, 0.09);
+        }
+    }
+
     &__title {
         grid-column: 1;
         margin: 0;
         font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+        font-weight: $fw-head;
         line-height: 1.15;
+
+        @include media-breakpoint-down(md) { font-weight: $fw-head-sm; }
     }
 
     // Lining figures, and never wrapped: the price is read at a glance or
@@ -159,20 +181,23 @@
 
     &__description {
         grid-column: 1 / -1;
-        margin: 0.6rem 0 0;
+        margin: 0.5rem 0 0;
         max-width: 56ch;
         color: $paper-2;
     }
 
-    // The days nobody is cooking. Quieter than everything above it and set
-    // apart by a hairline, so it reads as a footnote to the dish rather than
-    // as part of the offer.
-    &__closed {
-        grid-column: 1 / -1;
-        margin: clamp(0.85rem, 2vw, 1.25rem) 0 0;
-        padding-top: clamp(0.75rem, 2vw, 1rem);
-        border-top: 1px solid rgba($paper, 0.09);
-        color: $paper-2;
+    // Three courses at the size a single dish is set in would be a card that
+    // fills the screen and a name that outshouts the label above it. A meal
+    // steps down; one dish keeps the headline.
+    &--several &__title {
+        font-size: clamp(1.25rem, 1.9vw, 1.625rem);
+    }
+
+    &--several &__price {
+        font-size: clamp(1rem, 1.3vw, 1.125rem);
+    }
+
+    &--several &__description {
         font-size: $fs-small;
     }
 
@@ -180,7 +205,7 @@
     // confite au Pinot Noir de Founex" would be three words a line beside
     // five characters. The price drops under the name instead.
     @include media-breakpoint-down(md) {
-        grid-template-columns: 1fr;
+        &__dish { grid-template-columns: 1fr; }
 
         &__title,
         &__price,

@@ -167,8 +167,18 @@
         padding-block-end: clamp(3.25rem, 6vw, 5rem);
         padding-block-start: calc(var(--nav-h) + 2rem);
 
+        // On a phone the lockup was taking two thirds of the hero and the
+        // photograph was reduced to a strip above it. The words are the same
+        // words in the same order; they simply sit lower, tightened against
+        // each other and dropped toward the bottom edge, so the picture keeps
+        // the top half of the frame to itself.
+        //
+        // The floor is set by the plat du jour, which climbs 1rem into this
+        // edge on a phone: anything under about 2rem here and the card lands
+        // on the buttons.
         @include media-breakpoint-down(md) {
             padding-block-start: calc(var(--nav-h) + 1.25rem);
+            padding-block-end: 2rem;
         }
     }
 
@@ -185,7 +195,7 @@
         line-height: $lh-lead;
 
         @include media-breakpoint-down(md) {
-            margin-top: 1rem;
+            margin-top: 0.75rem;
             font-size: $fs-body;
         }
     }
@@ -196,11 +206,17 @@
         gap: 0.75rem;
         margin-top: 2rem;
 
+        // The gap between the words and the buttons was doing the work of a
+        // section break inside a lockup that is read as one thing. Closing it
+        // on a phone gives the photograph back the height it was spending.
+        @include media-breakpoint-down(md) {
+            margin-top: 1.25rem;
+        }
+
         // Two buttons side by side do not fit a 360px screen, and wrapping
         // leaves a short one hanging under a long one. Full width stacks them
         // as a pair of equal, thumb-sized rows instead.
         @include media-breakpoint-down(sm) {
-            margin-top: 1.75rem;
             gap: 0.625rem;
 
             .btn {

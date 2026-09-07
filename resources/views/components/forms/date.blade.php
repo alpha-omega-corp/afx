@@ -1,6 +1,6 @@
 <div class="form-floating mb-3">
     <input {{ $required ? 'required' : '' }}
-           type="date"
+           type="{{ $type }}"
            class="form-control"
            id="{{ $id }}"
            name="{{ $name }}"

@@ -3,11 +3,11 @@
 @section('title', ucfirst(__('nav.hotel')) . ' — ' . __('app.title'))
 
 @section('content')
-    <x-page :image="$page->image" :title="$page->locale?->title ?: ucfirst(__('nav.hotel'))" :rule="true" embers="quiet">
+    <x-page :image="$page?->image" :title="$page?->locale?->title ?: ucfirst(__('nav.hotel'))" :rule="true" embers="quiet">
         {{-- The invitation waits until the page has made its case: the hero
              carries the name and the photograph, and the button sits under
              the paragraph that explains what is being booked. --}}
-        @if($page->locale?->content)
+        @if($page?->locale?->content)
             <div class="app-page__intro">
                 <div class="container">
                     <p class="prose">{{ $page->locale->content }}</p>

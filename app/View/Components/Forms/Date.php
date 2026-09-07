@@ -16,8 +16,11 @@ class Date extends Component
         public string $label,
         public ?string $value = null,
         public bool $required = true,
+        // A day or a clock time: the same floating-label field either way, and
+        // the browser picks the right picker for it.
+        public string $type = 'date',
     ) {
-        $this->id = 'date-' . preg_replace('/[^a-z0-9]+/i', '-', $name) . '-' . ++self::$sequence;
+        $this->id = $type . '-' . preg_replace('/[^a-z0-9]+/i', '-', $name) . '-' . ++self::$sequence;
     }
 
     public function render(): View
