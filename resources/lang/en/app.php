@@ -14,6 +14,7 @@ return [
     'login' => 'Login',
     'page' => 'Page',
     'gallery' => 'Gallery',
+    'photo_open' => 'Enlarge photo :n of :total',
     'menu' => 'Menu',
     'contact' => 'contact details',
     'closed_lead' => 'The auberge is currently closed.',

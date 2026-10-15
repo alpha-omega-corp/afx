@@ -12,6 +12,7 @@
             @foreach($gallery->items as $item)
                 <a
                     class="pswp-gallery__item"
+                    aria-label="{{ __('app.photo_open', ['n' => $loop->iteration, 'total' => $loop->count]) }}"
                     href="{{ asset($item->image) }}"
                     style="--ratio: {{ $item->ratio() }}"
                     @if($item->isMeasured())

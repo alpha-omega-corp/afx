@@ -1,5 +1,7 @@
 @extends('layouts.guest')
 
+@section('description', Str::limit(trim(strip_tags($page?->locale?->content ?? '')), 155) ?: __('footer.blurb'))
+
 @section('content')
     {{-- The house itself, under the firelight: the embers rise over the
          photograph, and it drifts at a third of the page's speed as the
@@ -121,4 +123,39 @@
             </div>
         </section>
     </x-page>
+
+    {{-- Only what the site already says: the footer's address, phone, mail
+         and social links, and the week from Opening — the same hours the
+         footer prints. Inline php directives only: Blade pairs the inline
+         one above with any later end-php directive, comments included. --}}
+    @php($days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
+    @php($restaurant = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Restaurant',
+            'name' => __('app.title'),
+            'url' => route('guest.fr.home'),
+            'telephone' => '+41227761029',
+            'email' => 'aubergedefounex@bluewin.ch',
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => "Grand'Rue 31",
+                'postalCode' => '1297',
+                'addressLocality' => 'Founex',
+                'addressCountry' => 'CH',
+            ],
+            'sameAs' => [
+                'https://www.facebook.com/AubergeFounex',
+                'https://www.instagram.com/auberge_de_founex/',
+            ],
+            'openingHoursSpecification' => \App\Support\Opening::week()
+                ->flatMap(fn ($day) => collect($day->services())->map(fn ($range) => [
+                    '@type' => 'OpeningHoursSpecification',
+                    'dayOfWeek' => 'https://schema.org/' . $days[$day->day],
+                    'opens' => $range[0],
+                    'closes' => $range[1],
+                ]))
+                ->values()
+                ->all(),
+        ])
+    <script type="application/ld+json">{!! json_encode($restaurant, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
 @endsection

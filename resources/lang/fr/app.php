@@ -14,6 +14,7 @@ return [
     'login' => 'Connexion',
     'page' => 'Page',
     'gallery' => 'Galerie',
+    'photo_open' => 'Agrandir la photo :n sur :total',
     'menu' => 'Menu',
     'contact' => 'Coordonnées',
     'closed_lead' => 'L’auberge est actuellement fermée.',

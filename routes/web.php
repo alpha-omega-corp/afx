@@ -14,6 +14,11 @@ use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/locale/{locale}', [LocaleController::class, 'locale'])->name('locale');
 
+Route::get('/sitemap.xml', fn () => response()
+    ->view('sitemap')
+    ->header('Content-Type', 'application/xml'))
+    ->name('sitemap');
+
 Route::controller(AuthController::class)->name('auth.')->group(function() {
     Route::post('/login', 'login')->name('login');
     Route::get('/logout', 'logout')->name('logout');

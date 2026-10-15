@@ -1,5 +1,7 @@
 @extends('layouts.guest')
 
+@section('description', Str::limit(trim(strip_tags($page?->locale?->content ?? '')), 155) ?: __('footer.blurb'))
+
 @section('title', ucfirst(__('nav.menu')) . ' — ' . __('app.title'))
 
 @section('content')

@@ -8,6 +8,15 @@
     <title>@yield('title', __('app.title'))</title>
     <meta name="description" content="@yield('description', __('footer.blurb'))">
 
+    @php($route = Route::currentRouteName() ?? '')
+    @if(str_starts_with($route, 'guest.'))
+        <link rel="canonical" href="{{ url()->current() }}">
+        @foreach(\App\Enums\Language::cases() as $lang)
+            <link rel="alternate" hreflang="{{ $lang->value }}" href="{{ route(str_replace(['guest.fr.', 'guest.en.'], "guest.{$lang->value}.", $route)) }}">
+        @endforeach
+        <link rel="alternate" hreflang="x-default" href="{{ route(str_replace('guest.en.', 'guest.fr.', $route)) }}">
+    @endif
+
     <link rel="icon" href="{{ asset('favicon.ico') }}">
 
     @vite(['resources/js/app.js'])
