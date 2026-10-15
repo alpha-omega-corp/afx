@@ -21,8 +21,11 @@ class GuestController extends Controller
             'specials' => MenuItem::specials(),
             // Only the editor needs the list of sections to file the special
             // under; a guest never sees that field, so never pays for it.
+            // `locales`, not `locale`: the editor names each section in the
+            // source language whichever one the page is being read in, and
+            // without them that is a query per section per staff page view.
             'sections' => Auth::check()
-                ? MenuSection::with('locale')->orderBy('position')->get()
+                ? MenuSection::with('locales')->orderBy('position')->get()
                 : collect(),
             'gallery' => Gallery::where('name', GalleryEnum::DELICACIES)->first(),
             'doors' => Page::whereIn('name', [
@@ -39,6 +42,9 @@ class GuestController extends Controller
         // keeps a nine-section carte to three queries rather than to one per
         // heading and one per dish.
         $sections = MenuSection::with(['locale', 'items.locale'])
+            // Staff get the other languages too: the card's editor is drawn
+            // on this page and names every section in the source language.
+            ->when(Auth::check(), fn ($query) => $query->with('locales'))
             ->orderBy('position')
             ->get();
 

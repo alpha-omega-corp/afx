@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <title>Une chambre sous le toit, un lit fait et une lampe allumée</title>
+  <defs>
+    <radialGradient id="lamplight" cx="0.72" cy="0.55" r="0.6">
+      <stop offset="0" stop-color="#3a2a1e"></stop>
+      <stop offset="1" stop-color="#1E1B18"></stop>
+    </radialGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FF8A3D" stop-opacity="0.55"></stop>
+      <stop offset="1" stop-color="#FF8A3D" stop-opacity="0"></stop>
+    </radialGradient>
+    <linearGradient id="night" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f161d"></stop>
+      <stop offset="1" stop-color="#1e2a33"></stop>
+    </linearGradient>
+    <linearGradient id="duvet" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f1eadf"></stop>
+      <stop offset="1" stop-color="#d9cfbf"></stop>
+    </linearGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 0.08"></feFuncA></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#lamplight)"></rect>
+  <path d="M0 0 H760 L300 420 H0 Z" fill="#15110e"></path>
+  <g stroke="#0e0b09" stroke-width="12">
+    <path d="M190 0 L0 175 M420 0 L0 390 M650 0 L230 385"></path>
+  </g>
+  <path d="M760 0 L300 420" stroke="#2a211b" stroke-width="10"></path>
+  <path d="M322 96 L552 96 L452 262 L214 262 Z" fill="#241b15"></path>
+  <path d="M340 110 L528 110 L440 248 L240 248 Z" fill="url(#night)"></path>
+  <g fill="#F3EDE4" fill-opacity="0.7"><circle cx="400" cy="150" r="2"></circle><circle cx="470" cy="135" r="1.5"></circle><circle cx="330" cy="215" r="2"></circle><circle cx="430" cy="200" r="1.5"></circle></g>
+  <path d="M434 110 L340 248" stroke="#241b15" stroke-width="7"></path>
+
+  <rect x="0" y="705" width="1600" height="195" fill="#191410"></rect>
+  <g stroke="#120e0b" stroke-width="3"><path d="M0 745 H1600 M0 792 H1600 M0 845 H1600"></path></g>
+  <ellipse cx="800" cy="790" rx="420" ry="62" fill="#B84A0E" fill-opacity="0.55"></ellipse>
+  <ellipse cx="800" cy="790" rx="380" ry="48" fill="none" stroke="#F26B1D" stroke-opacity="0.6" stroke-width="4" stroke-dasharray="14 10"></ellipse>
+
+  <ellipse cx="800" cy="712" rx="330" ry="22" fill="#000" fill-opacity="0.35"></ellipse>
+  <path d="M556 520 V380 C556 350 580 336 610 336 H990 C1020 336 1044 350 1044 380 V520 Z" fill="#4a3322"></path>
+  <path d="M586 520 V392 C586 372 600 362 620 362 H980 C1000 362 1014 372 1014 392 V520 Z" fill="#5a3e29"></path>
+  <rect x="604" y="460" width="170" height="74" rx="30" fill="#f7f2ea"></rect>
+  <rect x="826" y="460" width="170" height="74" rx="30" fill="#f7f2ea"></rect>
+  <path d="M540 530 H1060 C1072 530 1080 540 1080 552 V690 C1080 702 1072 710 1060 710 H540 C528 710 520 702 520 690 V552 C520 540 528 530 540 530 Z" fill="url(#duvet)"></path>
+  <path d="M540 560 C680 574 920 574 1060 560" fill="none" stroke="#e8dfd0" stroke-width="10" stroke-linecap="round"></path>
+  <rect x="512" y="604" width="576" height="54" rx="10" fill="#F26B1D"></rect>
+  <path d="M512 620 H1088 M512 642 H1088" stroke="#B84A0E" stroke-width="5"></path>
+  <path d="M1088 612 C1098 640 1096 690 1086 716 L1070 716 C1078 690 1080 650 1072 612 Z" fill="#B84A0E"></path>
+
+  <circle cx="1175" cy="470" r="150" fill="url(#halo)"></circle>
+  <rect x="1110" y="560" width="130" height="150" rx="6" fill="#3a2a1f"></rect>
+  <rect x="1122" y="600" width="106" height="4" fill="#2a1e16"></rect>
+  <rect x="1168" y="510" width="14" height="50" fill="#a39b90"></rect>
+  <path d="M1128 454 H1222 L1244 512 H1106 Z" fill="#FF8A3D"></path>
+  <rect x="1136" y="545" width="60" height="14" rx="2" fill="#6b4a2f"></rect>
+
+  <g>
+    <rect x="300" y="560" width="120" height="14" rx="4" fill="#3d2b1f"></rect>
+    <path d="M312 574 L306 700 M408 574 L414 700" stroke="#3d2b1f" stroke-width="10" stroke-linecap="round"></path>
+    <rect x="316" y="524" width="88" height="36" rx="6" fill="#ece4d6"></rect>
+    <rect x="316" y="538" width="88" height="6" fill="#F26B1D"></rect>
+  </g>
+  <rect width="1600" height="900" filter="url(#grain)"></rect>
+</svg>

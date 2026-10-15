@@ -1,8 +1,20 @@
+// Foundation
+// vite.config.js prepends `@import "./resources/sass/bootstrap"` to this file,
+// so tokens, the Bootstrap variables and media-breakpoint-* are already in
+// scope here. These two must come BEFORE every component and page partial:
+// they define the mixins those partials call, and a mixin has to exist before
+// it is included. They are imported here and nowhere else — a second import
+// would emit the keyframes twice.
+@import "glass";
+@import "bento";
+
 // Components
 @import "components/site-banner";
 @import "components/navigation";
 @import "components/hero";
 @import "components/page";
+@import "components/illustration";
+@import "components/intro";
 @import "components/tile";
 @import "components/daily";
 @import "components/strip";
@@ -38,6 +50,19 @@
     --nav-h: #{$nav-h-sm};
 
     @include media-breakpoint-up(lg) { --nav-h: #{$nav-h}; }
+
+    // The surface a form field paints itself on, and the border that says
+    // it is a field at all. Declared here so _input.scss can read them with
+    // no fallback, and overridden by whichever surface the field lands on:
+    // a glass panel re-points --field-border at $line-glass, because
+    // $line-strong is 2.4:1 on glass and a field's border is, by
+    // definition, the only thing that says the field exists.
+    //
+    // --field-bg stays OPAQUE at every level. The floating-label pill is
+    // painted with it and sits across the field's own top border; at 92%
+    // that border shows through the pill as a scar.
+    --field-bg: #{$ink-2};
+    --field-border: #{$line-strong};
 }
 
 html {
@@ -49,8 +74,20 @@ html {
 // Alpine hides these until it has booted.
 [x-cloak] { display: none !important; }
 
+// The page colour moves up to html so it is the canvas that is painted;
+// body::before below then lays the ambient over it without body having to
+// paint anything itself.
+//
+// And body must NOT paint it too. CSS Backgrounds §2.11.2: body's background
+// only propagates to the canvas while the root's own is transparent. With a
+// colour on html the propagation stops, body becomes an ordinary in-flow
+// block, and its background is painted at step 4 of the root stacking context
+// — i.e. ON TOP of step 3, which is where every z-index: -1 layer of the back
+// office lives: body.admin::before (the ambient) and .admin-panel::after (the
+// whole glass surface of every panel). A `background-color` here erases both.
+html { background-color: $ink; }
+
 body {
-    background-color: $ink;
     color: $paper;
     font-family: $font-body;
     font-size: $fs-body;
@@ -88,10 +125,16 @@ a {
 
 // --- Focus ---------------------------------------------------
 // One visible treatment everywhere, never removed.
+//
+// No `border-radius` here. This rule sets the FOCUSED ELEMENT's own corners,
+// not the outline's, and it lands after every component partial at equal
+// weight: a 4px control squared off to 2px the moment it was tabbed to, and
+// the round chip over a page photograph (.preview-edit, border-radius: 50%)
+// turned into a square. An outline already follows the shape of the box it
+// surrounds, so there is nothing to correct.
 :focus-visible {
     outline: 2px solid $ember-hi;
     outline-offset: 2px;
-    border-radius: 2px;
 }
 
 .skip-link {
@@ -99,7 +142,11 @@ a {
     left: 50%;
     top: 0;
     transform: translate(-50%, -120%);
-    z-index: 100;
+    // .admin-topbar is sticky at 1030 and the link lands at top: 0, left: 50%
+    // — i.e. exactly underneath it. At 100 the focused skip link is painted
+    // behind the header, which is the same as not having one. Above the
+    // Bootstrap tooltip layer (1080) so nothing can cover it.
+    z-index: $z-skip;
     background: $ember;
     color: $ink;
     font-weight: 600;
@@ -109,6 +156,71 @@ a {
     &:focus {
         transform: translate(-50%, 0);
         color: $ink;
+    }
+}
+
+// =============================================================
+// Ambient — the back office only
+// =============================================================
+// Four layers: three heavily diluted ember pools and one 168deg linear
+// that walks the page from #17140F at the top left to #100E0C at the
+// bottom right. No pool goes above .055, and none of the three is
+// anchored under the reading area — they sit at -6%, 8% and 108%. The
+// brightest point of the ambient composes to #201711; the L1 veil over
+// it gives #171310, where $paper-2 still measures 7.6:1.
+//
+// `position: fixed` and NOT `background-attachment: fixed`. The second
+// re-samples the background on the same element as the content at every
+// scroll frame; the first produces one viewport-sized composited layer,
+// rasterised once, that the scroll simply leaves in place while the
+// document slides over it. Repaint cost while scrolling: zero. No
+// `will-change` — `fixed` plus a negative z-index has already made the
+// layer, and will-change would only pin it forever for no gain.
+//
+// It lives on body and NOT on .admin-shell, for two reasons that are
+// both about not breaking something later. .admin-shell is display:flex,
+// where a ::before is a flex item the moment it stops being out of flow.
+// And .admin-shell is the ancestor of the position:fixed drawer: the day
+// somebody puts a `filter`, a `transform` or a `will-change: transform`
+// on it to animate the ambient, .admin-shell becomes the containing
+// block and the drawer stops being anchored to the viewport. Keeping the
+// ambient off the shell makes that mistake impossible to make.
+body.admin {
+    // Removing `background-color` from the rule above is not enough: Bootstrap's
+    // reboot still hands body `background-color: var(--bs-body-bg)`, and
+    // --bs-body-bg is $ink. With a colour on html the canvas propagation is off
+    // (see the note above), so that declaration paints an opaque #141210 as an
+    // ordinary in-flow block — at step 4 of the root stacking context, i.e. on
+    // top of ::before below at step 3. Measured: every pixel of the back office
+    // came back a flat #141210 and the ambient never showed. Transparent here,
+    // and only here, because html already paints the page colour for everyone
+    // and only the back office has an ambient to reveal.
+    background-color: transparent;
+
+    &::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background:
+            // The main pool, under the bar, on the rail side.
+            radial-gradient(1100px 720px at 14% -6%,
+                rgba($ember, 0.055) 0%, rgba($ember, 0) 62%),
+            // A counter-light top right, so the bar is not symmetrical.
+            radial-gradient(900px 620px at 92% 8%,
+                rgba($ember-hi, 0.036) 0%, rgba($ember-hi, 0) 58%),
+            // Low embers: their only job is to stop the foot of a long
+            // list from becoming a dead flat.
+            radial-gradient(1300px 900px at 62% 108%,
+                rgba($ember-lo, 0.045) 0%, rgba($ember-lo, 0) 66%),
+            linear-gradient(168deg, #17140F 0%, #141210 46%, #100E0C 100%);
+    }
+
+    // Forced colours takes the palette back; an ambient wash there is
+    // noise the OS did not ask for.
+    @media (forced-colors: active) {
+        &::before { display: none; }
     }
 }
 
@@ -270,10 +382,72 @@ a {
 }
 
 // =============================================================
+// Interaction utilities
+// =============================================================
+// Emitted here, after every component partial, and nowhere else. That
+// position is the point: at equal specificity these win on source
+// order, so `.tr-leave` can override a component's own `transition`
+// line without an !important.
+//
+// The Alpine vocabulary. The six attributes always go in this order:
+//   x-transition:enter="tr-enter"        held for the whole entrance
+//   x-transition:enter-start="tr-from"   one frame, at the start
+//   x-transition:enter-end="tr-to"       set at the end, then removed
+//   x-transition:leave="tr-leave"
+//   x-transition:leave-start="tr-to"
+//   x-transition:leave-end="tr-from"
+// Entering on $ease-out, leaving on $ease-in and shorter: a thing that
+// arrives settles, a thing that leaves goes.
+//
+// .opacity-0 / .opacity-100 are NOT defined here — Bootstrap's utility
+// API already emits them. Use those for an opacity-only transition.
+
+.tr-enter { transition: opacity $d-base $ease-out, transform $d-base $ease-out; }
+.tr-leave { transition: opacity $d-quick $ease-in, transform $d-quick $ease-in; }
+.tr-from  { opacity: 0; transform: translateY(-4px) scale(0.97); }
+.tr-to    { opacity: 1; transform: none; }
+
+// A chip that is born out of the right-hand edge of a button group:
+// .admin-panel__actions is margin-left: auto, so the group is anchored
+// right and grows leftwards. Nothing already on screen moves.
+.tr-origin-end { transform-origin: 100% 50%; }
+.tr-from-chip  { opacity: 0; transform: scale(0.94) translateX(6px); }
+
+// For a cross-fade of two mutually exclusive blocks in normal flow: the
+// one arriving waits for the one leaving, or the content under them
+// jumps by the difference in their heights.
+.delay-120 { transition-delay: 120ms; }
+
+// The class form of @mixin tap, for a control whose styles belong to
+// another agent's partial but whose markup is being written now.
+.u-tap { @include tap; }
+
+// A counter that runs 9 -> 10 inside a button changes the button's
+// width, and a width does not animate. Tabular figures remove the jitter.
+.u-tabular { font-variant-numeric: tabular-nums; }
+
+// =============================================================
 // Motion
 // =============================================================
 // One page-load moment on the hero lockup. Nothing animates on
 // scroll. Everything else is a hover or focus response.
+//
+// This block must stay the LAST rule the stylesheet emits. Components
+// are imported at the top of this file and _glass.scss above them, so
+// everything that declares a transition appears before it: these
+// !important declarations win on weight AND on source order. The
+// corollary is a rule for every other partial: never put !important on
+// transition-* or animation-*, or the last such declaration in the
+// source would beat this one.
+//
+// The inline styles Alpine (x-transition) and Bootstrap write are
+// normal declarations; an author !important beats them. Alpine then
+// reads back a computed duration of ~0 and finishes on the next frame.
+//
+// What survives here and what does not: the STATE is kept, the JOURNEY
+// is removed. Every hover colour, focus glow, is-selected, is-current
+// and open/closed state stays and stays instant. Every hover transform,
+// every stagger, every travelled distance goes.
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -283,6 +457,32 @@ a {
     *::after {
         animation-duration: 0.001ms !important;
         animation-iteration-count: 1 !important;
+        // Without this the upload stagger — min(i * 30ms, 360ms) —
+        // survives and leaves the thumbnails blank for a third of a second.
+        animation-delay: 0ms !important;
         transition-duration: 0.001ms !important;
+        // Without this the drawer's `visibility 0s linear $d-ample` keeps
+        // the closed rail in the tab order for 280ms after it is gone.
+        transition-delay: 0ms !important;
+        scroll-behavior: auto !important;
     }
+
+    // A duration of zero does not remove a transform, it makes it
+    // instant — and a button that snaps to 1.02 under the cursor is
+    // precisely what the setting is asking not to happen. :where() keeps
+    // the specificity at 0 so the !important, and not the selector, is
+    // what wins.
+    :where(a, button, label, summary, [role="button"], .btn, .admin-action,
+           .admin-gallery__item, .admin-switch__item, .file-upload) {
+        &:hover,
+        &:active,
+        &:focus-visible {
+            transform: none !important;
+            translate: none !important;
+            scale: none !important;
+        }
+    }
+
+    // Final state, no journey.
+    .modal.fade .modal-dialog { transform: none !important; }
 }

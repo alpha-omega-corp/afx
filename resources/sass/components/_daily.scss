@@ -62,11 +62,18 @@
     }
 }
 
+// The card: a label column on the left — the covered dish, the words, the
+// day — and the dishes on the right, each name run to its price by a dotted
+// leader, the way a slate on the wall would set them.
 .daily {
     position: relative;
-    padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.35rem, 3vw, 2.5rem);
+    display: grid;
+    grid-template-columns: minmax(13rem, 17rem) 1fr;
+    gap: clamp(1.5rem, 3.5vw, 3rem);
+    align-items: center;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.35rem, 3vw, 2.75rem);
     border: 1px solid rgba($ember, 0.34);
-    border-radius: $r-panel;
+    border-radius: $r-panel * 2;
     // Firelight caught in the top-left corner of a raised surface.
     background:
         radial-gradient(130% 150% at 0% 0%,
@@ -77,7 +84,7 @@
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
     overflow: hidden;
 
-    // The shine, part two: one ember hairline along the top edge, brightest in the
+    // The shine: one ember hairline along the top edge, brightest in the
     // middle and gone by both corners. A border cannot fade out; this can.
     &::before {
         content: "";
@@ -90,57 +97,102 @@
             rgba($ember, 0) 100%);
     }
 
-    &__eyebrow {
-        margin: 0 0 clamp(0.9rem, 2vw, 1.25rem);
-        font-family: $font-body;
-        font-size: 0.75rem;
-        font-weight: 700;
-        line-height: 1.4;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: $ember-hi;
+    @include media-breakpoint-down(lg) {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
     }
 
-    // The day, after the label and quieter than it: the ember word is what
-    // the eye is meant to land on. Kept on the same line where there is room
-    // and allowed to wrap where there is not.
-    &__date {
+    // --- The label column ------------------------------------
+    &__head {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding-right: clamp(1.5rem, 3.5vw, 3rem);
+        border-right: 1px solid rgba($paper, 0.09);
+
+        @include media-breakpoint-down(lg) {
+            flex-direction: row;
+            align-items: center;
+            padding: 0 0 1.25rem;
+            border-right: 0;
+            border-bottom: 1px solid rgba($paper, 0.09);
+        }
+    }
+
+    &__art {
+        width: clamp(5rem, 7vw, 6.5rem);
+        flex: none;
         color: $paper-2;
-        white-space: nowrap;
 
-        &::before {
-            content: "·";
-            margin-inline: 0.5rem;
-            color: rgba($paper-2, 0.55);
-        }
+        @include media-breakpoint-down(lg) { width: 4.75rem; }
+    }
 
-        // A phone has no room for both on one line, and letting them wrap
-        // leaves the separator stranded at the head of the second line. The
-        // date takes its own line on purpose instead, and drops the dot with
-        // it — there is nothing left for it to separate.
-        @include media-breakpoint-down(md) {
-            display: block;
-            margin-top: 0.3rem;
+    &__when {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0 0 0.6rem;
+        padding: 0.3rem 0.75rem;
+        border: 1px solid rgba($paper, 0.16);
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        color: $paper-2;
 
-            &::before { content: none; }
+        &::first-letter { text-transform: uppercase; }
+
+        &.is-today {
+            border-color: rgba($ember, 0.55);
+            background: rgba($ember, 0.12);
+            color: $ember-hi;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
         }
     }
 
+    // A live dot: the card is today's, not a standing offer.
+    &__pulse {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: $ember-hi;
+        box-shadow: 0 0 0 0 rgba($ember-hi, 0.6);
+        animation: daily-pulse 2.4s $ease-out infinite;
+    }
+
+    &__eyebrow {
+        margin: 0;
+        font-family: $font-heading;
+        font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+        font-weight: $fw-head;
+        line-height: 1.1;
+        color: $paper;
+
+        @include media-breakpoint-down(md) { font-weight: $fw-head-sm; }
+    }
+
+    &__date {
+        margin: 0.4rem 0 0;
+        font-size: $fs-small;
+        color: $paper-2;
+
+        &::first-letter { text-transform: uppercase; }
+    }
+
+    // --- The dishes ------------------------------------------
     &__list {
         list-style: none;
         margin: 0;
         padding: 0;
     }
 
-    // One dish: a name, a price on the same baseline, and a line about it
-    // underneath. A card can hold a whole meal, and the courses are separated
-    // by the same hairline that sets the closing note apart — quieter than a
-    // border, enough to stop two names reading as one.
+    // Name, leader, price on one baseline; a line about it underneath.
     &__dish {
         display: grid;
-        grid-template-columns: 1fr auto;
+        grid-template-columns: auto 1fr auto;
         align-items: baseline;
-        column-gap: clamp(1.25rem, 3vw, 2.5rem);
+        column-gap: 0.85rem;
 
         + .daily__dish {
             margin-top: clamp(0.9rem, 2vw, 1.35rem);
@@ -152,58 +204,54 @@
     &__title {
         grid-column: 1;
         margin: 0;
-        font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+        font-size: clamp(1.5rem, 2.4vw, 2rem);
         font-weight: $fw-head;
         line-height: 1.15;
 
         @include media-breakpoint-down(md) { font-weight: $fw-head-sm; }
     }
 
+    &__leader {
+        grid-column: 2;
+        min-width: 1.5rem;
+        border-bottom: 2px dotted rgba($paper, 0.22);
+        transform: translateY(-0.3em);
+    }
+
     // Lining figures, and never wrapped: the price is read at a glance or
     // it is not read at all.
     &__price {
-        grid-column: 2;
+        grid-column: 3;
         margin: 0;
         font-family: $font-body;
         font-size: clamp(1.125rem, 1.6vw, 1.375rem);
-        font-weight: 600;
+        font-weight: 700;
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
-        color: $paper;
+        color: $ember-hi;
     }
 
     &__currency {
         margin-right: 0.3rem;
         color: $paper-2;
         font-size: $fs-small;
-        font-weight: 400;
+        font-weight: 500;
     }
 
     &__description {
         grid-column: 1 / -1;
-        margin: 0.5rem 0 0;
+        margin: 0.4rem 0 0;
         max-width: 56ch;
         color: $paper-2;
     }
 
-    // Three courses at the size a single dish is set in would be a card that
-    // fills the screen and a name that outshouts the label above it. A meal
-    // steps down; one dish keeps the headline.
-    &--several &__title {
-        font-size: clamp(1.25rem, 1.9vw, 1.625rem);
-    }
+    // A meal steps down; one dish keeps the headline.
+    &--several &__title { font-size: clamp(1.25rem, 1.9vw, 1.625rem); }
+    &--several &__price { font-size: clamp(1rem, 1.3vw, 1.125rem); }
+    &--several &__description { font-size: $fs-small; }
 
-    &--several &__price {
-        font-size: clamp(1rem, 1.3vw, 1.125rem);
-    }
-
-    &--several &__description {
-        font-size: $fs-small;
-    }
-
-    // A phone cannot hold a name and a price on one line: "Souris d'agneau
-    // confite au Pinot Noir de Founex" would be three words a line beside
-    // five characters. The price drops under the name instead.
+    // A phone cannot hold a long name, a leader and a price on one line:
+    // the price drops under the name and the leader goes.
     @include media-breakpoint-down(md) {
         &__dish { grid-template-columns: 1fr; }
 
@@ -211,7 +259,8 @@
         &__price,
         &__description { grid-column: 1; }
 
-        &__price { margin-top: 0.55rem; }
+        &__leader { display: none; }
+        &__price { margin-top: 0.4rem; }
     }
 
     // Staff only, and only until there is a dish: the card's own empty state,
@@ -227,4 +276,10 @@
 
         &::before { display: none; }
     }
+}
+
+@keyframes daily-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba($ember-hi, 0.6); }
+    70%  { box-shadow: 0 0 0 8px rgba($ember-hi, 0); }
+    100% { box-shadow: 0 0 0 0 rgba($ember-hi, 0); }
 }

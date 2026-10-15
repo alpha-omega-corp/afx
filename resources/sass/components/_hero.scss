@@ -241,3 +241,92 @@
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: none; }
 }
+
+// =============================================================
+// Hero chip — today's dish, named above the title on the home page.
+// Glass over the photograph, one ember label, the dish in paper.
+// =============================================================
+
+.hero__eyebrow { margin-bottom: clamp(1rem, 2.5vw, 1.5rem); }
+
+.hero-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 100%;
+    min-height: $tap;
+    padding: 0.35rem 0.9rem 0.35rem 0.4rem;
+    border: 1px solid rgba($ember, 0.45);
+    border-radius: 1.5rem;
+    background: rgba($ink, 0.55);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: $paper;
+    font-size: $fs-small;
+    transition: border-color $t-fast, background-color $t-fast;
+
+    &:hover,
+    &:focus-visible {
+        border-color: $ember-hi;
+        background: rgba($ink, 0.75);
+        color: $paper;
+
+        .hero-chip__go { transform: translateY(2px); }
+    }
+
+    &__label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        flex: none;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        background: $ember;
+        color: $ink;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    &__dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: $ink;
+        animation: hero-chip-blink 2s ease-in-out infinite;
+    }
+
+    &__dish {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 500;
+
+        // A phone has room for two words beside the label: the dish gets
+        // two lines instead of an ellipsis after its first syllable.
+        @include media-breakpoint-down(sm) {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            white-space: normal;
+            line-height: 1.3;
+        }
+    }
+
+    &__more { flex: none; margin-left: -0.4rem; color: $ember-hi; font-weight: 700; }
+
+    &__go {
+        width: 16px;
+        height: 16px;
+        flex: none;
+        color: $ember-hi;
+        transition: transform $t-fast;
+    }
+}
+
+@keyframes hero-chip-blink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+}

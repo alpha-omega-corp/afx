@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <title>Une planche du terroir : fromages, viande séchée, cornichons et pain</title>
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.48" r="0.5">
+      <stop offset="0" stop-color="#F26B1D" stop-opacity="0.28"></stop>
+      <stop offset="1" stop-color="#F26B1D" stop-opacity="0"></stop>
+    </radialGradient>
+    <g id="slice"><circle r="46" fill="#9c3b3b"></circle><path d="M-30 -12 C-10 -20 12 -6 30 -16 M-26 18 C-8 8 14 22 28 12" stroke="#e8c1b8" stroke-width="6" fill="none" stroke-linecap="round"></path></g>
+    <g id="pickle">
+      <path d="M-52 0 C-50 -20 50 -20 52 0 C50 20 -50 20 -52 0 Z" fill="#5f7330"></path>
+      <path d="M-36 -6 C-12 -12 12 -12 36 -6" stroke="#8a9d4a" stroke-width="5" fill="none" stroke-linecap="round"></path>
+      <g fill="#7d9142"><circle cx="-20" cy="6" r="3"></circle><circle cx="4" cy="8" r="3"></circle><circle cx="26" cy="4" r="3"></circle></g>
+    </g>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 0.08"></feFuncA></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1200" height="900" fill="#1E1B18"></rect>
+  <circle cx="600" cy="450" r="440" fill="url(#glow)"></circle>
+  <rect x="148" y="188" width="920" height="560" rx="46" fill="#000" fill-opacity="0.35"></rect>
+  <rect x="130" y="170" width="920" height="560" rx="46" fill="#9a6d45"></rect>
+  <path d="M1050 390 H1110 C1130 390 1130 510 1110 510 H1050 Z" fill="#9a6d45"></path>
+  <circle cx="1098" cy="450" r="14" fill="#1E1B18"></circle>
+  <g stroke="#7f5836" stroke-width="4" fill="none">
+    <path d="M160 260 C400 240 700 280 1020 250"></path><path d="M160 420 C420 400 720 440 1020 410"></path><path d="M160 600 C420 580 720 620 1020 590"></path>
+  </g>
+  <path d="M220 250 L470 300 L260 430 Z" fill="#f1d58a" stroke="#d8b25a" stroke-width="10" stroke-linejoin="round"></path>
+  <path d="M250 300 L420 330 L290 400 Z" fill="#f6e2a6" fill-opacity="0.6"></path>
+  <path d="M300 470 L520 520 L330 650 Z" fill="#f6e6b6" stroke="#e0c98a" stroke-width="10" stroke-linejoin="round"></path>
+  <g>
+    <use href="#slice" x="620" y="300"></use><use href="#slice" x="690" y="330"></use><use href="#slice" x="760" y="300"></use>
+    <use href="#slice" x="830" y="330"></use>
+  </g>
+  <use href="#pickle" x="640" y="520" transform="rotate(-20 640 520)"></use>
+  <use href="#pickle" x="700" y="560" transform="rotate(15 700 560)"></use>
+  <use href="#pickle" x="620" y="600" transform="rotate(40 620 600)"></use>
+  <g>
+    <ellipse cx="880" cy="560" rx="90" ry="58" fill="#c98c4e" transform="rotate(-10 880 560)"></ellipse>
+    <ellipse cx="880" cy="560" rx="72" ry="44" fill="#ecd3a3" transform="rotate(-10 880 560)"></ellipse>
+    <ellipse cx="950" cy="620" rx="90" ry="58" fill="#b87a3e" transform="rotate(12 950 620)"></ellipse>
+    <ellipse cx="950" cy="620" rx="72" ry="44" fill="#e7cb96" transform="rotate(12 950 620)"></ellipse>
+  </g>
+  <g fill="#7a3a55" stroke="#5a2a40" stroke-width="3">
+    <circle cx="520" cy="640" r="20"></circle><circle cx="550" cy="660" r="20"></circle><circle cx="530" cy="682" r="20"></circle><circle cx="560" cy="626" r="20"></circle>
+  </g>
+  <rect width="1200" height="900" filter="url(#grain)"></rect>
+</svg>

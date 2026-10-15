@@ -56,7 +56,13 @@ class MenuController extends Controller
             $item->price = $dish['price'];
             $item->save();
 
-            Translations::write($item, ['fr' => $dish['fr'], 'en' => $dish['en']]);
+            // A null 'en' is dropped rather than passed: Translations reads a
+            // missing language as "not managed here", and a present-but-empty
+            // one as "translate this for me".
+            Translations::write($item, array_filter([
+                'fr' => $dish['fr'],
+                'en' => $dish['en'],
+            ], fn ($given) => $given !== null));
         }
 
         return redirect()->back();
@@ -76,10 +82,10 @@ class MenuController extends Controller
      * Dishes dropped from the card go back to being ordinary dishes on the
      * carte. Nothing here deletes anything.
      *
-     * This editor is French-only: it is written in a hurry, most days, and
-     * the English follows on its own. Because it sends no English at all,
-     * rather than sending it blank, any English a person has corrected on the
-     * carte survives being edited from here — see App\Support\Translations.
+     * Both languages are written from here, as they are on the carte: this is
+     * now the one place a dish on the card is edited, since the sections below
+     * it no longer offer those dishes. A blank English field asks for a
+     * translation — see App\Support\Translations.
      */
     public function daily(DailySpecialRequest $request): RedirectResponse
     {
@@ -107,7 +113,13 @@ class MenuController extends Controller
             $item->daily_position = $show ? $position : null;
             $item->save();
 
-            Translations::write($item, ['fr' => $dish['fr']]);
+            // A null 'en' is dropped rather than passed: Translations reads a
+            // missing language as "not managed here", and a present-but-empty
+            // one as "translate this for me".
+            Translations::write($item, array_filter([
+                'fr' => $dish['fr'],
+                'en' => $dish['en'],
+            ], fn ($given) => $given !== null));
 
             $kept[] = $item->getKey();
         }

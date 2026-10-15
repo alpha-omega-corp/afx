@@ -1,26 +1,139 @@
 // =============================================================
-// Admin surfaces — one panel shape, one action shape, reused by
-// every screen so the same button always means the same thing.
+// Admin components — everything the shell contains.
+//
+// One panel shape, one action shape, one metric shape, reused by every
+// screen so the same object always means the same thing. The surface
+// ladder and the interaction grammar come from _glass.scss and are never
+// rewritten here: no `backdrop-filter`, no `transition: all`, no
+// `!important` on transition-* or animation-* (app.scss's reduced-motion
+// block is the last rule of the sheet and has to keep winning).
+//
+// Two writing rules that come up on nearly every block below:
+//
+//   1. A mixin that emits nested at-rules — every glass-* surface,
+//      `tappable`, `tap`, `collapsible` — goes LAST among the simple
+//      declarations of its block. Anything simple written after it would
+//      sit below a nested rule and trip Sass's mixed-decls deprecation.
+//   2. When two such mixins have to meet on one selector, the second one
+//      goes inside a bare `& { … }`. That opens a fresh style rule, so
+//      its declarations are the first in their own block and nothing
+//      follows a nested one.
 // =============================================================
 
+// = lighten($danger, 16%). Written flat because Sass's colour functions are
+// deprecated and calling one here would put a new warning in our own partial.
+// 5.7:1 on a card, 4.6:1 on the tinted hover — AA at $fs-small either way,
+// which plain $danger (3.1:1 on a card) is not.
+$admin-danger-text: #E07A66;
+
+// =============================================================
+// Panel — the default surface, and the bento cell
+// =============================================================
+// The glass lives on a layer of its own (::after at z-index -1) and not on
+// the panel box. Three reasons, all structural:
+//
+//   1. `backdrop-filter` makes its element the containing block for every
+//      position: fixed descendant, exactly as `transform` does — and this
+//      panel is full of them. menu.blade.php declares one <x-modal.index>
+//      per section INSIDE the panel that lists them, opening.blade.php one
+//      per closure. Blurring the panel itself would anchor those dialogs to
+//      the panel and then `overflow: hidden` would clip them away.
+//   2. A transform on a DESCENDANT of a filtered element invalidates the
+//      filtered region: every hovered button in the panel would replay a
+//      full-panel blur at 60Hz. Same argument, same fix, as the topbar.
+//
+// `position: relative` and NOTHING that makes a stacking context — no
+// z-index, no isolation, no opacity. This is the third reason the filter had
+// to leave the panel box, and the sharpest one: a stacking context here
+// would trap those same dialogs at the panel's own level, while Bootstrap
+// appends .modal-backdrop to <body> at 1050. The backdrop would then paint
+// over a dialog that can no longer reach 1055, and the modal would open
+// behind its own scrim.
+//
+// The layer's z-index: -1 therefore resolves against the root, where it
+// lands directly above body::before — the ambient wash it is meant to sit
+// on, and the thing its blur is meant to sample. Every ancestor between the
+// two is transparent by design, so nothing occludes it on the way.
 .admin-panel {
-    background-color: $ink-2;
-    border: 1px solid $line;
-    border-radius: $r-panel;
+    position: relative;
+    // The 12px radius has to clip the header band and any edge-to-edge child
+    // (the hours preview, a page list). Safe for the modals inside: without a
+    // filter or a transform on this box, overflow never clips a fixed
+    // descendant.
     overflow: hidden;
+    border-radius: $r-glass;
+    // The cast belongs to the panel box, because the layer's own outer shadow
+    // would be eaten by that overflow. Everything else — tints, borders,
+    // inset edges, fallbacks — stays on the layer.
+    box-shadow:
+        0 1px 0 0 rgba($g-base, 0.55),
+        0 2px 6px -4px rgba(0, 0, 0, 0.65),
+        0 16px 36px -24px rgba(0, 0, 0, 0.85);
+    // Restated here rather than inherited from the layer: a custom property
+    // set on ::after is not visible to the panel's children, and every field
+    // inside needs the lighter border (G6).
+    --field-border: #{$line-glass};
+}
+
+// The tones. Each one re-includes its whole surface rather than only the
+// blur: the mixins ship their own reduced-transparency and forced-colors
+// branches, and those have to be emitted after the base rule's, not before,
+// or a reader asking for less transparency would keep the blur.
+.admin-panel::after { @include glass-card($blur: false); }
+
+// --glass is the default and the only tone that blurs. --flat is the same
+// surface with the layer left flat: a panel taller than a viewport, or one
+// sitting inside a modal, where filtering an 86% flat buys a composited
+// layer and nothing else.
+.admin-panel--glass::after { @include glass-card; }
+.admin-panel--flat::after  { @include glass-card($blur: false); }
+
+// The one heated surface of a screen. glass-ember-edge owns ::before — hence
+// the surface layer being ::after and not the other way round.
+.admin-panel--ember {
+    @include glass-ember-edge;
+
+    &::after { @include glass-ember; }
+}
+
+.admin-panel--ember {
+    box-shadow:
+        0 16px 40px -26px rgba(0, 0, 0, 0.88),
+        0 6px 28px -20px rgba($ember, 0.34);
+}
+
+// The geometry of the surface layer, emitted after every tone: glass-ember
+// opens with `position: relative`, which would otherwise take the layer out
+// of the corner it is meant to fill.
+.admin-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
 }
 
 .admin-panel__header {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 1rem;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid $line;
-    background-color: rgba($ink, 0.45);
+    gap: 0.75rem 1rem;
+    padding: 1.15rem 1.35rem;
+    @include glass-veil(bottom, $blur: false);
+
+    @include media-breakpoint-up(md) { padding: 1.25rem 1.5rem; }
 }
 
-.admin-panel__heading { min-width: 0; flex: 1 1 20rem; }
+// The ember radial is anchored at 0% 0% — the panel's top-left corner, which
+// is exactly where the header band sits. At 74% ink the band would put the
+// fire out under the one heading that has to carry it, so the ember panel
+// keeps the rule and drops the veil.
+.admin-panel--ember .admin-panel__header { background: none; }
+
+.admin-panel__heading {
+    min-width: 0;
+    flex: 1 1 18rem;
+}
 
 .admin-panel__title {
     margin: 0;
@@ -35,67 +148,230 @@
 .admin-panel__description {
     margin: 0.35rem 0 0;
     font-size: $fs-small;
+    line-height: 1.45;
     color: $paper-2;
 }
 
-// Actions never sit loose in the body: they live here, together.
+// Actions never sit loose in the body: they live here, together, anchored
+// right — which is also why a chip that appears on selection grows out of
+// the right-hand edge and moves nothing that is already on screen.
 .admin-panel__actions {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.5rem;
     margin-left: auto;
 }
 
-.admin-panel__body--padded { padding: 1.5rem; }
+.admin-panel__body { min-width: 0; }
 
-// --- Actions -------------------------------------------------
-// Intent is carried by colour and never by position alone.
+.admin-panel__body--padded {
+    padding: 1.15rem 1.35rem 1.35rem;
+
+    @include media-breakpoint-up(md) { padding: 1.5rem; }
+}
+
+// =============================================================
+// Metrics — the band that opens a screen
+// =============================================================
+// Three or four numbers, read in one pass, before any panel has to be. It is
+// always the first cell of the bento and always full width.
+//
+// auto-fit and not a fixed count: the same list carries one tile on /pages
+// and three on /opening. minmax(min(100%, 12rem), 1fr) rather than
+// minmax(12rem, 1fr) — on a 320px phone the plain form would demand a track
+// wider than the cell and push the grid off the side of the page.
+.admin-metrics {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 0.65rem;
+
+    @include media-breakpoint-up(lg) { gap: 1rem; }
+}
+
+// A band of one is not a band. /pages and /gallery carry a single number,
+// and auto-fit collapses the empty tracks under it: the tile stretched the
+// whole width of the cell and turned a count into a banner. Capped, it is
+// the same object it is on the screens that have three of them, and the
+// eye reads a tile rather than a strip.
+//
+// From md only: on a phone every cell is full width and a lone tile pulled
+// in by a few pixels would read as a misalignment, not as a tile.
+.admin-metric:only-child {
+    @include media-breakpoint-up(md) { max-width: 20rem; }
+}
+
+// No blur, ever: these repeat, and four composited layers to filter a
+// gradient nobody sees move is the definition of the budget being spent
+// badly.
+.admin-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+    padding: 0.95rem 1.1rem;
+    @include glass-card($blur: false, $radius: $r-metric);
+}
+
+// The state tiles. The accent is a channel of its own so the dot, and only
+// the dot, carries it: an open/closed state is never ember (a brand colour
+// is not a state colour) and never colour alone (§9) — the value spells the
+// word out beside it.
+.admin-metric--ok   { --metric-accent: #{$success}; }
+.admin-metric--shut { --metric-accent: #{$danger}; }
+
+// The one metric tile that may be heated, for a screen whose L3 is not spent
+// elsewhere. Never used on /opening, where the status panel is the L3.
+.admin-metric--live {
+    --metric-accent: #{$ember-hi};
+    @include glass-ember($blur: false, $radius: $r-metric);
+}
+
+.admin-metric__label {
+    margin: 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $paper-2;
+}
+
+.admin-metric__value {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-family: $font-heading;
+    font-size: 1.5rem;
+    line-height: 1.15;
+    color: $paper;
+    // A date and a count sit in the same band; without this they wobble
+    // against each other on every reload.
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-metric__note {
+    margin: 0;
+    font-size: $fs-small;
+    line-height: 1.4;
+    color: $paper-2;
+}
+
+// The dot exists only where an accent was declared, so a plain counter tile
+// never grows one.
+.admin-metric--ok .admin-metric__value::before,
+.admin-metric--shut .admin-metric__value::before,
+.admin-metric--live .admin-metric__value::before {
+    content: "";
+    flex: none;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background-color: var(--metric-accent);
+    box-shadow: 0 0 10px -1px var(--metric-accent);
+}
+
+// =============================================================
+// Actions
+// =============================================================
+// Intent is carried by colour and never by position alone. The geometry is
+// the house recipe: grow a little under the cursor, sink under the press,
+// let go on the long ease — and only where there is a fine pointer, because
+// on touch :hover sticks after a tap and leaves the button scaled.
 .admin-action {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     padding: 0.55rem 0.9rem;
+    // A labelled action grows to the touch floor on its own; --compact keeps
+    // its 36px and gets the invisible halo instead.
+    min-height: $tap;
     border: 1px solid transparent;
     border-radius: $r-control;
+    background-color: transparent;
+    font-family: $font-body;
     font-size: $fs-small;
     font-weight: 600;
     line-height: 1;
+    text-align: left;
     cursor: pointer;
-    transition: background-color $t-fast, border-color $t-fast, color $t-fast;
+    @include tappable;
 
-    &--compact { padding: 0.5rem; }
+    &--compact {
+        padding: 0.5rem;
+        min-height: 0;
+        // 36px on screen, 44px under a thumb. The panels that hold these keep
+        // >= 0.75rem of padding around them so the halo is never clipped.
+        @include tap;
+    }
 
     &--primary {
         background-color: $ember;
         border-color: $ember;
+        // Ink on ember: 6.1:1. $paper on ember is 2.6:1 and fails.
         color: $ink;
 
-        &:hover, &:focus-visible { background-color: $ember-hi; border-color: $ember-hi; }
+        @include hoverable {
+            &:hover { background-color: $ember-hi; border-color: $ember-hi; }
+        }
+
+        &:active { background-color: $ember-lo; border-color: $ember-lo; }
     }
 
     &--neutral {
-        background-color: transparent;
-        border-color: $line-strong;
+        // The field border, not $line-strong: on a glass panel the glass
+        // repoints --field-border at $line-glass, and an outlined control has
+        // nothing but its border to say that it is one (G6).
+        border-color: var(--field-border);
         color: $paper;
 
-        &:hover, &:focus-visible { border-color: $ember; color: $ember; }
+        @include hoverable {
+            &:hover {
+                border-color: $ember;
+                color: $ember-hi;
+                background-color: rgba($ember, 0.08);
+            }
+        }
+
+        &:active { border-color: $ember-lo; background-color: rgba($ember, 0.14); }
     }
 
     &--quiet {
-        background-color: transparent;
         border-color: transparent;
         color: $paper-2;
 
-        &:hover, &:focus-visible { color: $paper; background-color: rgba($paper, 0.08); }
+        @include hoverable {
+            &:hover { color: $paper; background-color: rgba($paper, 0.08); }
+        }
+
+        &:active { background-color: rgba($paper, 0.12); }
     }
 
     &--danger {
-        background-color: transparent;
-        border-color: rgba($danger, 0.6);
-        color: lighten($danger, 12%);
+        border-color: rgba($danger, 0.55);
+        color: $admin-danger-text;
 
-        &:hover, &:focus-visible { background-color: $danger; border-color: $danger; color: $paper; }
+        @include hoverable {
+            &:hover {
+                border-color: $danger;
+                background-color: rgba($danger, 0.22);
+                color: $admin-danger-text;
+            }
+        }
+
+        // No deeper fill on the press: past ~0.24 the tint takes the label
+        // under 4.5:1, and the sink already says the button was hit.
+        &:active { border-color: $danger; background-color: rgba($danger, 0.22); }
     }
+
+    // On a button the glow is a keyboard answer only. Left on after a mouse
+    // click it is noise, hence the second line.
+    &:focus-visible { @include focus-glow-button; }
+    &:focus:not(:focus-visible) { box-shadow: none; }
 }
 
 .admin-action__icon {
@@ -104,22 +380,77 @@
     flex: 0 0 18px;
 }
 
-// --- Shared states -------------------------------------------
+// A count that runs 9 -> 10 inside a button changes the button's width, and
+// width does not animate.
+.admin-action__label { font-variant-numeric: tabular-nums; }
+
+// =============================================================
+// Shared states
+// =============================================================
 .admin-empty {
     margin: 0;
-    padding: 2.5rem 1.5rem;
+    padding: 2.25rem 1.5rem;
     text-align: center;
     color: $paper-2;
     font-size: $fs-small;
+    line-height: 1.5;
 }
 
 .admin-confirm {
     margin: 0;
     color: $paper;
+    line-height: 1.5;
+}
+
+// The line of explanation at the head of a form, where a field's own label
+// has no room to say why it may be left blank. A hollow rather than plain
+// copy: it is an aside, and an inlay is what an aside looks like in this
+// system.
+.admin-hint {
+    margin: 0 0 1.25rem;
+    padding: 0.75rem 0.9rem;
+    color: $paper-2;
+    font-size: $fs-small;
+    line-height: 1.5;
+    @include glass-inlay($r-control);
+
+    strong { color: $paper; font-weight: 600; }
+}
+
+.admin-notice {
+    margin: 0;
+    color: $paper-2;
+    font-size: $fs-small;
+
+    code {
+        display: inline-block;
+        padding: 0.35rem 0.6rem;
+        // G4: ember type this small, on glass, is $ember-hi. Plain $ember
+        // measures 4.2:1 on a card and fails.
+        color: $ember-hi;
+        font-size: 0.8125rem;
+        @include glass-inlay($r-control);
+    }
+}
+
+// A translation nobody has confirmed. Quiet — it is a note to staff, not a
+// warning — but present on every line that has one. Not ember: at 10px it
+// would be under the small-text floor whatever the shade.
+.admin-auto {
+    display: inline-block;
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.35rem;
+    border: 1px solid var(--field-border);
+    border-radius: 999px;
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $paper-2;
+    vertical-align: 1px;
 }
 
 // A switch inside a modal, for a field that is a yes or a no rather than a
-// value. The whole row is the target, not the 16px box.
+// value. The whole row is the target, not the box.
 .admin-check {
     display: flex;
     align-items: center;
@@ -128,78 +459,164 @@
     color: $paper;
     font-size: $fs-small;
     cursor: pointer;
+    user-select: none;
 
+    // The native box cannot animate and cannot take the field surface, so it
+    // is rebuilt: same element, same name, same x-model, a drawn tick.
     input {
-        width: 1.15rem;
-        height: 1.15rem;
+        position: relative;
+        appearance: none;
+        -webkit-appearance: none;
         flex: none;
-        accent-color: $ember;
+        width: 1.25rem;
+        height: 1.25rem;
+        margin: 0;
+        border: 1px solid var(--field-border);
+        border-radius: $r-control;
+        background-color: var(--field-bg);
+        cursor: pointer;
+        @include field-transition;
+
+        // Two borders of a rotated box: a tick with no asset behind it.
+        &::after {
+            content: "";
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            width: 0.3rem;
+            height: 0.6rem;
+            border: solid $ink;
+            border-width: 0 2px 2px 0;
+            transform: translate(-50%, -50%) rotate(45deg) scale(0.4);
+            opacity: 0;
+            transition: opacity $d-quick $ease-out, transform $d-base $ease-out;
+        }
+
+        &:checked {
+            background-color: $ember;
+            border-color: $ember;
+
+            &::after { opacity: 1; transform: translate(-50%, -50%) rotate(45deg) scale(1); }
+        }
+
+        &:focus-visible { @include focus-glow-button; }
+        &:focus:not(:focus-visible) { box-shadow: none; }
+
+        // appearance: none erases the control entirely when the OS takes the
+        // palette back; there it goes back to being the browser's checkbox.
+        @media (forced-colors: active) {
+            appearance: auto;
+            -webkit-appearance: auto;
+
+            &::after { content: none; }
+        }
+    }
+
+    @include hoverable {
+        &:hover input { border-color: $ember; }
     }
 }
 
-// --- Page header preview -------------------------------------
-.admin-preview {
-    display: grid;
-    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
-    gap: 1.5rem;
-    margin: 0;
-    padding: 1.5rem;
-
-    @include media-breakpoint-down(md) { grid-template-columns: 1fr; }
-}
-
-.admin-preview__image {
-    width: 100%;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
-    border-radius: $r-panel;
-    border: 1px solid $line;
-}
-
-.admin-preview__title {
-    margin: 0 0 0.5rem;
-    font-size: $fs-h3;
-}
-
-.admin-preview__text {
-    margin: 0;
-    color: $paper-2;
-    font-size: $fs-small;
-    max-width: $measure;
-}
-
-// --- Menu sections -------------------------------------------
+// =============================================================
+// Menu sections
+// =============================================================
 .admin-sections {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
+// A hollow in the panel, never a second card: two stacked paper tints
+// (.055 x 2) push $paper-2 from 7.0:1 to 6.3:1 and $ember under 5:1 (G1).
+//
+// No scale on hover either — a 1.02 on a 700px row overflows 7px and lands
+// on its neighbour's border. Colour only, which is also what keeps the
+// modals declared inside each section out of trouble: a transform here
+// would become their containing block.
 .admin-section {
-    border: 1px solid $line;
-    border-radius: $r-panel;
-    background-color: rgba($ink, 0.4);
+    transition:
+        background-color $d-base $ease-out,
+        border-color     $d-base $ease-out,
+        box-shadow       $d-base $ease-out,
+        opacity          $d-quick $ease-out;
+    @include glass-inlay;
+
+    @include hoverable {
+        &:hover { border-color: rgba($g-tint, 0.13); }
+    }
+}
+
+// Sortable marks three different nodes during a drag and they mean three
+// different things: .sortable-chosen is the row the pointer picked up,
+// .sortable-ghost is the placeholder showing where it would land, and
+// .sortable-drag is the clone that follows the pointer. `x-sort.ghost` keeps
+// the placeholder on screen, so it has to read as an empty slot.
+.admin-section.sortable-ghost {
+    border-style: dashed;
+    border-color: rgba($ember, 0.45);
+    background: rgba($ember, 0.05);
+
+    // Dimmed and not removed: taking the contents out would change the
+    // placeholder's height in the middle of the drag, and every row below it
+    // would jump.
+    > * { opacity: 0.2; }
+}
+
+.admin-section.sortable-chosen,
+.admin-section.sortable-drag {
+    cursor: grabbing;
+}
+
+// The travelling clone: lifted off the page, and the only thing on screen
+// the eye should be following.
+.admin-section.sortable-drag {
+    border-color: rgba($ember, 0.4);
+    box-shadow:
+        0 24px 48px -18px rgba(0, 0, 0, 0.92),
+        0 0 0 1px rgba($ember, 0.25);
 }
 
 .admin-section__header {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.9rem 1rem;
-    border-bottom: 1px solid $line;
+    gap: 0.6rem;
+    padding: 0.75rem 0.9rem;
+    border-bottom: 1px solid rgba($g-tint, 0.07);
 }
 
+// A drag handle is grabbed, not tapped, so it grows for real on a coarse
+// pointer instead of getting an invisible halo: the finger has to land on
+// the thing it is going to drag. No tappable — a handle that shrinks under
+// the press would fight the drag it just started.
 .admin-section__handle {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    margin-left: -0.25rem;
+    border-radius: $r-control;
     color: $paper-2;
     cursor: grab;
+    transition: color $d-quick $ease-out, background-color $d-quick $ease-out;
 
     svg { width: 20px; height: 20px; }
 
-    &:hover { color: $ember; }
+    @include hoverable {
+        &:hover { color: $ember-hi; background-color: rgba($paper, 0.07); }
+    }
+
+    &:active { cursor: grabbing; color: $ember-hi; }
+
+    @media (pointer: coarse) {
+        width: $tap;
+        height: $tap;
+        margin-left: -0.5rem;
+    }
 }
 
 .admin-section__title {
@@ -213,109 +630,134 @@
 
 .admin-section__actions {
     display: flex;
+    flex: none;
     gap: 0.35rem;
 }
 
+// The list is used twice: inside a section of the carte, and bare in the
+// review worklist, which is a panel body that already has padding of its
+// own. The inset therefore belongs to the section, not to the list.
 .admin-section__items {
     list-style: none;
     margin: 0;
-    padding: 0.5rem 1rem 0.9rem;
+    padding: 0;
 }
 
-// The French, the English and the price: three columns, so the eye can run
-// down the middle one and find the dishes nobody has read over yet.
+.admin-section > .admin-section__items { padding: 0.35rem 0.9rem 0.8rem; }
+
+// The dish line, in its narrow shape: the French and the price on one row,
+// the English under them. This is the shape the review worklist keeps at
+// every width — it is a 4-of-12 cell at xl and has no room for two
+// languages side by side.
 .admin-section__item {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: baseline;
-    gap: 0.25rem 1rem;
-    padding: 0.35rem 0;
+    gap: 0.1rem 1rem;
+    margin-inline: -0.4rem;
+    padding: 0.35rem 0.4rem;
+    border-radius: $r-control;
     font-size: $fs-small;
     color: $paper-2;
+    transition: background-color $d-quick $ease-out;
 
-    // Two languages side by side stop being two columns and start being four
-    // words a line long before a phone gets to them.
-    @include media-breakpoint-down(md) {
-        grid-template-columns: minmax(0, 1fr) auto;
+    @include hoverable {
+        &:hover { background-color: rgba($paper, 0.04); }
     }
 }
 
-.admin-section__item-title { color: $paper; }
+.admin-section__item-title { grid-column: 1; grid-row: 1; color: $paper; }
+.admin-section__item-price {
+    grid-column: 2;
+    grid-row: 1;
+    // G4: small ember type on glass is $ember-hi. $ember is 4.2:1 here.
+    color: $ember-hi;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+.admin-section__item-en { grid-column: 1 / -1; grid-row: 2; color: $paper-2; }
 
-.admin-section__item-en {
-    color: $paper-2;
+// Inside a section the panel is full width at every step, so the three
+// columns can run side by side and the eye can go down the middle one to
+// find what nobody has read over yet.
+.admin-section .admin-section__item {
+    @include media-breakpoint-up(md) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
 
-    @include media-breakpoint-down(md) {
-        grid-column: 1 / -1;
-        order: 3;
+        .admin-section__item-title { grid-column: 1; grid-row: 1; }
+        .admin-section__item-en    { grid-column: 2; grid-row: 1; }
+        .admin-section__item-price { grid-column: 3; grid-row: 1; }
     }
 }
 
-.admin-section__item-price { color: $ember; white-space: nowrap; }
-
-// A translation nobody has confirmed. Quiet — it is a note to staff, not a
-// warning — but present on every line that has one.
-.admin-auto {
-    display: inline-block;
-    margin-left: 0.4rem;
-    padding: 0.05rem 0.35rem;
-    border: 1px solid $line-strong;
-    border-radius: 999px;
-    font-size: 0.625rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: $paper-2;
-    vertical-align: 1px;
-}
-
-// A line of explanation at the head of a form, where a field's own label has
-// no room to say why it may be left empty.
-.admin-hint {
-    margin: 0 0 1.25rem;
-    color: $paper-2;
-    font-size: $fs-small;
-    line-height: 1.5;
-}
-
-// --- Gallery manager -----------------------------------------
+// =============================================================
+// Gallery manager
+// =============================================================
 .admin-gallery {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
     gap: 0.75rem;
 }
 
+// A tile IS a target, so it may light up and it may scale — 1.02 up, 0.98
+// down rather than the button's 0.95: a photo that shrinks by a twentieth
+// reads as a glitch, not as a press. No blur: sixty of these repeat.
 .admin-gallery__item {
     position: relative;
     display: block;
     aspect-ratio: 4 / 3;
-    border-radius: $r-panel;
     overflow: hidden;
-    border: 2px solid transparent;
     cursor: pointer;
-    transition: border-color $t-fast;
+    @include glass-card($blur: false, $radius: $r-panel);
 
-    &:hover { border-color: $line-strong; }
-    &.is-selected { border-color: $ember; }
-    &.is-selected .admin-gallery__mark { opacity: 1; }
-    &:focus-within { outline: 2px solid $ember-hi; outline-offset: 2px; }
+    & { @include tappable(1.02, 0.98); }
+
+    @include hoverable {
+        &:hover { @include glass-card-hover; }
+    }
+
+    &.is-selected {
+        border-color: $ember;
+        box-shadow:
+            0 0 0 1px rgba($ember, 0.55),
+            0 12px 28px -16px rgba($ember, 0.45);
+    }
+
+    &.is-selected .admin-gallery__mark {
+        opacity: 1;
+        transform: none;
+    }
+
+    // Last, and on purpose: same weight as .is-selected, so a selected tile
+    // that takes focus still shows the ring. The checkbox is opacity 0, which
+    // makes :focus-within the only thing a keyboard has to go on.
+    &:focus-within { @include focus-glow-button; }
 }
 
+// Opacity only — never display: none, visibility: hidden or [hidden]. Any of
+// them takes the box out of the tab order and :focus-within dies with it.
 .admin-gallery__checkbox {
     position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
     opacity: 0;
     pointer-events: none;
 }
 
 .admin-gallery__image {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
 }
 
+// The one place $ease-spring is allowed: the tick arrives with a fifth of a
+// bounce, which is what makes a selection feel confirmed rather than
+// recorded.
 .admin-gallery__mark {
     position: absolute;
     top: 0.5rem;
@@ -325,15 +767,17 @@
     border-radius: 50%;
     background-color: $ember;
     color: $ink;
+    box-shadow: 0 2px 10px -2px rgba(0, 0, 0, 0.7);
     opacity: 0;
-    transition: opacity $t-fast;
+    transform: scale(0.4);
+    transition: opacity $d-quick $ease-out, transform $d-base $ease-spring;
 
     svg { width: 16px; height: 16px; }
 }
 
 .admin-upload__previews {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 7rem), 1fr));
     gap: 0.5rem;
     margin-top: 1rem;
 }
@@ -343,37 +787,71 @@
     aspect-ratio: 4 / 3;
     object-fit: cover;
     border-radius: $r-control;
+    border: 1px solid rgba($g-tint, 0.09);
+    // `both` is what makes this safe under reduced motion: the duration
+    // collapses to 0.001ms and fill-mode leaves the thumbnail VISIBLE instead
+    // of stuck at opacity 0.
+    animation: glass-pop $d-base $ease-out both;
+    // --i comes from the x-for index. Capped: past a dozen items a stagger
+    // stops being a cascade and becomes a wait.
+    animation-delay: min(calc(var(--i, 0) * 30ms), 360ms);
 }
 
-// --- Pages list ----------------------------------------------
-.admin-page-rows {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
+// =============================================================
+// Pages
+// =============================================================
+// A card that contains a target rather than being one, so it lifts a pixel
+// and brightens instead of scaling — 240px is the ceiling for a scale and
+// this is two or three times that. The dialog it belongs to is a SIBLING,
+// not a child: the lift is a `translate`, and a translated ancestor would
+// become the containing block of a position: fixed dialog.
 .admin-page-row {
     display: grid;
     grid-template-columns: 7.5rem minmax(0, 1fr) auto;
     align-items: center;
-    gap: 1.25rem;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid $line;
+    gap: 1rem 1.25rem;
+    padding: 1rem 1.25rem;
+    @include glass-card($blur: false);
 
-    &:last-child { border-bottom: 0; }
+    & { @include tappable-flat; }
+
+    @include hoverable {
+        &:hover { @include glass-card-hover; }
+    }
+
+    > * { min-width: 0; }
 
     @include media-breakpoint-down(md) {
         grid-template-columns: 4.5rem minmax(0, 1fr);
         row-gap: 0.75rem;
     }
 
+    // From xl the row is a bento cell of four or six columns of twelve —
+    // 280px to 430px. A 120px thumbnail, a two-line excerpt and a labelled
+    // button do not share one line in that box, so the card turns vertical
+    // and the thumbnail becomes the banner it deserves.
+    @include media-breakpoint-up(xl) {
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start;
+        gap: 0.9rem;
+    }
+
     &__image {
         width: 100%;
         aspect-ratio: 3 / 2;
         object-fit: cover;
-        border-radius: $r-control;
-        border: 1px solid $line;
+        border-radius: $r-panel;
+        border: 1px solid rgba($g-tint, 0.09);
     }
+
+    // The three lines of copy are wrapped, and the wrapper is load-bearing:
+    // this grid has three tracks, so five loose children would wrap onto a
+    // second row and file the action under the excerpt. It is the middle
+    // track and it must be able to shrink under its longest word — stated
+    // rather than left to the `> *` rule above, because the day a column is
+    // added the class should not be relying on a rule that happens to cover
+    // it.
+    &__text { min-width: 0; }
 
     // The page is what the row is; its editable headline is what the row
     // currently says.
@@ -388,13 +866,14 @@
         margin: 0.2rem 0 0.3rem;
         font-size: $fs-small;
         font-weight: 600;
-        color: $ember;
+        color: $ember-hi;
     }
 
     // Long page copy is a preview here, not the content itself.
     &__excerpt {
         margin: 0;
         font-size: $fs-small;
+        line-height: 1.45;
         color: $paper-2;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -403,42 +882,222 @@
     }
 
     &__actions {
+        display: flex;
+        flex: none;
+
         @include media-breakpoint-down(md) { grid-column: 1 / -1; }
+        @include media-breakpoint-up(xl) { justify-self: start; }
     }
 }
 
-// --- Open / closed switch ------------------------------------
+// =============================================================
+// Open / closed
+// =============================================================
+// The headline number of the whole back office: it is read before anything
+// else on the screen, so it is set at metric size and the dot carries a
+// halo rather than being a 12px full stop.
 .admin-status {
     display: flex;
     align-items: flex-start;
     gap: 0.85rem;
 
     &__dot {
+        flex: 0 0 12px;
         width: 12px;
         height: 12px;
-        margin-top: 0.35rem;
+        margin-top: 0.5rem;
         border-radius: 50%;
-        flex: 0 0 12px;
         background-color: $success;
+        box-shadow: 0 0 12px -1px $success;
     }
 
-    &.is-closed .admin-status__dot { background-color: $danger; }
+    // Never colour alone: the state is spelled out in __state beside it, and
+    // the reason under that (§9).
+    &.is-closed &__dot {
+        background-color: $danger;
+        box-shadow: 0 0 12px -1px $danger;
+    }
 
     &__state {
         margin: 0;
-        font-size: 1.125rem;
-        font-weight: 600;
+        font-family: $font-heading;
+        font-size: 1.5rem;
+        line-height: 1.15;
         color: $paper;
     }
 
     &__reason {
-        margin: 0.15rem 0 0;
+        margin: 0.25rem 0 0;
         font-size: $fs-small;
+        line-height: 1.45;
         color: $paper-2;
     }
 }
 
-// --- Opening hours -------------------------------------------
+// A slow ring, once every three seconds, on the open state only — the door
+// being open is the live thing on this screen. It ends on the resting frame,
+// which is what makes it safe: reduced motion collapses the duration to
+// 0.001ms and pins the iteration count at 1, so the dot lands at rest
+// immediately instead of freezing mid-ring.
+@keyframes admin-pulse {
+    0%   { box-shadow: 0 0 12px -1px $success, 0 0 0 0 rgba($success, 0.40); }
+    70%  { box-shadow: 0 0 12px -1px $success, 0 0 0 8px rgba($success, 0); }
+    100% { box-shadow: 0 0 12px -1px $success, 0 0 0 0 rgba($success, 0); }
+}
+
+.admin-status:not(.is-closed) .admin-status__dot {
+    animation: admin-pulse 3s $ease-out infinite both;
+}
+
+// =============================================================
+// The card of the day
+// =============================================================
+// Not a panel. Every other block on this screen is a card; the plat du jour
+// deliberately is not one. It is the only thing here that changes daily, and
+// on the guest side it is the only ember-lit surface of the site. The same
+// firelight marks it here, so the eye lands on it before the carte — and
+// there is never a second L3 on the screen.
+// No blur, and unlike the panel this one is not a matter of taste. The
+// surface is on the ELEMENT here (glass-ember-edge needs ::before, the panel's
+// trick of moving everything onto ::after is already taken), and the header
+// holds an <x-admin.action> that scales on hover: a transform on a descendant
+// of a filtered element invalidates the filtered region and replays the blur
+// over the whole card at 60Hz — the exact cost the topbar and the panel were
+// restructured to avoid. What is behind is the ambient, a low-frequency
+// gradient that loses nothing by not being blurred, and dropping it takes the
+// screen back inside the blur budget (rail + bar, and no third layer).
+.admin-daily {
+    // The spacing is the bento's now; a margin here would show up as an
+    // uneven gutter between two cells of the same row.
+    margin: 0;
+    padding: 1.25rem 1.35rem 1.35rem;
+    @include glass-ember($blur: false);
+
+    // Second surface mixin on one selector: see the note at the top of the
+    // file. This one brings the hairline of firelight along the top edge.
+    & { @include glass-ember-edge; }
+
+    @include media-breakpoint-up(md) { padding: 1.35rem 1.5rem 1.5rem; }
+
+    &__header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem 1.5rem;
+    }
+
+    &__title {
+        margin: 0;
+        font-family: $font-body;
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 1.4;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: $ember-hi;
+    }
+
+    &__description {
+        margin: 0.4rem 0 0;
+        max-width: 62ch;
+        color: $paper-2;
+        font-size: $fs-small;
+        line-height: 1.5;
+    }
+
+    &__date {
+        margin: 1rem 0 0;
+        color: $paper;
+        font-size: $fs-small;
+        font-weight: 600;
+    }
+
+    &__empty {
+        margin: 1rem 0 0;
+        color: $paper-2;
+        font-size: $fs-small;
+    }
+
+    &__list {
+        list-style: none;
+        margin: 0.85rem 0 0;
+        padding: 0;
+    }
+
+    // Course number, French, English, the section it is filed under, price.
+    &__dish {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) auto auto;
+        align-items: baseline;
+        gap: 0.25rem 1rem;
+        padding: 0.5rem 0;
+        border-top: 1px solid rgba($g-tint, 0.09);
+        font-size: $fs-small;
+
+        &:first-child { border-top: 0; }
+
+        // Two languages and a section name stop being columns long before a
+        // phone gets to them. Every child is placed explicitly here: with only
+        // the English and the section respanned, the price had no cell left on
+        // the first row and auto-placed itself into the badge column, on a
+        // fourth row, stretching that column to its width.
+        @include media-breakpoint-down(lg) {
+            grid-template-columns: auto minmax(0, 1fr) auto;
+
+            .admin-daily__course  { grid-column: 1; grid-row: 1; }
+            .admin-daily__name    { grid-column: 2; grid-row: 1; }
+            .admin-daily__price   { grid-column: 3; grid-row: 1; }
+            .admin-daily__name-en { grid-column: 2 / -1; grid-row: 2; }
+            .admin-daily__section { grid-column: 2 / -1; grid-row: 3; }
+        }
+    }
+
+    // The order it is eaten in, which is the order the editor holds.
+    &__course {
+        flex: none;
+        width: 1.35rem;
+        height: 1.35rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        border: 1px solid rgba($ember, 0.45);
+        color: $ember-hi;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+
+    &__name { color: $paper; font-weight: 600; }
+
+    // Placement for these two is set on __dish, per breakpoint, so all five
+    // cells are described in one place.
+    &__name-en { color: $paper-2; }
+
+    &__section {
+        color: $paper-2;
+        font-size: 0.6875rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        white-space: nowrap;
+
+        @include media-breakpoint-down(lg) { white-space: normal; }
+    }
+
+    &__price {
+        // G4 again, and here it matters most: this is the one surface with a
+        // fire under it.
+        color: $ember-hi;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+}
+
+// =============================================================
+// Opening hours
+// =============================================================
 // Seven rows read at a glance, and under them the two lines a guest will
 // actually see. The preview is the point of the panel: the week is edited a
 // day at a time and read as a sentence.
@@ -452,16 +1111,17 @@
         grid-template-columns: minmax(6rem, 9rem) minmax(0, 1fr);
         align-items: baseline;
         gap: 0.35rem 1rem;
-        padding: 0.7rem 1.5rem;
-        border-bottom: 1px solid $line;
+        padding: 0.7rem 1.35rem;
+        border-bottom: 1px solid rgba($g-tint, 0.06);
 
         &:last-child { border-bottom: 0; }
 
+        @include media-breakpoint-up(md) { padding-inline: 1.5rem; }
         @include media-breakpoint-down(sm) { grid-template-columns: minmax(0, 1fr); }
     }
 
-    // A shut day is still listed — the week is only legible whole — but it
-    // is not something to read twice.
+    // A shut day is still listed — the week is only legible whole — but it is
+    // not something to read twice.
     &__row.is-closed { color: $paper-2; }
 
     &__day {
@@ -476,16 +1136,20 @@
         font-variant-numeric: tabular-nums;
     }
 
+    // Radius 0: it is the last band of an unpadded panel and runs edge to
+    // edge, so it takes the panel's own corners rather than printing a second
+    // set inside them. Passed to the mixin rather than overridden after it.
     &__preview {
         display: flex;
         flex-direction: column;
         gap: 0.2rem;
         margin: 0;
-        padding: 1rem 1.5rem;
-        border-top: 1px solid $line;
-        background-color: rgba($ink, 0.5);
+        padding: 1rem 1.35rem;
         color: $paper;
         font-size: $fs-small;
+        @include glass-inlay(0);
+
+        @include media-breakpoint-up(md) { padding-inline: 1.5rem; }
     }
 }
 
@@ -501,7 +1165,7 @@
     margin: 0;
     padding: 1rem 0 0;
     border: 0;
-    border-top: 1px solid $line;
+    border-top: 1px solid rgba($g-tint, 0.08);
 
     &:first-child {
         padding-top: 0;
@@ -523,34 +1187,79 @@
         color: $ember-hi;
     }
 
+    // The fold. A one-row grid whose track runs 0fr <-> 1fr is the only exact
+    // way to animate a height nobody measured; the vertical spacing moves
+    // onto this wrapper because a parent's `gap` does not animate and would
+    // leave a hole where the folded row used to be.
+    &__collapse { @include collapsible(0.75rem); }
+
+    // The fold has to clip this box — a 0fr track spills otherwise — and the
+    // four fields inside it sit flush against three of its edges. A field's
+    // focus indicator is an OUTER box-shadow ($focus-glow: a 1px liner, a 4px
+    // ring and two diffuse blooms reaching ~10px), so flush against the clip
+    // box the bloom was sliced off at the top, the left and the right on all
+    // 28 time fields of the hours dialog. The padding is inside the clipped
+    // area and gives the glow its room; the negative margin hands the space
+    // straight back, so nothing on screen moves.
     &__ranges {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        // Not below 0.75rem: the focus halos of two adjacent time fields are
+        // 4px each and would touch.
         gap: 0 0.75rem;
-        margin-top: 0.75rem;
+        margin: calc(0.75rem - 10px) -10px -10px;
+        padding: 10px;
 
         @include media-breakpoint-down(sm) { grid-template-columns: 1fr; }
     }
 }
 
-// --- Holiday calendar ----------------------------------------
+// Inside the animated wrapper the spacing belongs to the wrapper, so the
+// 0.75rem above comes off and only the glow's own 10px is left to cancel.
+// Written as a child selector so the block still stands on its own if it is
+// ever used without one.
+.admin-hours-day__collapse > .admin-hours-day__ranges { margin-top: -10px; }
+
+// =============================================================
+// Holiday calendar
+// =============================================================
 .admin-holidays {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0.9rem 1rem;
+    display: grid;
+    gap: 0.5rem;
+
+    @include media-breakpoint-up(md) { padding: 1rem 1.25rem; }
 }
 
+// Dates, state, reason, actions — one column each, so the badges line up
+// down the list however long a date range prints. A hollow and not a card:
+// it sits inside a panel (G1), and it carries a dialog, so nothing here may
+// become a containing block.
 .admin-holiday {
-    // Dates, state, reason, actions — one column each, so the badges line
-    // up down the list however long a date range prints.
     display: grid;
     grid-template-columns: auto auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.75rem 1rem;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid $line;
+    gap: 0.6rem 1rem;
+    padding: 0.8rem 1rem;
+    transition: border-color $d-base $ease-out, background-color $d-base $ease-out;
+    @include glass-inlay;
 
-    &:last-child { border-bottom: 0; }
+    // Without this a long reason forces min-content and drags the whole row
+    // wider than its cell.
+    > * { min-width: 0; }
+
+    // The row is not a target — its two buttons are — so it never scales and
+    // never lifts. It does answer the cursor, because that is what tells you
+    // which of ten dates the pair of buttons on the right belongs to. Colour
+    // only, which is exactly what the transition above was declared for.
+    @include hoverable {
+        &:hover {
+            border-color: rgba($g-tint, 0.14);
+            background-color: rgba($g-base, 0.44);
+        }
+    }
 
     @include media-breakpoint-down(lg) {
         grid-template-columns: minmax(0, 1fr) auto;
@@ -576,15 +1285,9 @@
         text-transform: uppercase;
         padding: 0.2rem 0.5rem;
         border-radius: 999px;
-        border: 1px solid $line-strong;
+        border: 1px solid var(--field-border);
         color: $paper-2;
         white-space: nowrap;
-    }
-
-    &.is-current &__badge {
-        border-color: $ember;
-        background-color: rgba($ember, 0.16);
-        color: $ember;
     }
 
     &__reason {
@@ -597,9 +1300,24 @@
 
     &__actions {
         display: flex;
+        flex: none;
         justify-content: flex-end;
         gap: 0.35rem;
     }
+}
+
+// The closure that is running right now: the one row on the screen that
+// describes today. Unblurred — it repeats — and rounded to the inlay radius
+// it replaces.
+.admin-holiday.is-current { @include glass-ember($blur: false, $radius: $r-panel); }
+
+// The badge inside it keeps paper type: at 11px an ember label would be
+// under the small-text floor whatever the shade (§5.5). The tint and the
+// border carry the signal, the word carries the meaning.
+.admin-holiday.is-current .admin-holiday__badge {
+    border-color: rgba($ember, 0.55);
+    background-color: rgba($ember, 0.14);
+    color: $paper;
 }
 
 .admin-holiday-fields__dates {
@@ -610,49 +1328,89 @@
     @include media-breakpoint-down(sm) { grid-template-columns: 1fr; }
 }
 
-// --- Section switch ------------------------------------------
+// =============================================================
+// Gallery switch
+// =============================================================
 // One rail entry, several things of the same kind behind it.
 .admin-switch {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.25rem;
     padding: 0.25rem;
-    background-color: $ink-2;
-    border: 1px solid $line;
-    border-radius: $r-panel;
     align-self: flex-start;
+    @include glass-veil(bottom, $blur: false);
 
-    &__item {
-        padding: 0.5rem 0.9rem;
-        border-radius: $r-control;
-        font-size: $fs-small;
-        font-weight: 600;
-        color: $paper-2;
-        transition: background-color $t-fast, color $t-fast;
-
-        &:hover { color: $paper; background-color: rgba($paper, 0.06); }
-
-        &.is-current {
-            background-color: $ember;
-            color: $ink;
-        }
-
-        &.is-current:hover { background-color: $ember-hi; color: $ink; }
+    // glass-veil is written for a full-bleed bar: it hard-sets radius 0 and a
+    // single bottom edge. The switch is a track, so the box is closed again —
+    // in its own rule, because a declaration written straight after the mixin
+    // would follow the @supports blocks it emits.
+    & {
+        border: 1px solid rgba($g-tint, 0.08);
+        border-radius: $r-glass;
     }
 }
 
-.admin-notice {
-    margin: 0;
-    color: $paper-2;
+// Written as a descendant and not as a bare class: app.scss emits `a:hover`
+// AFTER every component partial, at the same weight, so a bare
+// `.admin-switch__item:hover` would lose the colour on source order alone.
+.admin-switch .admin-switch__item {
+    // It is an <a>, so inline by default — translate does nothing to an
+    // inline box, and min-height does not apply to one either.
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: $tap;
+    padding: 0.5rem 0.9rem;
+    border-radius: $r-control;
     font-size: $fs-small;
+    font-weight: 600;
+    color: $paper-2;
+    // A chip whose edge is a hair from the track's own border: it lifts, it
+    // does not scale.
+    @include tappable-flat;
 
-    code {
-        display: inline-block;
-        padding: 0.35rem 0.6rem;
-        border: 1px solid $line-strong;
-        border-radius: $r-control;
-        background-color: rgba($ink, 0.6);
-        color: $ember;
-        font-size: 0.8125rem;
+    @include hoverable {
+        &:hover { color: $paper; background-color: rgba($paper, 0.06); }
     }
+
+    // Driven by the attribute rather than by a parallel class, so the style
+    // and the announced state cannot drift apart. This is the largest solid
+    // ember allowed anywhere in the back office — roughly 120x36.
+    &[aria-current="page"] {
+        background-color: $ember;
+        color: $ink;
+        font-weight: 700;
+    }
+
+    @include hoverable {
+        &[aria-current="page"]:hover { background-color: $ember-hi; color: $ink; }
+    }
+
+    &:focus-visible { @include focus-glow-button; }
+    &:focus:not(:focus-visible) { box-shadow: none; }
+
+    @media (pointer: coarse) { padding-inline: 1.1rem; }
+}
+
+// =============================================================
+// Touch spacing — LAST in this partial, and that is the point
+// =============================================================
+// Two 44px halos that overlap hand the tap to the LATER sibling in the DOM —
+// which on both of these pairs is the DELETE button. That is the wrong menu
+// section, or the wrong closing date, being removed; it is not a cosmetic
+// problem.
+//
+// A media query adds no specificity, so this block only wins on source order.
+// Written next to .admin-action it lost to `.admin-section__actions { gap:
+// .35rem }` and `.admin-holiday__actions { gap: .35rem }`, both declared
+// further down at the same (0,1,0) — the halos of two 36px compact buttons
+// then overlapped by 2.4px. Anything added to this list has to stay here, at
+// the foot of the file, behind every block it corrects.
+//
+// (.admin-topbar__actions carries its own copy: it belongs to the shell.)
+@media (any-pointer: coarse) {
+    .admin-panel__actions,
+    .admin-section__actions,
+    .admin-holiday__actions { gap: 0.625rem; }
 }

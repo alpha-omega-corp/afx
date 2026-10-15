@@ -22,11 +22,20 @@
                     <input type="hidden" name="{{ $idName }}" x-model="item.id"/>
                 </div>
 
+                {{-- .u-tap gives the 36px button a 44px hit area on a coarse
+                     pointer without changing what is drawn; the row's 1rem of
+                     padding is what keeps that halo clear of the row's edge.
+
+                     aria-label is a plain attribute rather than an Alpine
+                     binding around a single-quoted PHP string: the value is
+                     static, and a translation containing an apostrophe would
+                     have closed the literal — the exact failure the note at
+                     the top of this file is about. --}}
                 <button
                     type="button"
-                    class="admin-action admin-action--danger admin-action--compact"
+                    class="admin-action admin-action--danger admin-action--compact u-tap"
                     @click="remove(index)"
-                    :aria-label="'{{ __('admin.action.delete') }}'"
+                    aria-label="{{ __('admin.action.delete') }}"
                     title="{{ __('admin.action.delete') }}"
                 >
                     @svg(Icon::DELETE->value, 'admin-action__icon')
@@ -35,8 +44,13 @@
         </template>
     </div>
 
-    <button type="button" class="admin-action admin-action--neutral w-100 justify-content-center" @click="add()">
-        @svg(Icon::CREATE->value, 'admin-action__icon')
-        <span class="admin-action__label">{{ __('admin.action.create') }}</span>
-    </button>
+    {{-- Centred, at its natural width. It used to be w-100: a 700px button
+         that grows 2% under the cursor overhangs its container by 7px a
+         side and lands on its neighbour's border. --}}
+    <div class="app-repeater__footer">
+        <button type="button" class="admin-action admin-action--neutral" @click="add()">
+            @svg(Icon::CREATE->value, 'admin-action__icon')
+            <span class="admin-action__label">{{ __('admin.action.create') }}</span>
+        </button>
+    </div>
 </div>

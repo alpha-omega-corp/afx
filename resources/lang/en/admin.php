@@ -19,14 +19,31 @@ return [
     'holidays_description' => 'Periods when the auberge is closed. The banner appears on its own.',
     'gallery_title' => 'Gallery',
     'gallery_description' => 'Select photos to remove them, or upload new ones.',
+    'daily_description' => 'The one thing that changes every day. These dishes are shown on the home page and at the head of the carte; they do not appear again in the sections below.',
     'menu_title' => 'Menu sections',
     'menu_description' => 'Drag a section to reorder it. Each section holds its own dishes.',
+    'review_title' => 'To read over',
+    'review_description' => 'The dishes whose English is still the machine’s own.',
+    'review_more' => 'the first :n are listed below',
 
     'auto' => 'auto',
 
+    // Metrics — the band of numbers at the head of each screen, read
+    // before any panel has to be opened.
+    'metric' => [
+        'status' => 'Current state',
+        'days_open' => 'Serving days',
+        'next_closure' => 'Next closing',
+        'sections' => 'Sections',
+        'dishes' => 'Dishes on the carte',
+        'daily' => 'Daily specials',
+        'to_review' => 'translations to read over',
+        'pages' => 'Public pages',
+        'photos' => 'Photos',
+    ],
+
     'hint' => [
         'translation' => 'Write in French. An English field left blank is translated for you and keeps following the French; the moment you type in it, your words are the ones that stay.',
-        'daily_language' => 'The card of the day is written in French. The English is translated for you and can be corrected in Administration → Menu.',
         'auto' => 'Machine translation, not yet read over.',
     ],
 
@@ -95,13 +112,15 @@ return [
         'holidays' => 'No closing planned.',
         'daily' => 'No daily special on show. The button above writes one.',
         'hours' => 'No hours saved yet.',
-        'daily_sections' => 'Create a menu section first: the daily special is filed under one, like any other dish.'
+        'daily_sections' => 'Create a menu section first: the daily special is filed under one, like any other dish.',
+        'review' => 'Every English line on the carte has been read over.',
     ],
 
     'gallery' => [
         'delicacies' => 'Home',
         'restaurant' => 'Restaurant',
         'hotel' => 'Hotel',
+        'select' => 'Select photo :n',
     ],
 
     'status' => [

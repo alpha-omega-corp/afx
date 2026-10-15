@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <title>Une auberge de village au crépuscule, les fenêtres allumées</title>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141210"></stop>
+      <stop offset="0.62" stop-color="#2a1a12"></stop>
+      <stop offset="1" stop-color="#5a2a10"></stop>
+    </linearGradient>
+    <linearGradient id="lit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF8A3D"></stop>
+      <stop offset="1" stop-color="#F26B1D"></stop>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FF8A3D" stop-opacity="0.38"></stop>
+      <stop offset="1" stop-color="#FF8A3D" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="spill" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F26B1D" stop-opacity="0.32"></stop>
+      <stop offset="0.6" stop-color="#F26B1D" stop-opacity="0.12"></stop>
+      <stop offset="1" stop-color="#F26B1D" stop-opacity="0"></stop>
+    </radialGradient>
+    <clipPath id="ground"><rect x="0" y="705" width="1600" height="195"></rect></clipPath>
+    <mask id="crescent">
+      <rect width="1600" height="900" fill="white"></rect>
+      <circle cx="1336" cy="158" r="34" fill="black"></circle>
+    </mask>
+    <g id="upper">
+      <rect x="-50" y="-60" width="100" height="120" rx="4" fill="url(#halo)" transform="scale(2.2)"></rect>
+      <rect x="-36" y="-48" width="72" height="96" rx="3" fill="url(#lit)"></rect>
+      <path d="M0 -48 V48 M-36 -4 H36" stroke="#241b16" stroke-width="6"></path>
+      <rect x="-58" y="-50" width="18" height="100" rx="2" fill="#3b2a1f"></rect>
+      <rect x="40" y="-50" width="18" height="100" rx="2" fill="#3b2a1f"></rect>
+      <rect x="-44" y="48" width="88" height="8" rx="2" fill="#16110e"></rect>
+    </g>
+    <g id="arch">
+      <ellipse cx="0" cy="10" rx="140" ry="120" fill="url(#halo)"></ellipse>
+      <path d="M-58 90 V0 a58 58 0 0 1 116 0 V90 Z" fill="url(#lit)"></path>
+      <path d="M0 -58 V90 M-58 20 H58" stroke="#241b16" stroke-width="6"></path>
+    </g>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 0.08"></feFuncA></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"></rect>
+  <g fill="#F3EDE4" fill-opacity="0.55">
+    <circle cx="160" cy="90" r="2"></circle><circle cx="330" cy="160" r="1.5"></circle><circle cx="520" cy="70" r="2"></circle>
+    <circle cx="700" cy="130" r="1.5"></circle><circle cx="1040" cy="60" r="2"></circle><circle cx="1240" cy="140" r="1.5"></circle>
+    <circle cx="1420" cy="80" r="2"></circle><circle cx="1510" cy="190" r="1.5"></circle><circle cx="90" cy="230" r="1.5"></circle>
+  </g>
+  <circle cx="1320" cy="170" r="34" fill="#F3EDE4" fill-opacity="0.85" mask="url(#crescent)"></circle>
+  <path d="M0 585 C220 540 400 560 580 532 C780 502 980 548 1180 520 C1360 496 1490 512 1600 500 V900 H0 Z" fill="#1b1310"></path>
+  <rect x="0" y="705" width="1600" height="195" fill="#0f0b09"></rect>
+  <g clip-path="url(#ground)">
+    <ellipse cx="850" cy="705" rx="560" ry="150" fill="url(#spill)"></ellipse>
+  </g>
+  <rect x="1005" y="190" width="46" height="110" fill="#120d0b"></rect>
+  <path d="M480 348 L850 176 L1220 348 Z" fill="#130e0c"></path>
+  <path d="M480 348 L850 176 L1220 348" fill="none" stroke="#35271f" stroke-width="10" stroke-linejoin="round"></path>
+  <rect x="520" y="348" width="660" height="360" fill="#241b16"></rect>
+  <rect x="520" y="348" width="660" height="18" fill="#1a130f"></rect>
+  <rect x="520" y="506" width="660" height="10" fill="#1a130f"></rect>
+  <use href="#upper" x="600" y="428"></use>
+  <use href="#upper" x="720" y="428"></use>
+  <use href="#upper" x="980" y="428"></use>
+  <use href="#upper" x="1100" y="428"></use>
+  <circle cx="850" cy="420" r="34" fill="#1a130f"></circle>
+  <circle cx="850" cy="420" r="22" fill="url(#lit)" fill-opacity="0.9"></circle>
+  <use href="#arch" x="635" y="615"></use>
+  <use href="#arch" x="1065" y="615"></use>
+  <circle cx="850" cy="640" r="95" fill="url(#halo)"></circle>
+  <path d="M808 708 V612 a42 42 0 0 1 84 0 V708 Z" fill="#B84A0E"></path>
+  <path d="M822 708 V618 a28 28 0 0 1 56 0 V708 Z" fill="url(#lit)" fill-opacity="0.85"></path>
+  <path d="M935 560 h26 v22" fill="none" stroke="#35271f" stroke-width="5"></path>
+  <circle cx="961" cy="600" r="70" fill="url(#halo)"></circle>
+  <rect x="949" y="582" width="24" height="34" rx="6" fill="#FF8A3D"></rect>
+  <g fill="#0d0a08">
+    <circle cx="1370" cy="560" r="70"></circle><circle cx="1440" cy="500" r="85"></circle><circle cx="1510" cy="570" r="75"></circle>
+    <circle cx="1455" cy="600" r="70"></circle><rect x="1430" y="600" width="26" height="110"></rect>
+    <circle cx="170" cy="600" r="60"></circle><circle cx="110" cy="640" r="55"></circle><circle cx="220" cy="650" r="50"></circle>
+    <rect x="152" y="640" width="20" height="70"></rect>
+  </g>
+  <g fill="#0b0807">
+    <rect x="380" y="668" width="110" height="10" rx="3"></rect>
+    <rect x="392" y="678" width="8" height="30"></rect><rect x="470" y="678" width="8" height="30"></rect>
+    <path d="M362 708 v-44 h8 v20 h16 v24 z"></path><path d="M508 708 v-44 h-8 v20 h-16 v24 z"></path>
+  </g>
+  <rect width="1600" height="900" filter="url(#grain)"></rect>
+</svg>

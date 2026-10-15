@@ -1,75 +1,197 @@
-// Both of these are buttons now rather than divs with click handlers: they
-// open a file picker, which is a button's job, and a finger or a keyboard can
-// reach them.
+// =============================================================
+// Picture field — the dropzone, and the preview that replaces it.
+//
+// Both of these are buttons rather than divs with click handlers: they
+// open a file picker, which is a button's job, and a finger or a keyboard
+// can reach them.
+//
+// They are two mutually exclusive blocks in normal flow, so they are
+// SEQUENCED and never cross-faded: the arriving one waits out the leaving
+// one (.delay-120 in the markup), or everything under the field jumps by
+// the difference in their heights.
+// =============================================================
+
 .file-upload {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    gap: 0.6rem;
     width: 100%;
-    padding: 1.5rem 1rem;
-    background: none;
-    border: 1px dashed $line-strong;
-    border-radius: $r-panel;
+    padding: 1.75rem 1rem;
     color: inherit;
     cursor: pointer;
 
-    &:hover { border-color: $ember; }
+    // A dropzone is a hollow inside whatever panel or dialog it landed in,
+    // so it takes the inlay recipe — but dashed, because the dashed edge is
+    // the thing that says "drop here" rather than "press here", and a
+    // shorthand `border` from the mixin would take the dash back off.
+    // --field-border is the surface's own control border ($line-glass on
+    // glass, $line-strong on flat), so this cannot fall under 3:1 wherever
+    // it is used.
+    background: rgba($g-base, 0.34);
+    border: 1px dashed var(--field-border);
+    border-radius: $r-panel;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.30);
+
+    // Flat, not scaled: this is a full-width block, and 2% of 700px is 7px
+    // of overhang onto its neighbours.
+    @include tappable-flat;
+    @include glass-flat($surface-inlay);
 
     svg {
         width: 40px;
         height: 40px;
-        color: $primary;
+        color: $ember;
+        transition: color $d-base $ease-out;
     }
 
     span {
-        color: $gray;
+        color: $paper-2;
+        font-size: $fs-small;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        transition: color $d-base $ease-out;
     }
+
+    @include hoverable {
+        &:hover {
+            border-color: $ember;
+            background-color: rgba($ember, 0.05);
+
+            svg  { color: $ember-hi; }
+            span { color: $paper; }
+        }
+    }
+
+    // Dragging a file over the field is the one moment this control has to
+    // be unmistakable, and the browser gives us no state for it — so the
+    // keyboard case is at least given the full treatment.
+    &:focus-visible {
+        border-style: solid;
+        @include focus-glow-button;
+    }
+
+    // `none` would be wrong here: unlike every other control that carries
+    // this line, the dropzone has a resting shadow — the hollow that, with
+    // the dashed edge, is what says "drop here". Clearing the keyboard glow
+    // must put the hollow back, not flatten the field on the first click.
+    &:focus:not(:focus-visible) { box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.30); }
 }
 
 .file-preview {
     position: relative;
     overflow: hidden;
+    border: 1px solid rgba($g-tint, 0.09);
+    border-radius: $r-panel;
 
     .file-label {
         position: absolute;
         top: 0;
         width: 100%;
         display: flex;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: #fff;
+        align-items: stretch;
+        color: $paper;
+        font-size: $fs-small;
+        font-weight: 600;
+
+        // A bar the picture passes under: the veil, without the blur — the
+        // dialog it sits in is already a blurred surface, and glass inside
+        // glass is a composited layer bought for nothing.
+        @include glass-veil(bottom, $blur: false);
 
         .preview-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 44px;
-            padding: 12px;
-            background-color: $primary;
+            padding: 10px;
+            background-color: $ember;
+            // Ink on ember, never paper: white on $ember is 3.0:1 and this
+            // is the house rule the whole palette is built on.
+            color: $ink;
+
+            svg { width: 20px; height: 20px; }
         }
 
         .preview-label {
-            padding: 14px;
             display: flex;
-            justify-content: space-around;
+            align-items: center;
+            padding: 0.75rem 0.9rem;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
 
     img {
+        display: block;
         object-fit: cover;
         width: 100%;
     }
 }
 
+// Floats over a photograph that could be any colour at all, so it brings
+// its own dark ground rather than trusting a white glyph to survive.
 .preview-edit {
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 0.65rem;
+    right: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
     padding: 0;
-    background: none;
-    border: 0;
+    // 78% and not 50%: this chip lands on a photograph that could be a
+    // snow field. At that floor $paper clears 6:1 against the worst case,
+    // with no media query and nothing to keep in step.
+    background: rgba($g-void, 0.78);
+    border: 1px solid rgba($g-tint, 0.16);
+    border-radius: 50%;
+    color: $paper;
     cursor: pointer;
 
+    // NOT @include tap here: that mixin sets `position: relative` on the
+    // element it hangs its 44px halo from, and this button is positioned
+    // absolutely over the picture — it would drop back into the flow on
+    // every touch device. It is alone in its corner, so it can simply grow
+    // (see the coarse-pointer rule below).
+    @include tappable;
+
+    // tappable also raises the element in the three interactive states with
+    // `position: relative; z-index: 1` — which at (0,2,0) beats the
+    // `position: absolute` above and would drop this button into the flow
+    // the moment the cursor touched it. The lift is welcome; the position
+    // is not up for negotiation.
+    &:hover,
+    &:active,
+    &:focus-visible { position: absolute; }
+
     svg {
-        width: 20px;
-        height: 20px;
-        color: #ffffff;
+        width: 18px;
+        height: 18px;
+    }
+
+    @include hoverable {
+        &:hover {
+            background-color: rgba($g-void, 0.90);
+            border-color: rgba($ember-hi, 0.55);
+            color: $ember-hi;
+        }
+    }
+
+    &:focus-visible { @include focus-glow-button; }
+    &:focus:not(:focus-visible) { box-shadow: none; }
+}
+
+// `pointer: coarse` and not `any-pointer`, because this one changes the
+// VISIBLE size rather than hanging an invisible halo — the convention
+// already in _navigation.scss and _footer.scss.
+@media (pointer: coarse) {
+    .preview-edit {
+        width: $tap;
+        height: $tap;
     }
 }

@@ -1,51 +1,116 @@
 // =============================================================
-// Admin shell — a fixed section rail on the left, a sticky header
-// carrying the screen's primary action, and the panels below it.
+// Admin shell — a glass wall on the left, a glass veil on top, and
+// the bento grid between them.
+//
+// Three things this file must never do, each of them load-bearing:
+//   1. paint an opaque background on .admin-shell — it would occlude
+//      the ambient wash body::before lays under the whole back office;
+//   2. put a transform, a filter of either kind, a perspective or a
+//      will-change on .admin-shell — any one of them makes it the
+//      containing block of the position: fixed drawer, which would then
+//      be anchored to the shell instead of the viewport;
+//   3. declare display / flex-direction / gap on .admin-shell__main —
+//      this partial is imported after _bento.scss, so a leftover
+//      `display: flex` there would beat `display: grid` and the bento
+//      would not exist. Padding and width only.
+//
+// No filter property is ever written here by hand: every one of them is
+// emitted by the mixins of _glass.scss and nowhere else, which is what keeps
+// the blur budget of the back office countable.
 // =============================================================
 
 $admin-rail: 260px;
 
+// The ceiling on the measure of the back office, and the inset that keeps
+// anything outside .admin-shell__main flush with it. Past ~1820px of viewport
+// the grid stops growing and centres; without this the topbar title and its
+// action stayed pinned to the gutter while the first bento cell started 370px
+// further right, and the bar no longer sat above the content it names.
+$admin-measure: $container + 360px;
+$admin-inset: calc(#{$gutter} + max(0px, (100% - #{$admin-measure}) / 2));
+
 .admin-shell {
     display: flex;
     min-height: 100vh;
-    background-color: $ink;
+    // Transparent, not $ink: the ambient gradient lives on body::before
+    // and this element sits on top of it.
+    background-color: transparent;
 }
 
 // --- Section rail --------------------------------------------
+// Two different objects wearing one class. From lg it is a wall: docked,
+// full height, one vertical edge. Below lg it is a drawer: a floating
+// panel that rides in over a scrim.
 .admin-shell__sidebar {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
     width: $admin-rail;
     flex: 0 0 $admin-rail;
     padding: 1.5rem 1rem;
-    background-color: $ink-2;
-    border-right: 1px solid $line;
 
     @include media-breakpoint-up(lg) {
         position: sticky;
         top: 0;
         height: 100vh;
         overflow-y: auto;
+        overscroll-behavior: contain;
+
+        // The blur is called first and in its `always` form because we are
+        // already inside the lg query: calling glass-wall() with its own
+        // blur here would nest `min-width: 992px` inside `min-width: 992px`,
+        // and calling glass-blur AFTER glass-wall would land the declaration
+        // below the @supports fallback that resets it to none.
+        @include glass-blur(20px, 115%, always);
+        @include glass-wall($blur: false);
     }
 
-    // Below lg the rail becomes a drawer over the content.
+    // Below lg the rail becomes a drawer over the content. No blur: a
+    // filtered surface riding a translate samples the wrong rectangle and
+    // shimmers on WebKit. Only the right-hand corners are rounded — the
+    // panel is flush against the left edge of the viewport.
     @include media-breakpoint-down(lg) {
         position: fixed;
         inset: 0 auto 0 0;
-        z-index: 1045;
+        z-index: $z-drawer;
+        width: min(#{$admin-rail}, 86vw);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
         transform: translateX(-100%);
-        transition: transform $t-fast;
+        visibility: hidden;
+        // visibility on a 0s transition delayed by the full duration: the
+        // rail stays rendered while it slides out, then leaves both the
+        // accessibility tree and the tab order. Without it the six links of
+        // a closed rail are tabbable off-screen.
+        transition: transform $d-ample $ease-out, visibility 0s linear $d-ample;
+        @include glass-float($blur: false, $radius: 0 $r-float $r-float 0);
 
-        &.is-open { transform: translateX(0); }
+        &.is-open {
+            transform: translateX(0);
+            visibility: visible;
+            transition: transform $d-ample $ease-out, visibility 0s linear 0s;
+        }
     }
 }
 
+// The drawer's scrim. It leaves faster than the rail does ($d-quick
+// against $d-ample): the light comes back before the panel has finished
+// going, which reads as a quicker close than it is.
+// No blur, and the alpha raised to carry the veil on its own: this element
+// is faded in and out by Alpine, and an element that has a group opacity AND
+// a backdrop-filter composites the filtered backdrop through that opacity.
+// .modal-backdrop dodges it by pinning its opacity at 1 and moving the alpha
+// into the colour; a scrim that x-transition animates cannot. It also only
+// ever exists below lg, where the arbitration is "no blur" anyway.
 .admin-shell__scrim {
     position: fixed;
     inset: 0;
-    z-index: 1040;
-    background-color: rgba($ink, 0.6);
+    z-index: $z-scrim;
+    @include glass-scrim(0.72, $blur: false);
+
+    &--enter   { transition: opacity $d-ample $ease-out; }
+    &--leaving { transition: opacity $d-quick $ease-in; }
 
     @include media-breakpoint-up(lg) { display: none; }
 }
@@ -53,9 +118,15 @@ $admin-rail: 260px;
 .admin-shell__brand {
     display: block;
     padding: 0.5rem 0.75rem 1.25rem;
-    border-bottom: 1px solid $line;
+    border-bottom: 1px solid rgba($paper, 0.08);
+    transition: box-shadow $d-base $ease-out;
 
-    &:hover .admin-shell__brand-name { color: $ember-hi; }
+    @include hoverable {
+        &:hover .admin-shell__brand-name { color: $ember-hi; }
+    }
+
+    &:focus-visible { @include focus-glow-button; }
+    &:focus:not(:focus-visible) { box-shadow: none; }
 }
 
 .admin-shell__brand-name {
@@ -63,7 +134,7 @@ $admin-rail: 260px;
     font-family: $font-heading;
     font-size: 1.125rem;
     color: $paper;
-    transition: color $t-fast;
+    transition: color $d-base $ease-out;
 }
 
 .admin-shell__brand-label {
@@ -71,13 +142,14 @@ $admin-rail: 260px;
     font-size: 0.6875rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: $ember;
+    // G4: ember type this small, on a glass surface, is $ember-hi.
+    color: $ember-hi;
 }
 
 .admin-shell__sidebar-footer {
     margin-top: auto;
     padding-top: 1rem;
-    border-top: 1px solid $line;
+    border-top: 1px solid rgba($paper, 0.08);
 }
 
 // --- Rail links ----------------------------------------------
@@ -92,21 +164,47 @@ $admin-rail: 260px;
     align-items: center;
     gap: 0.75rem;
     padding: 0.6rem 0.75rem;
+    // 43.95px by accident until now. A rail link is a primary target.
+    min-height: $tap;
     border-radius: $r-control;
     font-size: $fs-small;
     color: $paper-2;
-    transition: background-color $t-fast, color $t-fast;
+    // A 228px-wide row: too long to scale without its border shimmering,
+    // so it lifts a pixel instead.
+    @include tappable-flat;
 
-    &:hover {
-        background-color: rgba($paper, 0.06);
-        color: $paper;
+    @include hoverable {
+        &:hover {
+            background-color: rgba($paper, 0.06);
+            color: $paper;
+        }
     }
 
-    &.is-current {
+    &:active { background-color: rgba($paper, 0.09); }
+
+    // Driven by the attribute and not by a parallel .is-current class, so
+    // the style and the accessible state cannot drift apart. Three signals,
+    // never colour alone: a diluted ember wash, an ember rule down the
+    // inner edge, and the weight.
+    &[aria-current="page"] {
         background-color: rgba($ember, 0.14);
-        color: $ember;
+        color: $ember-hi;
         font-weight: 600;
+        box-shadow: inset 2px 0 0 0 $ember;
     }
+
+    // After the [aria-current] block on purpose: same specificity, so
+    // source order decides, and a focused current link must show the glow.
+    &:focus-visible { @include focus-glow-button; }
+    &:focus:not(:focus-visible) { box-shadow: none; }
+
+    // …but the line above is (0,3,0) and the ember rule down the inner edge
+    // is only (0,2,0), so a mouse click on the current entry used to take
+    // one of the three signals that carry [aria-current="page"] away with it.
+    // Put back, not cleared.
+    &[aria-current="page"]:focus:not(:focus-visible) { box-shadow: inset 2px 0 0 0 $ember; }
+
+    @media (pointer: coarse) { padding-block: 0.8rem; }
 }
 
 .admin-nav__icon {
@@ -123,33 +221,92 @@ $admin-rail: 260px;
     flex-direction: column;
 }
 
+// The glass is on ::before rather than on the bar itself. A transform on a
+// DESCENDANT of a filtered element invalidates the filtered region and replays
+// the blur across the whole bar every frame — a full-width blur at 60Hz for a
+// 40px button. The pseudo-element takes the filter out of the buttons'
+// ancestry.
 .admin-topbar {
     position: sticky;
     top: 0;
-    z-index: 1030;
+    z-index: $z-topbar;
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 1.35rem $gutter;
-    background-color: rgba($ink, 0.92);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid $line;
+    // The veil below stays full-bleed (::before is inset: 0 on this
+    // full-width box); only the contents are pulled in to the measure.
+    padding: 1.25rem $admin-inset;
+    background-color: transparent;
+    isolation: isolate;
+
+    // z-index: -1 is safe: sticky + z-index has already made .admin-topbar
+    // a stacking context, so the pseudo cannot fall behind <main>.
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        @include glass-veil(bottom);
+    }
+
+    @include media-breakpoint-up(lg) {
+        gap: 1.25rem;
+        // 22px x 2 around the tallest thing the bar can hold — a 44px action
+        // button — is 88px, and a .bento-sticky cell parks at
+        // var(--nav-h) + 1.25rem = 92px. The four pixels are the clearance:
+        // grow this padding and a sticky cell slides under the bar.
+        padding: 1.375rem $admin-inset;
+    }
 }
 
 .admin-topbar__toggle {
     display: none;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 40px;
+    min-block-size: 40px;
     padding: 0.5rem;
-    border: 1px solid $line-strong;
+    // On glass, $line-strong is 2.4:1 and stops being a border you can see.
+    border: 1px solid $line-glass;
     border-radius: $r-control;
-    background: none;
+    background-color: rgba($paper, 0.03);
     color: $paper;
+    cursor: pointer;
+    // Inside the topbar: a lift, never a scale. See the note above.
+    @include tappable-flat;
 
-    svg { width: 20px; height: 20px; }
+    svg {
+        display: block;
+        width: 20px;
+        height: 20px;
+    }
+
+    @include hoverable {
+        &:hover {
+            background-color: rgba($paper, 0.08);
+            border-color: $paper-2;
+        }
+    }
+
+    &:focus-visible { @include focus-glow-button; }
+    &:focus:not(:focus-visible) { box-shadow: none; }
 
     @include media-breakpoint-down(lg) { display: inline-flex; }
+
+    // This one grows for real: it is the only way into the drawer.
+    @media (pointer: coarse) {
+        min-inline-size: $tap;
+        min-block-size: $tap;
+    }
 }
 
-.admin-topbar__heading { min-width: 0; }
+.admin-topbar__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
 
 .admin-topbar__eyebrow {
     margin: 0;
@@ -161,7 +318,7 @@ $admin-rail: 260px;
 
 .admin-topbar__title {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
     line-height: 1.2;
 }
 
@@ -170,11 +327,21 @@ $admin-rail: 260px;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-left: auto;
+
+    // Two 44px halos that overlap hand the tap to the later sibling — i.e.
+    // to the wrong button. 0.5rem is the floor for a pair of 36px controls.
+    @media (any-pointer: coarse) { gap: 0.625rem; }
 }
 
+// The bento container itself is .admin-bento, declared in _bento.scss and
+// carried by this same element. All that belongs here is the room it sits
+// in: the inset, the ceiling on the measure, and the air at the foot of a
+// long screen.
 .admin-shell__main {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.5rem $gutter 4rem;
+    width: 100%;
+    max-width: $admin-measure;
+    margin-inline: auto;
+    padding: 1.5rem $gutter 5rem;
+
+    @include media-breakpoint-up(lg) { padding: 2rem $gutter 6rem; }
 }

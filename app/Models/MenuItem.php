@@ -51,9 +51,15 @@ class MenuItem extends Model
         return MenuItemFactory::new();
     }
 
+    /**
+     * The foreign key is named, not inferred. Laravel would derive it from
+     * the method — `section_id` — and the column is `menu_section_id`, so the
+     * relation silently resolved to null for every dish. MenuSection::items()
+     * names its key for the same reason.
+     */
     public function section(): BelongsTo
     {
-        return $this->belongsTo(MenuSection::class);
+        return $this->belongsTo(MenuSection::class, 'menu_section_id');
     }
 
     /**

@@ -1,0 +1,23 @@
+// =============================================================
+// Line illustrations — resources/views/components/illustration.
+// Drawn in the text colour of wherever they land, with the ember
+// for the one detail that is lit: steam, a lamp, a window, a pin.
+// =============================================================
+
+.illustration {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+
+    .ill-accent  { stroke: $ember; }
+    .ill-glow    { stroke: none; fill: rgba($ember, 0.09); }
+    .ill-lit rect { fill: rgba($ember-hi, 0.26); }
+    .ill-lantern { stroke: $ember; fill: rgba($ember-hi, 0.5); }
+    .ill-pin     { stroke: $ember; fill: rgba($ember, 0.14); }
+
+    @media (forced-colors: active) {
+        .ill-accent, .ill-lantern, .ill-pin { stroke: CanvasText; }
+        .ill-glow { display: none; }
+    }
+}

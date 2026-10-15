@@ -19,7 +19,10 @@ Route::controller(AuthController::class)->name('auth.')->group(function() {
     Route::get('/logout', 'logout')->name('logout');
 });
 
+// Behind the admin gate like every other write: these two groups sat outside
+// it, so anybody could rewrite a page or upload files to the site.
 Route::controller(PageController::class)
+    ->middleware(AdminMiddleware::class)
     ->name('page.')
     ->prefix('page')
     ->group(function() {
@@ -71,6 +74,7 @@ Route::controller(AdminController::class)
     });
 
 Route::controller(GalleryController::class)
+    ->middleware(AdminMiddleware::class)
     ->name('gallery.')
     ->prefix('gallery')
     ->group(function() {

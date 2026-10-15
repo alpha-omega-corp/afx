@@ -19,14 +19,31 @@ return [
     'holidays_description' => 'Périodes pendant lesquelles l’auberge est fermée. Le bandeau s’affiche automatiquement.',
     'gallery_title' => 'Galerie',
     'gallery_description' => 'Sélectionnez des photos pour les supprimer, ou ajoutez-en de nouvelles.',
+    'daily_description' => 'Ce qui change tous les jours. Ces plats sont affichés sur la page d’accueil et en tête de la carte ; ils ne réapparaissent pas dans les sections ci-dessous.',
     'menu_title' => 'Sections de la carte',
     'menu_description' => 'Glissez une section pour la réordonner. Chaque section contient ses plats.',
+    'review_title' => 'À relire',
+    'review_description' => 'Les plats dont la version anglaise est encore celle de la machine.',
+    'review_more' => 'les :n premiers sont listés ci-dessous',
 
     'auto' => 'auto',
 
+    // Métriques — une bande de chiffres en tête de chaque écran, lus avant
+    // qu'un panneau ait à être ouvert.
+    'metric' => [
+        'status' => 'État actuel',
+        'days_open' => 'Jours de service',
+        'next_closure' => 'Prochaine fermeture',
+        'sections' => 'Sections',
+        'dishes' => 'Plats à la carte',
+        'daily' => 'Plats du jour',
+        'to_review' => 'traductions à relire',
+        'pages' => 'Pages publiques',
+        'photos' => 'Photos',
+    ],
+
     'hint' => [
         'translation' => 'Écrivez en français. Un champ anglais laissé vide est traduit automatiquement et suit ensuite le français ; dès que vous y écrivez quelque chose, c’est votre texte qui reste.',
-        'daily_language' => 'La carte du jour s’écrit en français. L’anglais est traduit automatiquement et se corrige dans Administration → Carte.',
         'auto' => 'Traduction automatique, pas encore relue.',
     ],
 
@@ -96,12 +113,14 @@ return [
         'daily' => 'Aucun plat du jour affiché. Le bouton ci-dessus en compose un.',
         'hours' => 'Aucun horaire enregistré.',
         'daily_sections' => 'Créez d’abord une section dans la carte : le plat du jour y est rangé comme n’importe quel plat.',
+        'review' => 'Tout l’anglais de la carte a été relu.',
     ],
 
     'gallery' => [
         'delicacies' => 'Accueil',
         'restaurant' => 'Restaurant',
         'hotel' => 'Hôtel',
+        'select' => 'Sélectionner la photo :n',
     ],
 
     'status' => [

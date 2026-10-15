@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <title>Un caquelon de fondue, une fourchette qui en ressort avec son pain</title>
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.48" r="0.5">
+      <stop offset="0" stop-color="#F26B1D" stop-opacity="0.28"></stop>
+      <stop offset="1" stop-color="#F26B1D" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="flame" cx="0.5" cy="0.6" r="0.5">
+      <stop offset="0" stop-color="#FF8A3D" stop-opacity="0.8"></stop>
+      <stop offset="1" stop-color="#FF8A3D" stop-opacity="0"></stop>
+    </radialGradient>
+    <linearGradient id="pot" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8f3420"></stop>
+      <stop offset="0.4" stop-color="#c2502a"></stop>
+      <stop offset="1" stop-color="#7a2c1a"></stop>
+    </linearGradient>
+    <g id="cube"><rect x="-26" y="-22" width="52" height="44" rx="8" fill="#e7cb96" stroke="#b87a3e" stroke-width="6"></rect></g>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 0.08"></feFuncA></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1200" height="900" fill="#1E1B18"></rect>
+  <circle cx="600" cy="460" r="440" fill="url(#glow)"></circle>
+  <rect x="0" y="720" width="1200" height="180" fill="#15120f"></rect>
+  <ellipse cx="600" cy="726" rx="250" ry="20" fill="#000" fill-opacity="0.45"></ellipse>
+  <path d="M430 720 L470 610 M770 720 L730 610 M600 720 V620" stroke="#3a3632" stroke-width="12" stroke-linecap="round"></path>
+  <ellipse cx="600" cy="640" rx="120" ry="40" fill="url(#flame)"></ellipse>
+  <path d="M600 660 C585 640 588 620 600 604 C612 620 615 640 600 660 Z" fill="#FF8A3D"></path>
+  <path d="M390 430 H810 C810 560 720 620 600 620 C480 620 390 560 390 430 Z" fill="url(#pot)"></path>
+  <path d="M810 450 C880 450 930 470 960 500" stroke="#a8432a" stroke-width="26" fill="none" stroke-linecap="round"></path>
+  <ellipse cx="600" cy="430" rx="210" ry="46" fill="#a8432a"></ellipse>
+  <ellipse cx="600" cy="432" rx="186" ry="34" fill="#f2d77a"></ellipse>
+  <path d="M470 430 C520 420 560 440 600 430 C650 418 690 440 730 428" stroke="#e6c35a" stroke-width="6" fill="none"></path>
+  <path d="M600 420 C606 360 628 300 660 250" stroke="#f2d77a" stroke-width="10" fill="none" stroke-linecap="round"></path>
+  <path d="M640 430 C650 380 670 330 690 290" stroke="#f2d77a" stroke-width="5" fill="none" stroke-linecap="round" stroke-opacity="0.8"></path>
+  <g transform="rotate(28 700 230)">
+    <rect x="690" y="40" width="14" height="190" rx="7" fill="#a39b90"></rect>
+    <path d="M686 230 v40 M697 230 v44 M708 230 v40" stroke="#a39b90" stroke-width="5" stroke-linecap="round"></path>
+    <rect x="688" y="40" width="18" height="60" rx="8" fill="#F26B1D"></rect>
+  </g>
+  <use href="#cube" x="672" y="258"></use>
+  <path d="M650 276 C660 300 668 320 670 340" stroke="#f2d77a" stroke-width="12" fill="none" stroke-linecap="round"></path>
+  <g>
+    <rect x="860" y="640" width="240" height="70" rx="14" fill="#9a6d45"></rect>
+    <use href="#cube" x="910" y="630"></use><use href="#cube" x="975" y="626"></use><use href="#cube" x="1040" y="634"></use>
+  </g>
+  <rect width="1200" height="900" filter="url(#grain)"></rect>
+</svg>

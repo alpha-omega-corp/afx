@@ -20,8 +20,19 @@ class GalleryRequest extends FormRequest
      */
     public function rules(): array
     {
+        // One request for two shapes: an upload carries files, a delete
+        // carries ids. The files go to public storage as they are, so only
+        // images are accepted.
+        if ($this->isMethod('delete')) {
+            return [
+                'items' => 'required|array',
+                'items.*' => 'integer|exists:gallery_items,id',
+            ];
+        }
+
         return [
             'items' => 'required|array',
+            'items.*' => 'image|max:16384',
         ];
     }
 }

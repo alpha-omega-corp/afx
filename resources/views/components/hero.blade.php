@@ -37,6 +37,10 @@
 
     <div class="hero__inner">
         <div class="container">
+            @isset($eyebrow)
+                <div class="hero__eyebrow">{{ $eyebrow }}</div>
+            @endisset
+
             <h1 class="hero__title">{{ $title }}</h1>
 
             @if($lead)

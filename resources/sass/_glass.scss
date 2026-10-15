@@ -1,0 +1,567 @@
+// =============================================================
+// Glass — the surface ladder and the interaction grammar of the
+// back office. Mixins only, no output of its own except keyframes.
+//
+// Imported from app.scss BEFORE components/* and pages/*, so every
+// partial that follows can call these. It is not imported anywhere
+// else: two imports would emit the keyframes twice.
+//
+// Why mixins and not %placeholders: @extend hoists the rule to the
+// point where the placeholder was *defined* — which is here, before
+// every component — so a component's own `transition` line, written
+// later, would silently beat the system's. @extend is also illegal
+// inside a @media block, and half of what follows lives in one.
+// Mixins, always.
+// =============================================================
+
+// --- The ladder ----------------------------------------------
+// L1  veil     glass-veil    a bar that passes OVER scrolling content
+// L2  card     glass-card    a panel, a tile, a row that is a target
+// L2b inlay    glass-inlay   a hollow INSIDE a card — never glass
+// L3  ember    glass-ember   the one thing on the screen that changes today
+// L4  float    glass-float   modal, drawer, dropdown — over anything
+// L4w wall     glass-wall    the docked rail: a wall, not a floating panel
+//
+// The grammar, and it is the rule that keeps the depth readable:
+// ambient -> card in relief -> inlay in hollow -> float in high relief.
+// Two cards must never nest. Two stacked paper tints (.055 x 2 = .11)
+// push $paper-2 from 7.0:1 down to 6.3:1 and $ember below 5:1; the
+// second one is always an inlay.
+
+// --- Blur budget ---------------------------------------------
+// backdrop-filter is not a colour: every frame in which the content
+// behind it moves, the compositor re-reads that rectangle, blurs it in
+// two passes and recomposes. A 390px-wide bar at DPR 3 with blur(14px)
+// is ~12M texel reads per frame, and the whole frame budget is 16.7ms.
+//
+// Therefore: no agent writes `backdrop-filter` by hand. It is emitted
+// here and nowhere else, and gated as follows.
+//   - repeated / scrolling surfaces (veil, card, ember, wall): lg and up
+//   - float: every size, because exactly one is ever on screen and it
+//     is static while open
+//   - $blur: false on any surface that repeats (metric tiles, gallery
+//     tiles) or that is taller than a viewport
+// Below lg the surfaces stay translucent — the ambient behind them is a
+// low-frequency gradient, so blurring it is a no-op you can see the
+// cost of and not the effect.
+@mixin glass-blur($radius: 18px, $saturate: 114%, $from: lg) {
+    @if $from == always {
+        backdrop-filter: blur($radius) saturate($saturate);
+        -webkit-backdrop-filter: blur($radius) saturate($saturate);
+    } @else {
+        @include media-breakpoint-up($from) {
+            backdrop-filter: blur($radius) saturate($saturate);
+            -webkit-backdrop-filter: blur($radius) saturate($saturate);
+        }
+    }
+}
+
+// --- The three fallbacks -------------------------------------
+// One branch, three triggers, one outcome: the surface goes opaque and
+// keeps its relief (borders, shadows, inset edges). $value is the flat
+// composite of the same recipe over $ink, so this is not a second
+// palette — it is the same surface with the glass taken out.
+//
+// Note the order of the guards: reduced-transparency is a user asking
+// for less see-through, forced-colors is the OS taking the palette back
+// entirely. Neither has anything to do with prefers-reduced-motion.
+@mixin glass-flat($value) {
+    @supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+        background: $value;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+        background: $value;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    @media (forced-colors: active) {
+        background: Canvas;
+        border-color: CanvasText;
+        box-shadow: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+
+// --- L1 · veil -----------------------------------------------
+// The sticky topbar, the gallery switch bar. Anything the page slides
+// under. Ink floor 0.74 (never below 0.72: under that the ambient ember
+// comes up through it and $paper-2 on the title drops under 7:1).
+//
+// Emits surface properties only — no position, no z-index — so it can
+// be applied to the element or to a ::before of it. The ::before form is
+// the canonical one for the topbar: it keeps the buttons out of the
+// filtered subtree, so a hover scale does not invalidate the blurred
+// rectangle 60 times a second. See the topbar recipe in the contract.
+@mixin glass-veil($edge: bottom, $blur: true) {
+    background: rgba($g-base, 0.74);
+    border-#{$edge}: 1px solid rgba($g-tint, 0.08);
+    border-radius: 0;
+    box-shadow:
+        inset 0 -1px 0 rgba($g-tint, 0.07),   // the glass edge
+        0 10px 26px -22px rgba(0, 0, 0, 0.90); // nothing over the void,
+                                               // a shadow as soon as there is content under it
+
+    @if $blur { @include glass-blur(14px, 118%); }
+
+    @include glass-flat($surface-veil);
+}
+
+// --- L2 · card -----------------------------------------------
+// .admin-panel, .admin-metric, a page row, the switch track. The
+// default surface of the back office.
+//
+// Paper tint .055 at the top, .014 at the foot: composed that is
+// #201E1C, three levels off today's flat $ink-2, so moving to glass
+// does not move the perceived contrast of body copy. Ink floor 0.58 —
+// a gallery photo can pass under this.
+//
+// $blur: false wherever the surface repeats. Four 220px tiles do not
+// need four composited layers to show a gradient nobody sees move.
+@mixin glass-card($blur: true, $radius: $r-glass) {
+    background:
+        linear-gradient(180deg,
+            rgba($g-tint, 0.055) 0%,
+            rgba($g-tint, 0.022) 46%,
+            rgba($g-tint, 0.014) 100%),
+        rgba($g-base, 0.58);
+    border: 1px solid rgba($g-tint, 0.09);
+    border-radius: $radius;
+    box-shadow:
+        0 1px 0 0 rgba($g-base, 0.55),       // the card sits on a dark line
+        0 2px 6px -4px rgba(0, 0, 0, 0.65),  // contact
+        0 16px 36px -24px rgba(0, 0, 0, 0.85), // cast
+        inset 0 1px 0 rgba($g-tint, 0.10),   // top glass edge
+        inset 0 -1px 0 rgba($g-base, 0.40);  // bottom edge
+
+    // A field on glass loses its border: $line-strong is 2.4:1 here and
+    // the border of an input is, by definition, the only thing that says
+    // it exists. Every glass surface hands its children a lighter one.
+    --field-border: #{$line-glass};
+
+    @if $blur { @include glass-blur(18px, 114%); }
+
+    @include glass-flat(linear-gradient(180deg, $surface-card-top 0%, $surface-card-bottom 100%));
+}
+
+// Only for cards that are themselves targets: a page row, a gallery
+// tile. A panel is not a target and must not light up under the cursor.
+@mixin glass-card-hover {
+    border-color: rgba($g-tint, 0.16);
+    box-shadow:
+        0 1px 0 0 rgba($g-base, 0.55),
+        0 3px 8px -4px rgba(0, 0, 0, 0.68),
+        0 22px 44px -26px rgba(0, 0, 0, 0.88),
+        inset 0 1px 0 rgba($g-tint, 0.14),
+        inset 0 -1px 0 rgba($g-base, 0.40);
+}
+
+// --- L2b · inlay ---------------------------------------------
+// A hollow inside a card: .admin-section, the hours preview, a repeater
+// row, a <code> block. No blur — the parent is already near opaque, so
+// there is nothing behind to filter, and filtering it would cost a
+// composited layer per row.
+@mixin glass-inlay($radius: $r-panel) {
+    background: rgba($g-base, 0.34);
+    border: 1px solid rgba($g-tint, 0.07);
+    border-radius: $radius;
+    box-shadow:
+        inset 0 1px 2px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba($g-tint, 0.035);
+    backdrop-filter: none;
+
+    @media (prefers-reduced-transparency: reduce) { background: $surface-inlay; }
+    @media (forced-colors: active) { background: Canvas; border-color: CanvasText; box-shadow: none; }
+}
+
+// --- L3 · ember ----------------------------------------------
+// The one surface per screen that says "this changes today": the plat
+// du jour, the status tile when the auberge is shut, the current
+// closure, a selected photo.
+//
+// The radial peaks at .16 and is anchored at 0% 0%, so it lights the
+// eyebrow and nothing else: $paper-2 at the heart of the halo is 6.4:1,
+// the floor of the whole system, and the reason .16 does not go up.
+// Small ember text on this surface is $ember-hi, never $ember.
+//
+// Two of these on one screen and neither means anything. One. Per screen.
+@mixin glass-ember($blur: true, $radius: $r-glass) {
+    $flat: (
+        radial-gradient(130% 150% at 0% 0%,
+            rgba($ember, 0.16) 0%,
+            rgba($ember-lo, 0.065) 38%,
+            rgba($ember, 0) 72%),
+        linear-gradient(180deg, $surface-ember-top 0%, $surface-ember-bottom 100%)
+    );
+
+    position: relative;
+    background:
+        radial-gradient(130% 150% at 0% 0%,
+            rgba($ember, 0.16) 0%,
+            rgba($ember-lo, 0.065) 38%,
+            rgba($ember, 0) 72%),
+        linear-gradient(180deg,
+            rgba($g-tint, 0.060) 0%,
+            rgba($g-tint, 0.020) 100%),
+        rgba($g-base, 0.60);
+    border: 1px solid rgba($ember, 0.30);
+    border-radius: $radius;
+    box-shadow:
+        0 16px 40px -26px rgba(0, 0, 0, 0.88),
+        0 6px 28px -20px rgba($ember, 0.34), // downward offset, -20 spread:
+                                             // the glow never leaves the card
+        inset 0 1px 0 rgba($ember-hi, 0.20), // a warm glass edge
+        inset 0 -1px 0 rgba($g-base, 0.42);
+
+    --field-border: #{$line-glass};
+
+    @if $blur { @include glass-blur(18px, 126%); }
+
+    @include glass-flat($flat);
+}
+
+// The hairline of firelight along the top edge — the same gesture as
+// the guest-side card of the day. Call it on the L3 surface. It brings
+// its own `overflow: hidden` so the radius clips it, and its own
+// `position: relative` so it has something to be absolute against;
+// both are emitted before the nested rule, which is what keeps a caller
+// from tripping Sass's mixed-declarations warning.
+@mixin glass-ember-edge {
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 1px;
+        pointer-events: none;
+        background: linear-gradient(90deg,
+            rgba($ember, 0) 0%,
+            rgba($ember-hi, 0.85) 50%,
+            rgba($ember, 0) 100%);
+    }
+}
+
+// --- L4 · float ----------------------------------------------
+// .modal-content, .dropdown-menu, the drawer. Ink floor 0.86 — the
+// highest in the system, because a modal passes over anything at all,
+// including a grid of 60 photos. At .58 it would be unreadable there.
+//
+// Always paired with a scrim: the scrim is what makes the floor
+// reachable. Never blur a card that is INSIDE one of these — it would
+// be filtering an 86% flat, a composited layer for nothing.
+@mixin glass-float($blur: true, $radius: $r-float) {
+    background:
+        linear-gradient(180deg,
+            rgba($g-tint, 0.075) 0%,
+            rgba($g-tint, 0.028) 34%,
+            rgba($g-tint, 0.018) 100%),
+        rgba($g-base, 0.86);
+    border: 1px solid rgba($g-tint, 0.12);
+    border-radius: $radius;
+    box-shadow:
+        0 44px 88px -34px rgba(0, 0, 0, 0.94), // long cast: it is far from the page
+        0 14px 30px -18px rgba(0, 0, 0, 0.72), // contact
+        inset 0 1px 0 rgba($g-tint, 0.14),
+        inset 0 -1px 0 rgba($g-base, 0.55);
+
+    --field-border: #{$line-glass};
+
+    // `always`: one float is on screen at a time and it does not move
+    // once open. Pass $blur: false on anything that is transformed —
+    // a blurred surface riding a translate samples the wrong rectangle
+    // and shimmers on WebKit. That is why the drawer opts out.
+    @if $blur { @include glass-blur(28px, 132%, always); }
+
+    @include glass-flat(linear-gradient(180deg, $surface-float-top 0%, $surface-float-bottom 100%));
+}
+
+// --- L4-wall · the docked rail -------------------------------
+// A rail that is stuck to the edge is not floating, it is a wall: no
+// wide cast, one vertical edge, and a short shadow thrown to the right.
+@mixin glass-wall($blur: true) {
+    background:
+        linear-gradient(180deg,
+            rgba($g-tint, 0.045) 0%,
+            rgba($g-tint, 0.015) 100%),
+        rgba($g-base, 0.62);
+    border-right: 1px solid rgba($g-tint, 0.09);
+    border-radius: 0;
+    box-shadow:
+        inset -1px 0 0 rgba($g-tint, 0.05),
+        10px 0 34px -28px rgba(0, 0, 0, 0.92);
+
+    @if $blur { @include glass-blur(20px, 115%); }
+
+    @include glass-flat(linear-gradient(180deg, $surface-wall-top 0%, $surface-wall-bottom 100%));
+}
+
+// --- Scrims --------------------------------------------------
+// saturate(80%) is structural, not decoration: it desaturates the
+// ambient ember before it reaches the glass above, which is what stops
+// a modal from picking up a red cast. blur(6px) breaks the high
+// frequencies — text, thumbnails — that 14% of transparency would
+// otherwise let straight through.
+// $blur: false for a scrim whose OPACITY is animated. An element that
+// carries both a group opacity and a backdrop-filter composites the
+// filtered backdrop through that opacity — the blur arrives at partial
+// strength and it is the shape WebKit renders worst. .modal-backdrop
+// avoids it by pinning its opacity at 1; the drawer's scrim is faded by
+// Alpine and cannot, so it goes without the filter instead. It only ever
+// exists below lg, where the arbitration is "no blur" anyway.
+@mixin glass-scrim($alpha: 0.62, $blur: true) {
+    background-color: rgba($g-void, $alpha);
+
+    @if $blur {
+        backdrop-filter: blur(6px) saturate(80%);
+        -webkit-backdrop-filter: blur(6px) saturate(80%);
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+        background-color: rgba($g-void, 0.92);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+
+// =============================================================
+// Interaction
+// =============================================================
+
+// --- Pointer guard -------------------------------------------
+// Anything that changes GEOMETRY on hover goes through this. On touch,
+// :hover sticks after a tap and is only cleared by the next tap
+// elsewhere: a button left at scale(1.02) is a visible bug, and on a
+// list several can be stuck at once. Both conditions are needed —
+// `hover: hover` alone lets a stylus and some lying Android browsers
+// through, `pointer: fine` alone lets a mouse with no hover through.
+@mixin hoverable {
+    @media (hover: hover) and (pointer: fine) { @content; }
+}
+
+// --- The clickable element -----------------------------------
+// The house recipe: grow a little under the cursor, sink under the
+// press, and let go on the long ease.
+//
+// Never `transition: all`. `all` declares every animatable property a
+// candidate — filter, backdrop-filter, background-position, clip-path —
+// and inside a filtered subtree that means re-blurring the parent's
+// rectangle every frame. The list below is explicit and closed.
+//
+// The press is $d-instant and the release falls back to $d-base: that
+// asymmetry is the whole physical feel. On a phone a 200ms press lands
+// after the finger has already lifted.
+//
+// Use only where the element has >= 8px of free air on all four sides
+// and is <= 240px on its long axis. Otherwise: tappable-flat.
+@mixin tappable($hover-scale: 1.02, $press-scale: 0.95) {
+    transition:
+        transform        $d-base $ease-out,
+        background-color $d-base $ease-out,
+        border-color     $d-base $ease-out,
+        color            $d-base $ease-out,
+        box-shadow       $d-base $ease-out,
+        opacity          $d-base $ease-out;
+    -webkit-tap-highlight-color: transparent;
+
+    @include hoverable {
+        &:hover { transform: scale($hover-scale); }
+    }
+
+    &:active {
+        transform: scale($press-scale);
+        transition-duration: $d-instant;
+    }
+
+    // A scaled element overflows by (scale-1)/2 on each side and, being
+    // earlier in the DOM, can paint UNDER its next sibling. Raised only
+    // in these three states, so a list of 30 does not create 30
+    // stacking contexts at rest.
+    &:hover,
+    &:active,
+    &:focus-visible {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+// For anything inside a filtered subtree (the topbar), anything with a
+// visible container edge a hair away (the switch chips), and anything
+// wider than ~240px (a row). One pixel of lift instead of a scale.
+//
+// `translate` and not `transform`: it is an independent property, so it
+// cannot collide with a transform that Bootstrap or Alpine puts on the
+// same node, and it interpolates on its own.
+@mixin tappable-flat {
+    transition:
+        background-color $d-base $ease-out,
+        border-color     $d-base $ease-out,
+        color            $d-base $ease-out,
+        box-shadow       $d-base $ease-out,
+        translate        $d-base $ease-out;
+    -webkit-tap-highlight-color: transparent;
+
+    @include hoverable {
+        &:hover { translate: 0 -1px; }
+    }
+
+    &:active {
+        translate: 0 0;
+        transition-duration: $d-instant;
+    }
+}
+
+// --- Touch target --------------------------------------------
+// An invisible, unpainted, unmeasured pseudo-element centred on the
+// control. It exists for hit-testing and nothing else, so the button
+// keeps the size it was designed at.
+//
+// `any-pointer: coarse` and not `pointer: coarse`: the halo costs
+// nothing, and a hybrid laptop that reports a fine primary pointer
+// still gets fingers on its screen. `pointer: coarse` stays the gate
+// for anything that changes the VISIBLE size — that is already the
+// convention in _navigation.scss and _footer.scss.
+//
+// No `border-radius: inherit` — a radius eats the corners of the 44px
+// square, which are exactly the pixels a thumb lands on.
+//
+// Two rules that are not optional:
+//   1. the halo must not be clipped: keep >= 0.75rem of padding between
+//      a button and an ancestor with overflow: hidden;
+//   2. two halos must not overlap: two 36px buttons each grow 4px, so
+//      any row of them needs gap >= 0.5rem on coarse pointers. Where
+//      they overlap it is the later sibling that wins the tap — i.e.
+//      the wrong holiday gets deleted.
+@mixin tap($size: $tap) {
+    @media (any-pointer: coarse) {
+        position: relative;
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: max(100%, #{$size});
+            height: max(100%, #{$size});
+            transform: translate(-50%, -50%);
+        }
+    }
+}
+
+// The variant for a control whose ::after is already spoken for. Only
+// on a control with a transparent background — on a filled one the
+// painted surface would grow with the padding.
+@mixin tap-inset($grow: 12px) {
+    @media (any-pointer: coarse) {
+        padding: $grow;
+        margin: -$grow;
+    }
+}
+
+// --- Backlit focus -------------------------------------------
+// For text inputs and selects. :focus and not :focus-visible: the spec
+// makes the UA treat focus on a keyboard-editable field as visible
+// however you got there, and that is correct — a field must always show
+// where the caret went.
+//
+// The outline goes transparent, not none: box-shadow is dropped in
+// Windows forced-colors mode, and a transparent outline becomes visible
+// there, which is what saves the indicator. The glow itself is the
+// indicator (1px liner + 4px halo = a 4px band, ember on $ink-2 ~ 4.8:1,
+// SC 2.4.13 clear).
+//
+// `padding` is deliberately not in the transition list: Bootstrap
+// changes padding-top on .form-floating > .form-control:focus, and
+// animating it makes the text jump while someone is typing.
+@mixin field-focus {
+    border-color: $ember;
+    box-shadow: $focus-glow;
+    outline: 2px solid transparent;
+    outline-offset: 0;
+}
+
+@mixin field-transition {
+    transition:
+        border-color     $d-base $ease-out,
+        box-shadow       $d-base $ease-out,
+        background-color $d-base $ease-out;
+}
+
+// For buttons, links, labels, checkboxes: the glow only when the
+// keyboard put it there. A button left glowing after a mouse click is
+// noise. Pair with `&:focus:not(:focus-visible) { box-shadow: none; }`.
+@mixin focus-glow-button {
+    box-shadow: $focus-glow-tight;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+
+    @media (forced-colors: active) {
+        outline: 2px solid Highlight;
+        box-shadow: none;
+    }
+}
+
+// --- Collapse / expand ---------------------------------------
+// The only exact way to animate an unknown height without measuring it
+// in JS: a one-row grid whose track goes 0fr <-> 1fr.
+//
+// Apply to a WRAPPER around the content. Its single child needs
+// min-height: 0 (or it refuses to go under its content height) and
+// overflow: hidden (or it spills out of a 0fr track) — the mixin emits
+// both. Vertical spacing moves onto the wrapper as $pad, because a
+// parent's `gap` does not animate and would leave a hole where the
+// collapsed row used to be.
+//
+// Opacity leaves on $d-quick while the height takes $d-ample: the
+// content is gone before the space closes, so nobody watches fields
+// being crushed to 3px.
+//
+// Support: Chrome 107+, Safari 16+, Firefox 66+. Below that both states
+// are still valid static values, so it snaps instead of breaking — and
+// there is no @supports test for interpolability to gate it on anyway.
+//
+// The collapsed state must also be made inert, or four focusable fields
+// live on inside a 0px box. See the contract recipe.
+@mixin collapsible($pad: 0, $duration: $d-ample) {
+    display: grid;
+    grid-template-rows: 1fr;
+    padding-top: $pad;
+    transition:
+        grid-template-rows $duration $ease-out,
+        padding-top        $duration $ease-out,
+        opacity            $d-quick  $ease-out;
+
+    > * {
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    &.is-collapsed {
+        grid-template-rows: 0fr;
+        padding-top: 0;
+        opacity: 0;
+    }
+}
+
+// =============================================================
+// Keyframes
+// =============================================================
+// Every one of them ends on the resting state and every use carries
+// `both`: under prefers-reduced-motion the duration collapses to
+// 0.001ms and fill-mode is what guarantees the element is left VISIBLE
+// rather than stuck at opacity 0. That is the whole safety of §motion.
+
+@keyframes glass-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes glass-pop {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: none; }
+}

@@ -1,64 +1,161 @@
-.tab {
+// =============================================================
+// Tabs — a segmented control, with a thumb that slides.
+//
+// The track is a hollow (inlay) and the thumb is the one thing raised out
+// of it, which is the same depth grammar as the rest of the back office:
+// ambient -> card -> inlay -> the thing on top.
+//
+// The slide is done in CSS alone, with no JavaScript and no measuring.
+// The track publishes how many tabs it has (--tab-count, written into the
+// markup by Blade, server side), and a :has() rule reads which one is
+// selected off `aria-selected` — the attribute Alpine is already binding
+// for accessibility — into --tab-i. The thumb is one tab wide and
+// translates by whole multiples of itself.
+//
+// Where :has() is missing the thumb is not shown at all and the selected
+// tab paints its own ground instead: the same control, without the travel.
+// That is why the selected state is never carried by the thumb alone —
+// colour, weight AND a ground, three cues, in both branches.
+// =============================================================
 
-    .tab-list-item {
-        list-style-type: none;
-        display: flex;
-        align-items: end;
+.tab__nav {
+    position: relative;
+    display: flex;
+    gap: 0;
+    padding: 0.25rem;
+    margin: 0;
+
+    @include glass-inlay($r-panel);
+}
+
+.tab__link {
+    position: relative;
+    z-index: 1;
+    // Equal thirds, halves, sixths — whatever there are. The thumb's width
+    // is computed from the same assumption, so this is not a preference.
+    flex: 1 1 0;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 40px;
+    padding: 0.5rem 0.9rem;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: $r-control;
+    color: $paper-2;
+    font-family: $font-body;
+    font-size: $fs-small;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+
+    // Flat: the chip sits a hair from the track's own border, and a scaled
+    // 1px edge miroirs against it.
+    @include tappable-flat;
+    // 40px drawn, 44px to a thumb. The halo only grows on the axis that is
+    // short, and its neighbours are to the left and right, so no two of
+    // these can overlap and steal each other's taps.
+    @include tap;
+
+    @include hoverable {
+        &:hover { color: $paper; }
     }
 
-    .tab-list-horizontal {
-        padding: 0;
-        overflow-x: scroll;
-        position: relative;
-        margin: 0 20px 0 20px;
-        display: flex;
-
-        .tab-button {
-            cursor: pointer;
-            padding: 10px;
-            background-color: transparent;
-            color: $gray;
-            border: 1px solid #ffffff;
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-
-            .tab-icon {
-                font-weight: bold;
-            }
-        }
-
-        .tab-button-inactive {
-            font-size: 12px;
-        }
-
-        .tab-button:hover {
-            .tab-icon {
-                color: $ember;
-            }
-        }
+    // $ember-hi and not $ember: on the raised thumb (paper tint .10, i.e.
+    // #2A2825) $ember measures 4.99:1 and this text is under 18px.
+    // $ember-hi gives 6.2:1.
+    &[aria-selected="true"] {
+        color: $ember-hi;
+        background-color: rgba($g-tint, 0.10);
+        border-color: rgba($g-tint, 0.14);
     }
 
-    .tab-page {
-        .tab-page-header {
-            position: relative;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-        }
+    &:focus-visible { @include focus-glow-button; }
+    &:focus:not(:focus-visible) { box-shadow: none; }
+}
 
-        .tab-page-content {
-            border-top: 1px solid $gray;
-            position: relative;
-            padding: 20px;
+// Its own element rather than the button's text node: a label that is
+// too long for its share of the track has to be able to clip, and a flex
+// item cannot ellipsize itself.
+.tab__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Hidden until :has() is available to drive it — see the note at the top.
+.tab__thumb {
+    display: none;
+    position: absolute;
+    z-index: 0;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    left: 0.25rem;
+    width: calc((100% - 0.5rem) / var(--tab-count, 1));
+    border-radius: $r-control;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba($g-tint, 0.10) 0%, rgba($g-tint, 0.045) 100%);
+    border: 1px solid rgba($g-tint, 0.14);
+    box-shadow:
+        0 1px 0 rgba($g-base, 0.50),
+        0 6px 14px -10px rgba(0, 0, 0, 0.80),
+        inset 0 1px 0 rgba($g-tint, 0.12);
+    translate: calc(var(--tab-i, 0) * 100%) 0;
+    // One property, named. Under prefers-reduced-motion app.scss collapses
+    // the duration and the thumb simply appears where it belongs.
+    transition: translate $d-base $ease-out;
+
+    // The opaque twin of the tint above, written out because there is no
+    // token for these two stops: #2A2825 is a .10 paper tint composited on
+    // $ink and #232120 a .045 one, i.e. exactly the gradient this thumb
+    // paints when it can be transparent. (Contract §0.1: a value the
+    // foundation does not carry is written flat in the partial that needs
+    // it, never added to _tokens.scss.)
+    @include glass-flat(linear-gradient(180deg, #2A2825 0%, #232120 100%));
+}
+
+@supports selector(:has(*)) {
+    .tab__thumb { display: block; }
+
+    // The thumb has taken the ground over; the button keeps only the
+    // colour and the weight.
+    .tab__link[aria-selected="true"] {
+        background-color: transparent;
+        border-color: transparent;
+    }
+
+    // A closed list, like every other list in this build. Six is well past
+    // anything a locale switcher will ever hold, and a seventh tab simply
+    // leaves the thumb at rest rather than putting it in the wrong place.
+    @for $i from 1 through 6 {
+        .tab__nav:has(> .tab__link:nth-child(#{$i})[aria-selected="true"]) {
+            --tab-i: #{$i - 1};
         }
     }
 }
 
-.tab-page-content-offset {
-    padding-left: 110px;
-    padding-right: 20px;
-    padding-top: 20px;
-    min-height: 250px;
+.tab__panels {
+    // The panels are swapped by x-show, so only one is in flow at a time
+    // and the block's height is whichever one is showing.
+    padding-top: 1rem;
+}
 
+.tab__panel-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.tab__panel-body {
+    // The fields below carry their own .mb-3; anything more here reads as
+    // a gap the tab strip left behind.
+    > *:last-of-type { margin-bottom: 0; }
 }

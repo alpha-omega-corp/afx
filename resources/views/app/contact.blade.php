@@ -3,15 +3,10 @@
 @section('title', ucfirst(__('nav.contact')) . ' — ' . __('app.title'))
 
 @section('content')
-    <x-page :image="$page?->image" :title="$page?->locale?->title ?: ucfirst(__('nav.contact'))" :band="false" :rule="true" embers="quiet">
-
-        @if($page?->locale?->content)
-            <div class="app-page__intro">
-                <div class="container">
-                    <p class="prose">{{ $page->locale->content }}</p>
-                </div>
-            </div>
-        @endif
+    <x-page :page="$page" :title="$page?->locale?->title ?: ucfirst(__('nav.contact'))" :facts="false">
+        {{-- The facts follow in full below, so the panel carries only the
+             words and the drawing. --}}
+        <x-slot:art><x-illustration.map/></x-slot:art>
 
         <div class="container app-contact">
             {{-- The details and nothing else. There was a message form here;

@@ -4,27 +4,63 @@
      id found the first row's input and the row being edited submitted nothing.
      A ref is scoped to its own component, which is what this always meant. --}}
 <div class="mb-3 w-100" x-data="{ preview: @js($file ? asset($file) : null) }">
-    {{-- Nothing chosen yet: the whole block is the target. --}}
-    <button type="button" class="file-upload" x-show="!preview" @click="$refs.input.click()">
+    {{-- Nothing chosen yet: the whole block is the target.
+
+         The dropzone and the preview are two mutually exclusive blocks in
+         normal flow. They are SEQUENCED, never cross-faded: the arriving one
+         waits out the leaving one (.delay-120 below), or everything under
+         this field jumps by the difference in their heights mid-swap. --}}
+    <button
+        type="button"
+        class="file-upload"
+        x-show="!preview"
+        @click="$refs.input.click()"
+        x-transition:enter="tr-enter"
+        x-transition:enter-start="tr-from"
+        x-transition:enter-end="tr-to"
+        x-transition:leave="tr-leave"
+        x-transition:leave-start="tr-to"
+        x-transition:leave-end="tr-from"
+    >
         @svg('heroicon-o-cloud-arrow-down')
-        <span>{{ $label }}</span>
+        {{-- $label is optional on this component and the page editor passes
+             none, which left the button with an icon and an empty span —
+             i.e. no accessible name at all. No new string: the gallery's own
+             verb already says exactly this. --}}
+        <span>{{ $label ?: __('admin.action.add_images') }}</span>
     </button>
 
     {{-- Chosen, or already saved: the picture itself, with a way back to the
          picker over it. --}}
-    <div class="file-preview" x-show="preview" x-cloak>
+    <div
+        class="file-preview"
+        x-show="preview"
+        x-cloak
+        x-transition:enter="tr-enter delay-120"
+        x-transition:enter-start="tr-from"
+        x-transition:enter-end="tr-to"
+        x-transition:leave="tr-leave"
+        x-transition:leave-start="tr-to"
+        x-transition:leave-end="tr-from"
+    >
         <div class="file-label">
             <div class="preview-icon">
                 @svg('heroicon-o-photo')
             </div>
-            <div class="preview-label">{{ $label }}</div>
+            <div class="preview-label">{{ $label ?: __('admin.action.add_images') }}</div>
         </div>
 
-        <button type="button" class="preview-edit" @click="$refs.input.click()" aria-label="{{ $label }}">
+        <button
+            type="button"
+            class="preview-edit"
+            @click="$refs.input.click()"
+            aria-label="{{ $label ?: __('admin.action.edit') }}"
+            title="{{ $label ?: __('admin.action.edit') }}"
+        >
             @svg(Icon::EDIT->value)
         </button>
 
-        <img class="image-preview" :src="preview" alt="">
+        <img class="image-preview" :src="preview" alt="" loading="lazy" decoding="async">
     </div>
 
     <input

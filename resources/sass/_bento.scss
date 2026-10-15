@@ -1,0 +1,85 @@
+// =============================================================
+// Bento — the asymmetric grid of the back office.
+//
+// Imported from app.scss BEFORE components/* and pages/*.
+//
+// The founding rule, and the reason this file is three rules long:
+// A SPAN CLASS NEVER DECLARES `grid-column`. It declares a custom
+// property, and only the container reads it, and only inside a
+// min-width query. Below md the property still exists and nobody reads
+// it, so no cell CAN be two columns wide. Single-column on a phone is
+// not a media query that somebody has to remember to write — it is the
+// only state the stylesheet is able to express there.
+// =============================================================
+
+$bento-md: 6;   // 768px and up
+$bento-xl: 12;  // 1200px and up
+
+// Why the ladder stops at 6 until xl, and why xl and not lg:
+// at 992px the rail appears and the content box LOSES 260px
+// (912px -> 652px). A "4 of 12" cell would be 217px there, and a panel
+// header — title plus a labelled action — breaks onto three lines under
+// ~280px. lg is a narrowing, not a widening; 12 columns wait for xl,
+// where the same cell is 281px. 280px is the floor: a span that puts a
+// cell under it at its own breakpoint is a composition bug, not a
+// responsive case.
+// The gutter between cells. It opens as the box does, and it never sits
+// under the 1.5rem the single-column shell used before the bento existed:
+// 1.5rem from md up, more from xxl, and a tighter 1.25rem reserved for the
+// one width where the padding matters more than the gap — a phone.
+.admin-bento {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--bento-gap, 1.25rem);
+
+    // A short card must not stretch to its tall neighbour's height.
+    // This single line is what makes a grid read as a bento instead of
+    // as a table of equal boxes.
+    align-items: start;
+
+    // Outside any media query, so this is the default state of every
+    // direct child. min-width: 0 is not optional: the initial value is
+    // `auto`, and one long dish name in a nested grid would then push
+    // the whole track wider than the viewport.
+    > * {
+        grid-column: 1 / -1;
+        min-width: 0;
+    }
+
+    @include media-breakpoint-up(md) {
+        grid-template-columns: repeat($bento-md, minmax(0, 1fr));
+        // The default is full width: a cell that forgets to declare a
+        // span stays full width, it never becomes an orphaned half.
+        > * { grid-column: span var(--span-md, #{$bento-md}); }
+    }
+
+    @include media-breakpoint-up(xl) {
+        grid-template-columns: repeat($bento-xl, minmax(0, 1fr));
+        > * { grid-column: span var(--span-xl, #{$bento-xl}); }
+    }
+
+    @include media-breakpoint-up(md)  { --bento-gap: 1.5rem; }
+    @include media-breakpoint-up(xxl) { --bento-gap: 1.75rem; }
+}
+
+// The closed list. Nothing outside these 18 class names places anything
+// in this grid — no inline style, no Bootstrap column, no grid-row.
+@for $i from 1 through $bento-md { .bento-md-#{$i} { --span-md: #{$i}; } }
+@for $i from 1 through $bento-xl { .bento-xl-#{$i} { --span-xl: #{$i}; } }
+
+// The backstop. Unnecessary against the mechanism above and mandatory
+// anyway: an inline `style="grid-column: span 4"` or a stray Bootstrap
+// .g-col-* would beat the base rule on specificity, and the one thing
+// this grid must never do is put two cells side by side on a phone.
+@include media-breakpoint-down(md) {
+    .admin-bento > * { grid-column: 1 / -1 !important; }
+}
+
+// A cell that has to sit at the top of its row rather than stretch —
+// a sticky upload panel next to a long photo grid, for instance.
+.bento-sticky {
+    @include media-breakpoint-up(xl) {
+        position: sticky;
+        top: calc(var(--nav-h) + 1.25rem);
+    }
+}

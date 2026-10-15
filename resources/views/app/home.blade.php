@@ -12,13 +12,30 @@
          photograph — it goes bare, on warm black. A missing row is a page
          that reads a little plainer, never a page that will not open. --}}
     <x-page
-        :image="$page?->image"
+        :page="$page"
         :title="__('app.title')"
         :lead="$page?->locale?->title"
         :tall="true"
         :embers="true"
         :parallax="true"
+        :rule="false"
+        :intro="false"
     >
+        {{-- Today's dish, named in the hero itself: the first thing a
+             returning guest looks for, readable before any scrolling. --}}
+        @if($specials->isNotEmpty())
+            <x-slot:eyebrow>
+                <a href="#plat-du-jour" class="hero-chip">
+                    <span class="hero-chip__label"><span class="hero-chip__dot" aria-hidden="true"></span>{{ __('app.daily') }}</span>
+                    <span class="hero-chip__dish">{{ $specials->first()->locale?->title }}</span>
+                    @if($specials->count() > 1)
+                        <span class="hero-chip__more">+{{ $specials->count() - 1 }}</span>
+                    @endif
+                    @svg('heroicon-o-arrow-down', 'hero-chip__go')
+                </a>
+            </x-slot:eyebrow>
+        @endif
+
         <x-slot:actions>
             {{-- The number is the one this button opens a conversation with,
                  not the landline: a button that shows one number and dials
@@ -64,9 +81,15 @@
 
         <section class="home-lede">
             <div class="container" data-strip>
-                <h2 class="app-section__title">{{ __('app.welcome') }}</h2>
+                <div class="home-lede__intro">
+                    <div>
+                        <h2 class="app-section__title">{{ __('app.welcome') }}</h2>
 
-                <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
+                        <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
+                    </div>
+
+                    <x-illustration.auberge class="home-lede__art"/>
+                </div>
 
                 {{-- Directly above the track: beside the heading these read as
                      decoration on the words rather than as controls for the

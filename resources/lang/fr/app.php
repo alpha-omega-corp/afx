@@ -33,4 +33,8 @@ return [
     'skip' => 'Aller au contenu',
     'previous' => 'Précédent',
     'next' => 'Suivant',
+    'today' => 'Aujourd’hui',
+    'see_daily' => 'Voir le plat du jour',
+    'practical' => 'Infos pratiques',
+    'reservations' => 'Réservations',
 ];

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <title>Une table dressée vue d'en haut : des filets de perche au citron, du pain, un verre de rouge</title>
+  <defs>
+    <radialGradient id="lamp" cx="0.5" cy="0.45" r="0.6">
+      <stop offset="0" stop-color="#FF8A3D" stop-opacity="0.16"></stop>
+      <stop offset="1" stop-color="#FF8A3D" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="wine" cx="0.4" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#9a3040"></stop>
+      <stop offset="1" stop-color="#5a1822"></stop>
+    </radialGradient>
+    <linearGradient id="crust" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e2ad5a"></stop>
+      <stop offset="1" stop-color="#b9782f"></stop>
+    </linearGradient>
+    <g id="fillet">
+      <path d="M0 -24 C55 -34 120 -30 158 -12 C170 -2 162 16 138 22 C86 32 34 30 2 20 C-12 10 -12 -14 0 -24 Z" fill="url(#crust)" stroke="#9c6526" stroke-width="3"></path>
+      <path d="M22 -8 C60 -14 100 -12 130 -4" fill="none" stroke="#f2cf8a" stroke-width="5" stroke-linecap="round" stroke-opacity="0.8"></path>
+    </g>
+    <rect id="frite" x="-8" y="-46" width="16" height="92" rx="7" fill="#eac25c" stroke="#c9982f" stroke-width="2"></rect>
+    <g id="crumb"><circle r="4" fill="#c98c4e"></circle></g>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 0.08"></feFuncA></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="#1E1B18"></rect>
+  <g stroke="#14110e" stroke-width="5">
+    <path d="M0 150 H1600 M0 330 H1600 M0 510 H1600 M0 690 H1600"></path>
+  </g>
+  <g fill="none" stroke="#2E2A25" stroke-width="3" stroke-opacity="0.7">
+    <path d="M0 60 C300 50 600 80 900 62 S1400 50 1600 70"></path>
+    <path d="M0 240 C260 228 520 255 820 238 S1350 226 1600 246"></path>
+    <path d="M0 420 C320 410 640 436 960 418 S1420 408 1600 426"></path>
+    <path d="M0 600 C280 588 560 614 880 598 S1390 588 1600 606"></path>
+    <path d="M0 790 C300 780 620 804 940 788 S1410 778 1600 796"></path>
+  </g>
+  <rect width="1600" height="900" fill="url(#lamp)"></rect>
+
+  <rect x="395" y="200" width="130" height="500" rx="8" fill="#F26B1D" transform="rotate(-4 460 450)"></rect>
+  <rect x="395" y="200" width="130" height="500" rx="8" fill="none" stroke="#B84A0E" stroke-width="4" stroke-dasharray="2 10" transform="rotate(-4 460 450) translate(10 10) scale(0.985)"></rect>
+  <g transform="rotate(-4 460 450)">
+    <rect x="449" y="430" width="22" height="240" rx="11" fill="#a9a296"></rect>
+    <rect x="447" y="250" width="26" height="190" rx="10" fill="#bfb8ac"></rect>
+    <path d="M447 250 v-40 M456 250 v-44 M464 250 v-44 M473 250 v-40" stroke="#bfb8ac" stroke-width="6" stroke-linecap="round"></path>
+  </g>
+
+  <circle cx="818" cy="468" r="262" fill="#000" fill-opacity="0.35"></circle>
+  <circle cx="800" cy="450" r="262" fill="#efe8dc"></circle>
+  <circle cx="800" cy="450" r="205" fill="#f6f1e8" stroke="#ddd3c3" stroke-width="4"></circle>
+  <g transform="translate(800 450)">
+    <use href="#fillet" transform="translate(-150 -120) rotate(18)"></use>
+    <use href="#fillet" transform="translate(-120 -60) rotate(14)"></use>
+    <use href="#fillet" transform="translate(-90 0) rotate(10)"></use>
+    <g transform="translate(20 110)">
+      <use href="#frite" transform="translate(-60 0) rotate(-62)"></use>
+      <use href="#frite" transform="translate(-40 16) rotate(-48)"></use>
+      <use href="#frite" transform="translate(-18 -4) rotate(-70)"></use>
+      <use href="#frite" transform="translate(4 18) rotate(-40)"></use>
+      <use href="#frite" transform="translate(24 0) rotate(-58)"></use>
+      <use href="#frite" transform="translate(-30 34) rotate(-80)"></use>
+      <use href="#frite" transform="translate(40 30) rotate(-66)"></use>
+    </g>
+    <g transform="translate(110 -10) rotate(-10)">
+      <path d="M-70 0 A70 70 0 0 1 70 0 Z" fill="#e8b92b"></path>
+      <path d="M-60 0 A60 60 0 0 1 60 0 Z" fill="#f4dc6c"></path>
+      <path d="M0 0 L-42 -42 M0 0 L0 -58 M0 0 L42 -42" stroke="#e8c648" stroke-width="4"></path>
+    </g>
+    <g fill="#5e7d35">
+      <ellipse cx="96" cy="58" rx="16" ry="8" transform="rotate(-30 96 58)"></ellipse>
+      <ellipse cx="118" cy="70" rx="14" ry="7" transform="rotate(20 118 70)"></ellipse>
+      <ellipse cx="104" cy="82" rx="12" ry="6" transform="rotate(-60 104 82)"></ellipse>
+    </g>
+    <circle cx="-118" cy="110" r="46" fill="#e6dcc6"></circle>
+    <circle cx="-118" cy="110" r="36" fill="#f3ecdc"></circle>
+    <circle cx="-126" cy="100" r="5" fill="#8aa05a"></circle><circle cx="-108" cy="118" r="4" fill="#8aa05a"></circle>
+  </g>
+
+  <g transform="rotate(4 1150 450)">
+    <path d="M1136 250 C1170 250 1176 330 1170 420 L1156 440 L1136 440 Z" fill="#cfc8bc"></path>
+    <rect x="1134" y="440" width="24" height="230" rx="11" fill="#a9a296"></rect>
+  </g>
+
+  <circle cx="1290" cy="220" r="78" fill="#000" fill-opacity="0.3"></circle>
+  <circle cx="1280" cy="210" r="78" fill="none" stroke="#6c665d" stroke-width="5"></circle>
+  <circle cx="1280" cy="210" r="60" fill="url(#wine)"></circle>
+  <path d="M1244 180 A48 48 0 0 1 1300 164" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="8" stroke-linecap="round"></path>
+
+  <ellipse cx="220" cy="175" rx="150" ry="100" fill="#000" fill-opacity="0.3"></ellipse>
+  <ellipse cx="210" cy="165" rx="150" ry="100" fill="#6b4a2f"></ellipse>
+  <ellipse cx="210" cy="165" rx="128" ry="80" fill="#4a3220"></ellipse>
+  <g transform="translate(210 165)">
+    <ellipse cx="-40" cy="-6" rx="62" ry="42" fill="#c98c4e" transform="rotate(-18)"></ellipse>
+    <ellipse cx="-40" cy="-6" rx="48" ry="30" fill="#ecd3a3" transform="rotate(-18)"></ellipse>
+    <ellipse cx="42" cy="12" rx="62" ry="42" fill="#b87a3e" transform="rotate(14)"></ellipse>
+    <ellipse cx="42" cy="12" rx="48" ry="30" fill="#e7cb96" transform="rotate(14)"></ellipse>
+  </g>
+
+  <circle cx="1260" cy="690" r="26" fill="#e8e2d8"></circle>
+  <circle cx="1318" cy="700" r="26" fill="#2b2622" stroke="#4a443d" stroke-width="3"></circle>
+  <use href="#crumb" x="620" y="770"></use><use href="#crumb" x="660" y="790"></use><use href="#crumb" x="1010" y="120"></use>
+  <use href="#crumb" x="560" y="140"></use><use href="#crumb" x="1060" y="760"></use>
+  <rect width="1600" height="900" filter="url(#grain)"></rect>
+</svg>

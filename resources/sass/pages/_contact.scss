@@ -3,7 +3,19 @@
 // =============================================================
 
 .app-contact {
-    padding-block-end: $section-gap;
+    padding-block: $section-gap;
+
+    // The details and the map side by side once there is room: the list on
+    // its own left half the page empty beside it.
+    @include media-breakpoint-up(lg) {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+        gap: clamp(2.5rem, 5vw, 4.5rem);
+        align-items: start;
+
+        .app-map { margin-top: 0; }
+        .app-map__frame { height: clamp(320px, 46vh, 460px); }
+    }
 
     // The details used to share the row with a message form. On their own
     // they are a short list, and a short list read across the full grid is a

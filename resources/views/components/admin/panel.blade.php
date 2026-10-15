@@ -1,4 +1,7 @@
-<section class="admin-panel">
+{{-- $attributes on the root: without it every class passed at the call site
+     is silently dropped, and a bento cell that cannot take a class is not a
+     cell. --}}
+<section {{ $attributes->class(array_filter(['admin-panel', 'admin-panel--' . $tone, $cell])) }}>
     <header class="admin-panel__header">
         <div class="admin-panel__heading">
             @if($title)

@@ -1,18 +1,251 @@
+// =============================================================
+// Modal — L4, the floating glass
+// =============================================================
+// Every write in the back office goes through this component: a page,
+// seven days of opening hours, a closure, a carte section and its
+// repeater, an upload, a delete confirmation. It is the most-seen
+// surface of the admin and the only one that is ever alone on screen.
+//
+// It is also the one component of this refit the GUEST side uses — the
+// login modal in layouts/guest.blade.php is the same component — so
+// nothing here may assume `body.admin` or the admin ambient behind it.
+//
+// _bootstrap.scss is frozen, so none of the Sass-level $modal-* defaults
+// can be changed. Everything below either goes through the runtime
+// custom properties Bootstrap declares on `.modal` (redeclared here, and
+// winning on source order at equal specificity) or is author CSS written
+// after Bootstrap's own rules. Nothing is fought with !important.
+
+// --- Bootstrap's runtime variables ---------------------------
+// Routed through the variables rather than overridden selector by
+// selector, so Bootstrap's own inner rules — the header and footer
+// corner radii, the footer's per-child spacing — stay in step instead of
+// drifting away from the values we actually paint.
+.modal {
+    // L4 is the roundest step of the ladder. `inner` is what the header
+    // and footer use for their own corners: one border width less, so
+    // they sit INSIDE the content's radius instead of across it.
+    --bs-modal-border-radius: #{$r-float};
+    --bs-modal-inner-border-radius: #{$r-float - 1px};
+
+    // Bootstrap spaces footer children with a margin on each of them
+    // (`> * { margin: calc(var(--bs-modal-footer-gap) * .5) }`). Zeroed
+    // here because the footer below uses a real `gap`; left at .5rem the
+    // two mechanisms would add up and the buttons would sit 1rem apart.
+    // The footer's own padding reads this variable too, which is why the
+    // padding is then restated explicitly.
+    --bs-modal-footer-gap: 0;
+
+    // Hairlines: the same paper edge as every other seam in the system.
+    // Decoration only — nothing here is the sole indicator of a control
+    // (G6), the header and footer are separated by tone as well.
+    --bs-modal-header-border-color: #{rgba($g-tint, 0.08)};
+    --bs-modal-footer-border-color: #{rgba($g-tint, 0.08)};
+
+    // The header's padding is set as variables and not as a `padding`
+    // declaration on .modal-header, because Bootstrap derives the close
+    // button's own padding and negative margins from these two. Setting
+    // the padding directly would leave the button hanging at the old
+    // offsets.
+    --bs-modal-header-padding-y: 1.15rem;
+    --bs-modal-header-padding-x: 1.5rem;
+    --bs-modal-header-padding: 1.15rem 1.5rem;
+}
+
+// --- The surface ---------------------------------------------
+.modal-content {
+    // NEVER put a transform on .modal-content. It would become the
+    // containing block of any position:fixed descendant, and a dropdown
+    // Popper positions inside the dialog would be trapped in it. The
+    // motion stays on .modal-dialog, where Bootstrap keeps it.
+    //
+    // The blur below already makes this element such a containing block
+    // — that is the standing price of L4 glass, and the reason nothing
+    // position:fixed may be opened from INSIDE a modal.
+    //
+    // Last declaration of the block on purpose: glass-float emits
+    // @supports and @media branches, and a plain declaration written
+    // after them trips Sass's mixed-decls warning.
+    @include glass-float;
+}
+
+// An L2 inside an L4 is blurring an 86% flat: a composited layer for a
+// difference nobody can see.
+//
+// ::after and not the box: the panel's whole surface — tint, border, blur —
+// lives on a layer of its own at z-index -1, so a guard written against
+// .admin-panel itself has nothing left to switch off.
+.modal-content .admin-panel::after {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+// --- The scrim -----------------------------------------------
+.modal-backdrop {
+    // Bootstrap fades the ELEMENT's opacity from 0 up to
+    // var(--bs-backdrop-opacity), and an element that carries both a
+    // group opacity and a backdrop-filter composites the filtered
+    // backdrop through that opacity: the blur would arrive at two thirds
+    // strength, and it is the exact shape WebKit renders worst. Pinned
+    // at 1 and the alpha moved into the colour instead — same veil, same
+    // fade, and the blur can come from the mixin like every other
+    // surface, fallbacks included.
+    --bs-backdrop-opacity: 1;
+
+    // saturate(80%) is structural: it takes the ember out of the ambient
+    // before it reaches the glass above, or the halo comes up through
+    // 14% of transparency and pushes the whole dialog red.
+    @include glass-scrim(0.66);
+}
+
+// --- Entrance and exit ---------------------------------------
+// Bootstrap owns the classes: `.fade` is on the element from the start,
+// `.show` goes on at open and comes off at close. We only replace what
+// the two states look like.
+//
+// The order inside the transition list is not cosmetic. Bootstrap reads
+// getComputedStyle(el).transitionDuration, splits on "," and keeps only
+// the FIRST value to decide when to emit shown.bs.modal — so the longest
+// duration has to lead, or the event fires mid-animation.
+.modal.fade .modal-dialog {
+    // Down and slightly small: the dialog arrives from behind the page
+    // rather than sliding in from off-screen, which is what makes a
+    // 16px-radius sheet of glass read as glass and not as a panel.
+    transform: scale(0.97) translateY(14px);
+    transition: transform $d-ample $ease-out, opacity 180ms $ease-out;
+}
+
+// Restated after the rule above, and this is load-bearing: Bootstrap
+// emits `.modal.show .modal-dialog` BEFORE our `.modal.fade
+// .modal-dialog`, both at (0,2,1), so without this line the resting
+// state would lose on source order and the dialog would never settle.
+.modal.show .modal-dialog { transform: none; }
+
+// Same reason: the static-backdrop nudge is emitted upstream of both.
+.modal.modal-static .modal-dialog { transform: scale(1.02); }
+
+// The container and the scrim cross-fade faster than the dialog travels.
+// The light is back before the sheet has finished leaving, which is what
+// makes the close read as quicker than it is.
+.modal.fade,
+.modal-backdrop.fade { transition: opacity 180ms $ease-out; }
+
+// --- Header --------------------------------------------------
+.modal-header {
+    // A hollow, not a tint: ink over the float surface only ever raises
+    // the ink floor, so the band reads as recessed and the contrast of
+    // the title goes up rather than down.
+    background-color: rgba($g-base, 0.30);
+    align-items: center;
+    gap: 1rem;
+}
+
+.modal-title {
+    // A modal title is a label on a task, not editorial copy: Inter and
+    // not Playfair, which is also what .admin-panel__title does — the
+    // same voice at the same size, so a panel and the dialog it opens
+    // are recognisably one system. The tracking is what carries it:
+    // uppercase at 15px with no tracking sets solid, and the h2 rule in
+    // app.scss would otherwise hand it -0.01em.
+    min-width: 0;
+    margin: 0;
+    font-family: $font-body;
+    font-size: $fs-small;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: $paper;
+}
+
+// Scoped to .modal-header because that is where Bootstrap sets the
+// button's padding and margins, at (0,2,0): an unscoped `.btn-close`
+// block would lose to it.
+.modal-header .btn-close {
+    // The glyph, tinted rather than filtered. `.btn-close-white` does
+    // this with `filter: invert(1) grayscale(100%) brightness(200%)`,
+    // and a filter repaints everything the element draws — the ember
+    // focus ring came out white, i.e. the one place in the whole build
+    // where the focus colour was not the focus colour. Same path
+    // Bootstrap ships, painted in $paper at build time instead.
+    --bs-btn-close-bg: #{escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$paper}'><path d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/></svg>"))};
+    // .55 of $paper composites to ~4.4:1 on the float surface, clear of
+    // the 3:1 a non-text control needs, and leaves somewhere to go on
+    // hover. Both ends are on the transition list below.
+    --bs-btn-close-opacity: 0.55;
+    --bs-btn-close-hover-opacity: 1;
+    --bs-btn-close-focus-opacity: 1;
+
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    // Bootstrap pulls the button out into the header's padding with
+    // negative margins. Squared off instead: at 36px the focus glow
+    // reaches 13px past the box, and the padding is what keeps it clear
+    // of .modal-content's `overflow: hidden`.
+    margin: 0 0 0 auto;
+    background-size: 0.875rem auto;
+    border-radius: $r-control;
+    @include tappable;
+    // 36px drawn, 44px to a thumb. `any-pointer` and not `pointer`: the
+    // halo costs nothing and hybrids get fingers on their screens too.
+    @include tap;
+
+    @include hoverable {
+        &:hover { background-color: rgba($g-tint, 0.08); }
+    }
+
+    &:active { background-color: rgba($g-tint, 0.05); }
+
+    // Bootstrap puts a hard ring on plain :focus, which lands after
+    // every mouse click. The glow belongs to the keyboard.
+    &:focus-visible { @include focus-glow-button; }
+    &:focus:not(:focus-visible) { box-shadow: none; }
+}
+
+// --- Body ----------------------------------------------------
 .modal-body {
     padding: 0;
 
     &--padded { padding: 1.5rem; }
 }
 
+// --- Footer --------------------------------------------------
 .modal-footer {
-    gap: 0.5rem;
-    border-top: 1px solid $line;
+    // Same hollow as the header: the two bands close the sheet at both
+    // ends and the body is what reads as the surface.
+    background-color: rgba($g-base, 0.30);
+    gap: 0.75rem;
+    // Restated because Bootstrap derives it from --bs-modal-footer-gap,
+    // which is zeroed above.
+    padding: 1rem 1.5rem;
+
+    // Two buttons on a 320px screen wrap to two right-aligned lines and
+    // leave a ragged column. Sharing the row keeps them on one line and
+    // makes both of them a comfortable thumb width.
+    @include media-breakpoint-down(sm) {
+        .btn { flex: 1 1 auto; }
+    }
 }
 
-.modal-header {
-    border-bottom: 1px solid $line;
+// .btn, .btn-primary and .btn-ghost live in app.scss and belong to
+// nobody here, so the micro-interaction is scoped to the footer rather
+// than added to the global classes. (0,2,0) beats their (0,1,0), which
+// is what lets `tappable`'s explicit transition list replace the
+// `$t-fast` one on .btn without an !important.
+//
+// A footer button is ~120x46 with 0.75rem of air on every side: inside
+// the 240px / 8px window where a scale is safe.
+.modal-footer .btn {
+    @include tappable;
+
+    &:focus-visible { @include focus-glow-button; }
+    &:focus:not(:focus-visible) { box-shadow: none; }
 }
 
+// --- The scroll fix ------------------------------------------
 // A modal that posts wraps its body and footer in a <form>, and that form
 // broke Bootstrap's scrolling.
 //
@@ -24,6 +257,11 @@
 // clipped away — which is what a seven-day opening form ran into.
 //
 // Putting the form back into the flex column, allowed to shrink, restores it.
+//
+// The glass above does not disturb any of this: glass-float paints and
+// blurs .modal-content but never touches its `overflow`, and a
+// backdrop-filter samples what is BEHIND the element — the page and the
+// scrim, both still — so scrolling the body re-reads nothing.
 .modal-dialog-scrollable .modal-content > form {
     display: flex;
     flex-direction: column;
@@ -34,4 +272,11 @@
     overflow: hidden;
 }
 
-.modal-dialog-scrollable .modal-body { min-height: 0; }
+.modal-dialog-scrollable .modal-body {
+    min-height: 0;
+    // The seven-day form is the only scroller on screen while it is open;
+    // without this, reaching its end hands the wheel to the page behind.
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba($g-tint, 0.22) transparent;
+}

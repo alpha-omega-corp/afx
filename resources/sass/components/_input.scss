@@ -1,29 +1,87 @@
 // =============================================================
 // Form controls.
-// Geometry stays Bootstrap's so floating labels keep working;
-// only colour and border are ours.
+//
+// Geometry stays Bootstrap's. A floating label is four paddings, a
+// height and a transform that only line up at the sizes Bootstrap
+// picked, and the pill it paints behind a floated label is positioned
+// against those. Colour, border, relief and focus are ours.
+//
+// Two custom properties carry the whole thing. Both are declared on
+// :root by app.scss, so they are read here with no fallback:
+//
+//   --field-bg      the surface a field paints itself on, and the reason
+//                   a field does NOT become translucent on a glass panel.
+//                   Bootstrap paints a pill behind a floated label so the
+//                   field's own top border cannot strike through the text;
+//                   that pill is a flat colour. Give the field a
+//                   translucent or gradient fill and the pill immediately
+//                   reads as a grey chip sitting in the corner of the box.
+//                   The fix is not to fight the pill, it is to make both
+//                   read the SAME property: they cannot drift apart, at
+//                   any glass level, ever again.
+//
+//   --field-border  re-pointed at $line-glass by glass-card / glass-ember /
+//                   glass-float. $line-strong measures 2.4:1 on glass, and
+//                   the border of an input is by definition the only thing
+//                   that says the input exists (SC 1.4.11).
+//
+// What carries the glass, then, is not transparency: it is the hollow
+// (an inset edge and an inset shadow — a field is a recess, not a raised
+// card), the border it inherits from whatever surface it landed on, and
+// the backlit focus.
 // =============================================================
 
-// The select arrived with the plat du jour; until then no form on the site
-// had one, and Bootstrap had left it on the body background — a shade darker
-// than every input beside it. That mattered beyond the shade: the pill behind
-// a floated label (below) is painted to match an input, so over a select it
-// showed as a grey chip. One surface, one border, one kind of field.
 .form-control,
 .form-select {
-    background-color: $ink-2;
-    border: 1px solid $line-strong;
+    background-color: var(--field-bg);
+    border: 1px solid var(--field-border);
     color: $paper;
     border-radius: $r-control;
 
-    &:focus {
-        background-color: $ink-2;
-        border-color: $ember;
-        color: $paper;
-        box-shadow: none;
-    }
+    // A field is a hollow: light catches the top edge, the inside falls
+    // away. This is what replaces the flat plate the fields used to be.
+    box-shadow:
+        inset 0 1px 0 rgba($g-tint, 0.05),
+        inset 0 1px 3px rgba($g-base, 0.45);
+
+    // date / time hand their picker to the UA, which draws the calendar
+    // and clock glyphs for whatever scheme it thinks it is on. Without
+    // this they are near-black on a near-black field.
+    color-scheme: dark;
+
+    @include field-transition;
 
     &::placeholder { color: transparent; }
+
+    // A field that can be typed into says so before it is touched.
+    @include hoverable {
+        &:hover:not(:focus) { border-color: $paper-2; }
+    }
+
+    // :focus and not :focus-visible — the spec has the UA treat focus on a
+    // keyboard-editable control as visible however it was reached, and it
+    // is right: the caret has to be findable after a mouse click too.
+    &:focus {
+        background-color: var(--field-bg);
+        color: $paper;
+        @include field-focus;
+    }
+
+    // The glow IS the indicator (1px liner + 4px halo = a 4px band); the
+    // global outline in app.scss would draw a second frame around it.
+    &:focus-visible { outline-color: transparent; }
+
+    &:disabled {
+        color: $paper-2;
+        box-shadow: none;
+    }
+}
+
+// The native dropdown is drawn by the OS, not by us: on Windows and most
+// Linux desktops an unstyled option list comes back white-on-white here.
+.form-select option {
+    background-color: $ink-2;
+    color: $paper;
 }
 
 .form-floating > .app-textarea {
@@ -37,29 +95,101 @@
     > label {
         color: $paper-2;
         padding: 1rem 0.9rem;
+        // Bootstrap animates this in 0.1s linear-ish, which reads as a
+        // twitch. Same curve as everything else that moves in the admin.
+        transition:
+            transform $d-quick $ease-out,
+            opacity   $d-quick $ease-out,
+            color     $d-base  $ease-out;
     }
 
-    // Bootstrap paints a white pill behind the floated label; on a
-    // dark surface that has to be the surface colour instead.
+    // The pill Bootstrap paints behind a floated label. It has to be the
+    // field's real surface — see the note at the top of this file.
     > label::after {
-        background-color: $ink-2 !important;
+        background-color: var(--field-bg) !important;
+    }
+
+    // A floated label that has gone quiet, and a floated label that is
+    // being typed under. The second one is half the "engaging focus":
+    // the label is what names the field, so it lights with it.
+    > .form-control:not(:placeholder-shown) ~ label,
+    > .form-select ~ label {
+        color: $paper-2;
     }
 
     > .form-control:focus ~ label,
-    > .form-control:not(:placeholder-shown) ~ label {
-        color: $paper-2;
+    > .form-select:focus ~ label {
+        color: $ember-hi;
+    }
+}
+
+// =============================================================
+// Input group — the icon and the field are ONE object
+// =============================================================
+// They used to be two panes glued edge to edge: two backgrounds, two
+// borders, and a focus ring that stopped at the seam and left the icon
+// outside the lit area.
+//
+// The surface, the border and the radius move up to the group; the addon
+// and the control go transparent and borderless inside it. There is then
+// no seam to hide, and :focus-within puts the same backlit glow around
+// the whole object, icon included. The control keeps its (transparent)
+// border width, because Bootstrap aligns the floating label against it.
+.input-group {
+    background-color: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: $r-control;
+    box-shadow:
+        inset 0 1px 0 rgba($g-tint, 0.05),
+        inset 0 1px 3px rgba($g-base, 0.45);
+    @include field-transition;
+
+    @include hoverable {
+        &:hover:not(:focus-within) { border-color: $paper-2; }
+    }
+
+    &:focus-within {
+        @include field-focus;
+
+        > .input-group-text { color: $ember-hi; }
+    }
+
+    > .form-floating > .form-control,
+    > .form-floating > .form-select,
+    > .input-group-text {
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    // The group owns the focus treatment now; the control inside must not
+    // draw a second ring inside the first.
+    > .form-floating > .form-control:focus,
+    > .form-floating > .form-select:focus {
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none;
+        outline-color: transparent;
     }
 }
 
 .input-group-text {
-    background-color: $ink-2;
-    border-color: $line-strong;
     color: $paper-2;
+    transition: color $d-base $ease-out;
 
     svg {
         width: 20px;
         height: 20px;
     }
+}
+
+// A field is a field on a phone too: 56px of floating label already
+// clears the target size, so this only catches the plain controls.
+// min-height and never height or padding — either of those moves the
+// floating label off its baseline.
+@media (pointer: coarse) {
+    .form-control,
+    .form-select { min-height: $tap; }
 }
 
 // =============================================================

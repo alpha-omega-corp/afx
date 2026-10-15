@@ -76,3 +76,93 @@ $r-panel:   8px;  // tiles, panels
 
 // --- Motion -------------------------------------------------
 $t-fast: 150ms ease;
+
+// =============================================================
+// Glass / bento layer — added for the admin refit.
+// Nothing above this line changed: 20+ partials read those names.
+// Everything below is additive and admin-facing; the guest side
+// keeps $t-fast and the flat surfaces it already has.
+// =============================================================
+
+// --- Surface channels ----------------------------------------
+// A surface in this system moves along two channels only: the paper
+// tint that lifts it off the page, and the ink that sinks it back.
+// No third grey exists — a third one is how a palette turns muddy.
+$g-tint: $paper;   // the lift  (243,237,228)
+$g-base: $ink;     // the sink  (20,18,16)
+$g-void: #0A0908;  // below ink; scrims only, never a surface
+
+// --- Opaque twins --------------------------------------------
+// Each of these is the arithmetic composite of its translucent recipe
+// over $ink: base*(1-a) + tint*a, rounded. They are what the surface
+// already looks like on a plain page, so the no-backdrop-filter branch
+// and the reduced-transparency branch are not a second palette — they
+// are the same surface with the glass taken out.
+$surface-veil:         #161412; // L1 over content
+$surface-card-top:     #201E1C; // L2, paper tint .055
+$surface-card-bottom:  #171513; // L2, paper tint .014
+$surface-inlay:        #1C1A18; // L2b, ink .34 over a card
+$surface-ember-top:    #211F1D; // L3, paper tint .060 (the ember radial is kept on top)
+$surface-ember-bottom: #181614; // L3, paper tint .020
+$surface-float-top:    #252220; // L4, paper tint .075
+$surface-float-bottom: #181614; // L4, paper tint .018
+$surface-wall-top:     #1E1C1A; // L4-wall, paper tint .045
+$surface-wall-bottom:  #171513; // L4-wall, paper tint .015
+
+// A border on glass has to clear 3:1 against a *lighter* surface than
+// $ink-2, so $line-strong (2.4:1 there) stops being enough. This is the
+// border of any input or outlined control sitting on a glass panel.
+$line-glass: #8A8179; // 3.4:1 on a card, 4.5:1 on $ink-2
+
+// --- Shape ---------------------------------------------------
+// $r-panel (8px) stays what it is: thumbnails, inlays, chips. The
+// glass levels are rounder, and each step of the ladder is one step
+// rounder than the one it sits on — that is the whole of the depth cue.
+$r-glass:  12px; // L2 / L3 cards
+$r-float:  16px; // L4 modal, drawer
+$r-metric: 10px; // metric tiles: smaller box, smaller radius
+
+// --- Motion --------------------------------------------------
+// Four durations, not five: the step is ~1.5x, because two neighbouring
+// values that cannot be told apart are two values doing one job.
+// $t-fast (150ms ease) above is untouched — the guest side still runs on
+// it. Admin code uses these.
+$d-instant:  90ms; // press down, travels no distance
+$d-quick:   140ms; // colour, opacity, and the exit of anything that
+                   // entered on $d-base — a thing that leaves, leaves
+$d-base:    200ms; // the default for every clickable element
+$d-ample:   280ms; // anything that crosses the screen: drawer, modal, collapse
+
+// One name, one intent. Never a bare `ease`.
+// $ease-out is an expo-out: 90% of the distance in a third of the time,
+// then a long settle. That is why 200ms reads as instant and still smooth.
+$ease-out:      cubic-bezier(0.16, 1, 0.30, 1);
+$ease-standard: cubic-bezier(0.40, 0, 0.20, 1); // symmetric A->B: colour, opacity
+$ease-in:       cubic-bezier(0.40, 0, 1, 1);    // exits only, never an entrance
+$ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1); // ~5% overshoot: the select tick, nothing else
+
+// --- Focus ---------------------------------------------------
+// Four stops: a hard 1px liner that doubles the ember border, a tight
+// 4px halo that gives it thickness, then two diffuse sheets. The last
+// two carry a negative spread so they light without thickening the
+// contour — that is what stops a glow from reading as a second frame.
+$focus-glow:
+    0 0 0 1px rgba($ember, 0.90),
+    0 0 0 4px rgba($ember, 0.18),
+    0 0 12px -1px rgba($ember-hi, 0.45),
+    0 0 30px -6px rgba($ember, 0.28);
+
+// A button is already a filled shape; the long sheets would only fatten it.
+$focus-glow-tight:
+    0 0 0 2px rgba($ember-hi, 0.85),
+    0 0 14px -3px rgba($ember-hi, 0.50);
+
+// --- Stack ---------------------------------------------------
+// Written down once so nobody has to guess whether the drawer is above
+// or below a modal. Bootstrap owns 1050/1055; the rest slot around them.
+$z-topbar:   1030;
+$z-scrim:    1040;
+$z-drawer:   1045;
+$z-backdrop: 1050; // Bootstrap
+$z-modal:    1055; // Bootstrap
+$z-skip:     1090; // above the sticky topbar, or the skip link is invisible

@@ -3,6 +3,39 @@
 @section('title', __('admin.opening_title'))
 
 @section('content')
+    {{-- 0. The three numbers this screen exists to answer, before any panel
+           has to be read: are we open, how many days do we serve this week,
+           and when is the next time the door is shut on purpose. Every one of
+           them is derived from what the controller already passed — no extra
+           query, no extra column. --}}
+    @php($next = $holidays->first(fn ($holiday) => ! $holiday->isPast()))
+
+    <ul class="admin-metrics">
+        <li @class(['admin-metric', 'admin-metric--shut' => $status->isClosed(), 'admin-metric--ok' => ! $status->isClosed()])>
+            <p class="admin-metric__label">{{ __('admin.metric.status') }}</p>
+            <p class="admin-metric__value">
+                {{ $status->isClosed() ? __('admin.status.closed') : __('admin.status.open') }}
+            </p>
+        </li>
+
+        <li class="admin-metric">
+            <p class="admin-metric__label">{{ __('admin.metric.days_open') }}</p>
+            <p class="admin-metric__value u-tabular">{{ $hours->reject->isClosed()->count() }} / 7</p>
+        </li>
+
+        <li class="admin-metric">
+            <p class="admin-metric__label">{{ __('admin.metric.next_closure') }}</p>
+            <p class="admin-metric__value u-tabular">{{ $next?->starts_on->isoFormat('LL') ?? '—' }}</p>
+            @if($next)
+                <p class="admin-metric__note">
+                    {{ $next->isCurrent()
+                        ? __('admin.holiday.current')
+                        : __('admin.holiday.upcoming', ['days' => (int) today()->diffInDays($next->starts_on)]) }}
+                </p>
+            @endif
+        </li>
+    </ul>
+
     @unless($ready)
         <x-admin.panel :description="__('admin.pending_migrations')">
             <p class="admin-notice">
@@ -11,10 +44,20 @@
         </x-admin.panel>
     @endunless
 
-    {{-- 1. The switch: is the auberge open right now, and why not. --}}
+    {{-- 1. The switch: is the auberge open right now, and why not.
+           Three lines and a button — a third of the row is all it needs, and
+           the wide half beside it goes to the week. The tile is heated only
+           when the auberge is shut BY HAND: being open is the normal state and
+           does not announce itself, and a closure that came from the calendar
+           is already marked, in its place, by the .is-current row further
+           down. isClosed() is true for either reason, so heating the tile on
+           it would put two L3 surfaces on the screen the day a planned
+           closure starts — and two heated surfaces mean neither of them. --}}
     <x-admin.panel
         :title="__('admin.status_title')"
         :description="__('admin.status_description')"
+        :tone="$status->closedManually() ? 'ember' : 'glass'"
+        :xl="4"
     >
         <x-slot:actions>
             <x-admin.action
@@ -67,11 +110,14 @@
     </x-modal.index>
 
     {{-- 2. The week: the hours printed in the footer and on the contact
-         page, and the days the plat du jour has to step over. --}}
+           page, and the days the plat du jour has to step over. Two internal
+           columns that only breathe past ~700px, so it takes the wide two
+           thirds of the row. --}}
     <x-admin.panel
         :title="__('admin.hours_title')"
         :description="__('admin.hours_description')"
         :padding="false"
+        :xl="8"
     >
         <x-slot:actions>
             <x-admin.action
@@ -112,11 +158,19 @@
         <x-admin.hours-fields :days="$hours"/>
     </x-modal.index>
 
-    {{-- 3. The calendar: closures planned ahead of time. --}}
+    {{-- 3. The calendar: closures planned ahead of time. Full width — a
+           period is a date range, a badge, a reason and two buttons on one
+           line, and cutting that line in half is how the reason disappears.
+
+           flat: the calendar is the list that grows without bound on this
+           screen, and it holds the one row that may carry ember. Two blurred
+           layers are already on screen (the rail and the bar); a third, this
+           tall, is what the budget gives up first. --}}
     <x-admin.panel
         :title="__('admin.holidays_title')"
         :description="__('admin.holidays_description')"
         :padding="false"
+        tone="flat"
     >
         <x-slot:actions>
             <x-admin.action
@@ -132,7 +186,7 @@
             <ul class="admin-holidays">
                 @foreach($holidays as $holiday)
                     <li @class(['admin-holiday', 'is-current' => $holiday->isCurrent(), 'is-past' => $holiday->isPast()])>
-                        <span class="admin-holiday__range">
+                        <span class="admin-holiday__range u-tabular">
                             @if($holiday->starts_on->isSameDay($holiday->ends_on))
                                 {{ $holiday->starts_on->isoFormat('LL') }}
                             @else

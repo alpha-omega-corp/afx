@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <title>Une table qui attend, le soir, sous la lampe</title>
+  <defs>
+    <radialGradient id="room" cx="0.5" cy="0.45" r="0.6">
+      <stop offset="0" stop-color="#2c211a"></stop>
+      <stop offset="1" stop-color="#141210"></stop>
+    </radialGradient>
+    <linearGradient id="cone" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF8A3D" stop-opacity="0.28"></stop>
+      <stop offset="1" stop-color="#FF8A3D" stop-opacity="0"></stop>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FF8A3D" stop-opacity="0.5"></stop>
+      <stop offset="1" stop-color="#FF8A3D" stop-opacity="0"></stop>
+    </radialGradient>
+    <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#121a22"></stop>
+      <stop offset="1" stop-color="#3a2618"></stop>
+    </linearGradient>
+    <g id="chair" fill="none" stroke="#3d2b1f" stroke-linecap="round">
+      <path d="M-58 0 C-70 -90 -60 -160 0 -170 C60 -160 70 -90 58 0" stroke-width="14"></path>
+      <path d="M-36 -20 C-44 -80 -38 -130 0 -136 C38 -130 44 -80 36 -20" stroke-width="8"></path>
+      <path d="M-70 4 H70" stroke-width="16"></path>
+      <path d="M-58 10 L-66 130 M58 10 L66 130 M-40 10 L-34 130 M40 10 L34 130" stroke-width="9"></path>
+      <path d="M-60 80 H60" stroke-width="5"></path>
+    </g>
+    <g id="glass">
+      <path d="M-22 -80 C-24 -40 -14 -20 0 -18 C14 -20 24 -40 22 -80 Z" fill="#f3ede4" fill-opacity="0.12" stroke="#a39b90" stroke-width="3"></path>
+      <path d="M-20 -50 C-18 -30 -10 -22 0 -21 C10 -22 18 -30 20 -50 Z" fill="#7a2233"></path>
+      <path d="M0 -18 V14 M-16 14 H16" stroke="#a39b90" stroke-width="3" stroke-linecap="round"></path>
+    </g>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 0.08"></feFuncA></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#room)"></rect>
+  <rect x="0" y="560" width="1600" height="200" fill="#1a1512"></rect>
+  <g stroke="#120f0d" stroke-width="4">
+    <path d="M0 560 H1600 M0 600 H1600"></path>
+    <path d="M200 600 V760 M420 600 V760 M1180 600 V760 M1400 600 V760"></path>
+  </g>
+  <rect x="0" y="760" width="1600" height="140" fill="#0f0c0a"></rect>
+  <g stroke="#1a1512" stroke-width="3"><path d="M0 800 H1600 M0 845 H1600"></path></g>
+
+  <rect x="1230" y="160" width="230" height="330" rx="6" fill="#241b15"></rect>
+  <rect x="1248" y="178" width="194" height="294" fill="url(#dusk)"></rect>
+  <path d="M1248 400 C1300 380 1340 395 1380 382 C1410 372 1430 380 1442 376 V472 H1248 Z" fill="#141010"></path>
+  <g fill="#FF8A3D"><circle cx="1290" cy="420" r="3"></circle><circle cx="1330" cy="430" r="3"></circle><circle cx="1400" cy="410" r="3"></circle></g>
+  <path d="M1345 178 V472 M1248 320 H1442" stroke="#241b15" stroke-width="10"></path>
+  <circle cx="1400" cy="230" r="14" fill="#F3EDE4" fill-opacity="0.8"></circle>
+
+  <circle cx="190" cy="330" r="110" fill="url(#halo)" fill-opacity="0.6"></circle>
+  <path d="M170 330 h40 l-8 40 h-24 z" fill="#B84A0E"></path>
+
+  <path d="M800 0 V250" stroke="#2d241e" stroke-width="4"></path>
+  <path d="M700 312 L900 312 L1110 700 L490 700 Z" fill="url(#cone)"></path>
+  <ellipse cx="800" cy="316" rx="120" ry="40" fill="url(#halo)"></ellipse>
+  <path d="M742 250 L858 250 L902 312 L698 312 Z" fill="#B84A0E"></path>
+  <path d="M742 250 L858 250 L866 262 L734 262 Z" fill="#F26B1D"></path>
+  <ellipse cx="800" cy="312" rx="102" ry="10" fill="#FF8A3D"></ellipse>
+
+  <use href="#chair" x="400" y="630"></use>
+  <use href="#chair" x="1200" y="630"></use>
+
+  <ellipse cx="800" cy="768" rx="330" ry="20" fill="#000" fill-opacity="0.35"></ellipse>
+  <path d="M510 598 H1090 L1100 740 C960 752 640 752 500 740 Z" fill="#e6dccb"></path>
+  <path d="M590 610 C584 660 588 700 580 744 M700 610 C696 670 700 710 694 748 M900 610 C904 670 900 710 906 748 M1010 610 C1016 660 1012 700 1020 744" stroke="#d2c5af" stroke-width="3" fill="none"></path>
+  <rect x="500" y="590" width="600" height="16" rx="4" fill="#f3ede4"></rect>
+
+  <circle cx="800" cy="520" r="70" fill="url(#halo)"></circle>
+  <rect x="790" y="532" width="20" height="58" rx="3" fill="#f3ede4"></rect>
+  <path d="M800 496 C812 512 812 524 800 530 C788 524 788 512 800 496 Z" fill="#FF8A3D"></path>
+  <rect x="776" y="584" width="48" height="8" rx="3" fill="#a39b90"></rect>
+  <use href="#glass" x="690" y="590"></use>
+  <use href="#glass" x="910" y="590"></use>
+  <ellipse cx="585" cy="586" rx="46" ry="8" fill="#d8cdb9"></ellipse>
+  <ellipse cx="1015" cy="586" rx="46" ry="8" fill="#d8cdb9"></ellipse>
+  <rect width="1600" height="900" filter="url(#grain)"></rect>
+</svg>
