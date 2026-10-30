@@ -11,12 +11,99 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
 
 // --- Spécialité de chasse ------------------------------------
 // The house's calling card, as large as the owner asked: one line of
-// Playfair in ember between two hairlines, still in the hero's firelight.
-// No panel of its own — it is a sign over the plat du jour, not another card.
+// Playfair in ember, a stag drawn beside it, still in the hero's
+// firelight. Since ticket #2 it answers the pointer: the light inside it
+// follows the cursor, the sign leans a degree or two toward it, and the
+// antlers draw themselves in as it arrives — again, tine by tine, under
+// the cursor. app.js writes the pointer into --chasse-x/-y and the lean
+// into --chasse-rx/-ry; without it the sign is lit from the top left and
+// stands straight.
+
+// Registered so the light glides to the pointer instead of jumping there:
+// an unregistered custom property cannot be interpolated.
+@property --chasse-x { syntax: "<percentage>"; inherits: false; initial-value: 18%; }
+@property --chasse-y { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+
 .home-chasse {
     position: relative;
     z-index: 2;
     padding-top: clamp(1.5rem, 3vw, 2.5rem);
+
+    &__sign {
+        position: relative;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: clamp(1rem, 2.5vw, 2.25rem);
+        padding: clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 3vw, 2.5rem);
+        border: 1px solid rgba($ember, 0.22);
+        border-radius: $r-panel * 2;
+        background:
+            radial-gradient(60% 140% at var(--chasse-x) var(--chasse-y),
+                rgba($ember, 0.16) 0%,
+                rgba($ember-lo, 0.06) 45%,
+                rgba($ink-2, 0) 75%),
+            rgba($ink-2, 0.55);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+        transform: perspective(1200px) rotateX(var(--chasse-rx, 0deg)) rotateY(var(--chasse-ry, 0deg));
+        transition:
+            --chasse-x 600ms $ease-out,
+            --chasse-y 600ms $ease-out,
+            transform 600ms $ease-out,
+            border-color $d-base $ease-standard;
+
+        @include hoverable {
+            &:hover { border-color: rgba($ember, 0.42); }
+        }
+
+        // A phone: the stag above the words, both centred.
+        @include media-breakpoint-down(md) {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            gap: 0.5rem;
+            text-align: center;
+        }
+    }
+
+    // As tall as the words beside it: the antlers clear the cap height, the
+    // muzzle sits on the baseline.
+    &__art {
+        width: clamp(5.5rem, 9vw, 8.5rem);
+        margin-block: -0.5rem;
+        color: $paper-2;
+
+        // Each antler stroke is 1 long (pathLength), so 1 hides it whole.
+        .ill-antlers path {
+            stroke-dasharray: 1;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 900ms $ease-out, stroke $d-base $ease-standard;
+        }
+
+        // The beams first, then the tines off them, from the brow up.
+        .ill-antlers path:nth-child(4n + 1) { transition-delay: 150ms; }
+        .ill-antlers path:nth-child(4n + 2) { transition-delay: 450ms; }
+        .ill-antlers path:nth-child(4n + 3) { transition-delay: 600ms; }
+        .ill-antlers path:nth-child(4n)     { transition-delay: 750ms; }
+    }
+
+    // Not yet on screen: the antlers wait, undrawn. Only a page that has run
+    // the reveal observer hides them, like every other reveal.
+    .has-reveal [data-reveal]:not(.is-in) &__art .ill-antlers path { stroke-dashoffset: 1; }
+
+    // Under the cursor the tines grow again and the antlers catch the light.
+    @include hoverable {
+        &__sign:hover &__art .ill-antlers path {
+            stroke: $ember-hi;
+            transition-delay: 0ms;
+        }
+
+        &__sign:hover &__art .ill-antlers path:not(:nth-child(4n + 1)) {
+            animation: chasse-tine 700ms $ease-out both;
+        }
+
+        &__sign:hover &__art .ill-antlers path:nth-child(4n + 3) { animation-delay: 80ms; }
+        &__sign:hover &__art .ill-antlers path:nth-child(4n)     { animation-delay: 160ms; }
+    }
 
     &__title {
         display: flex;
@@ -31,28 +118,22 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
         color: $ember-hi;
         text-wrap: balance;
 
-        @include media-breakpoint-down(md) { font-weight: $fw-head-sm; }
-
-        // The hairlines run out to the container's edges, so the words read
-        // as a sign hung across the page rather than a heading in a column.
-        &::before,
+        // The hairline runs out to the sign's edge, so the words read as a
+        // sign hung across the page rather than a heading in a column.
         &::after {
             content: "";
             flex: 1 1 1.5rem;
             min-width: 1.5rem;
             height: 1px;
-            background: linear-gradient(to right, rgba($ember, 0), $ember);
+            background: linear-gradient(to left, rgba($ember, 0), $ember);
         }
 
-        &::after { background: linear-gradient(to left, rgba($ember, 0), $ember); }
-
-        // A phone has no room for the hairlines and the words on one line:
-        // the hairlines go, and the words keep the whole width and stay whole.
+        // A phone has no room for the hairline and the words on one line:
+        // the hairline goes, and the words keep the whole width.
         @include media-breakpoint-down(md) {
             display: block;
-            text-align: center;
+            font-weight: $fw-head-sm;
 
-            &::before,
             &::after { display: none; }
         }
     }
@@ -63,6 +144,16 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
     // The doors no longer tuck into the hero when there is no card today.
     ~ .home-doors { margin-top: 0; }
     + .home-doors { padding-top: clamp(2rem, 4vw, 3rem); }
+}
+
+@keyframes chasse-tine {
+    from { stroke-dashoffset: 1; }
+    to   { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-chasse__sign { transition: none; }
+    .home-chasse__art .ill-antlers path { animation: none !important; }
 }
 
 // --- The doors -----------------------------------------------

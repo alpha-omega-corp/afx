@@ -9,4 +9,5 @@ return [
     'map' => 'Drawing of a folded map with the way marked to a pin',
     'room' => 'Drawing of a bed under a window, the moon outside',
     'table' => 'Drawing of a laid place: plate, fork, knife and a glass of wine',
+    'cerf' => 'Drawing of a stag’s head, its antlers lit',
 ];

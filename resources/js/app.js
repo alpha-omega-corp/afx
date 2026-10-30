@@ -90,6 +90,50 @@ if (document.querySelector('#gallery')) {
     targets.forEach((target) => observer.observe(target));
 })();
 
+// --- Spécialité de chasse ------------------------------------
+// The sign on the home page answers the pointer: its light follows the
+// cursor (or the finger, where it lands) and it leans a little toward it.
+// The CSS does the easing; this only writes where the pointer is, once a
+// frame at most. Still for anyone who asked for less motion.
+(() => {
+    const sign = document.querySelector('[data-chasse]');
+    if (!sign) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const LEAN = 3;   // degrees, at the very edge of the sign
+    let frame = null;
+
+    const follow = (event) => {
+        const { clientX, clientY } = event;
+        if (frame) cancelAnimationFrame(frame);
+
+        frame = requestAnimationFrame(() => {
+            const rect = sign.getBoundingClientRect();
+            const x = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+            const y = Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
+
+            sign.style.setProperty('--chasse-x', `${(x * 100).toFixed(1)}%`);
+            sign.style.setProperty('--chasse-y', `${(y * 100).toFixed(1)}%`);
+            // A wide, short sign: lean less across than up and down, or the
+            // far end swings by more than the near end is tall.
+            sign.style.setProperty('--chasse-ry', `${((x - 0.5) * LEAN).toFixed(2)}deg`);
+            sign.style.setProperty('--chasse-rx', `${((0.5 - y) * LEAN * 1.5).toFixed(2)}deg`);
+        });
+    };
+
+    // A finger lifts as soon as it lands, so a tap leaves the light where
+    // it touched; only a cursor leaving the sign puts it back.
+    const rest = (event) => {
+        if (event.pointerType === 'touch') return;
+        if (frame) cancelAnimationFrame(frame);
+        ['--chasse-x', '--chasse-y', '--chasse-rx', '--chasse-ry'].forEach((name) => sign.style.removeProperty(name));
+    };
+
+    sign.addEventListener('pointermove', follow);
+    sign.addEventListener('pointerdown', follow);
+    sign.addEventListener('pointerleave', rest);
+})();
+
 // --- Hearth embers -------------------------------------------
 // The home hero has no photograph, so firelight carries it. Motes rise
 // from the bottom edge, drift, flicker and burn out before they reach the

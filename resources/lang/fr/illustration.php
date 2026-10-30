@@ -9,4 +9,5 @@ return [
     'map' => 'Dessin d’un plan plié, le chemin tracé jusqu’à un repère',
     'room' => 'Dessin d’un lit sous une fenêtre, la lune dehors',
     'table' => 'Dessin d’un couvert : assiette, fourchette, couteau et verre de vin',
+    'cerf' => 'Dessin d’une tête de cerf, les bois allumés',
 ];

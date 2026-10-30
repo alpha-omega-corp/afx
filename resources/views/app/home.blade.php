@@ -52,10 +52,21 @@
         {{-- What the house is known for, asked for in large by the owner
              (ticket #1, client review 4): straight under the hero's buttons,
              where the eye lands after the name, and above today's card so
-             the dish of the day reads as part of it. --}}
+             the dish of the day reads as part of it.
+
+             Interactive since ticket #2 (client review 4): the stag's antlers
+             draw themselves in as the sign arrives, and the hearth's light
+             follows the pointer across it. It is a sign, not a control —
+             nothing to press, so nothing to focus; without the script it is
+             the same sign, standing still. --}}
         <section class="home-chasse" aria-labelledby="home-chasse-title">
-            <div class="container">
-                <h2 class="home-chasse__title" id="home-chasse-title">{{ __('app.game') }}</h2>
+            {{-- The reveal on the container, not the sign: the reveal's own
+                 transform would otherwise overwrite the sign's lean. --}}
+            <div class="container" data-reveal>
+                <div class="home-chasse__sign" data-chasse>
+                    <x-illustration.cerf class="home-chasse__art"/>
+                    <h2 class="home-chasse__title" id="home-chasse-title">{{ __('app.game') }}</h2>
+                </div>
             </div>
         </section>
 
