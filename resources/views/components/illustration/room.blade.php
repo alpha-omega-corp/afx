@@ -1,5 +1,5 @@
 {{-- A bed under a window, the moon outside: the rooms upstairs. --}}
-<svg {{ $attributes->merge(['class' => 'illustration']) }} viewBox="0 0 180 128" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<svg {{ $attributes->merge(['class' => 'illustration']) }} viewBox="0 0 180 128" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="{{ __('illustration.room') }}" focusable="false">
     <ellipse class="ill-glow" cx="90" cy="100" rx="74" ry="18"/>
     <rect x="98" y="10" width="44" height="40" rx="2"/>
     <path d="M120 10v40M98 30h44"/>

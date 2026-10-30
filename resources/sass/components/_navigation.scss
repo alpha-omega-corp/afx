@@ -79,6 +79,11 @@
         // lg now holds two things, not three.
         @include media-breakpoint-down(md) { font-size: 1.25rem; font-weight: $fw-head-sm; }
         @media (max-width: 359.98px) { font-size: 1.125rem; }
+
+        // 33px of type is a 33px target. The bar is already 60px tall for
+        // the toggle, so the padding costs nothing visible. Not the tap()
+        // halo: the ellipsis needs overflow: hidden, which would clip it.
+        @media (pointer: coarse) { padding-block: 0.375rem; }
     }
 
     &__right {

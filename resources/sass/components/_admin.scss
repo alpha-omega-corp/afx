@@ -237,6 +237,8 @@ $admin-danger-text: #E07A66;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: $paper-2;
+
+    @include media-breakpoint-down(md) { font-size: 0.75rem; }
 }
 
 .admin-metric__value {

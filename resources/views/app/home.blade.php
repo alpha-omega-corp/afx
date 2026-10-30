@@ -3,10 +3,9 @@
 @section('description', Str::limit(trim(strip_tags($page?->locale?->content ?? '')), 155) ?: __('footer.blurb'))
 
 @section('content')
-    {{-- The house itself, under the firelight: the embers rise over the
-         photograph, and it drifts at a third of the page's speed as the
-         hero scrolls away. The image is the home page's own, changed from
-         Administration → Pages like every other hero on the site.
+    {{-- The house itself, framed in the firelight beside the name. The
+         image is the home page's own, changed from Administration → Pages
+         like every other hero on the site.
 
          Every reference to the record is optional. A database whose pages
          have not been seeded is a database a member of staff can still log
@@ -19,7 +18,6 @@
         :lead="$page?->locale?->title"
         :tall="true"
         :embers="true"
-        :parallax="true"
         :rule="false"
         :intro="false"
     >
@@ -77,39 +75,38 @@
              around it were the same subject under two headings, and on a
              phone the second title arrived before the first photograph had
              finished being looked at. The words open the band, the
-             photographs run under them, and the house itself is the frame
-             the strip opens on. Raised off the page, as one movement. --}}
+             photographs run beside them out to the edge of the screen, and
+             the house itself is the frame the strip opens on. Raised off the
+             page, as one movement. --}}
         @php($photos = $gallery?->items ?? collect())
 
         <section class="home-lede">
-            <div class="container" data-strip>
+            <div class="container home-lede__body" data-strip>
                 <div class="home-lede__intro">
-                    <div>
-                        <h2 class="app-section__title">{{ __('app.welcome') }}</h2>
-
-                        <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
-                    </div>
-
                     <x-illustration.auberge class="home-lede__art"/>
+
+                    <h2 class="app-section__title">{{ __('app.welcome') }}</h2>
+
+                    <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
+
+                    {{-- Under the words, on the edge the photographs run
+                         from: the arrows read as the way into the strip
+                         rather than as decoration beside the heading. --}}
+                    @if($photos->isNotEmpty())
+                        <div class="strip__nav home-lede__nav">
+                            <button type="button" class="strip__btn" data-strip-prev>
+                                <span class="visually-hidden">{{ __('app.previous') }}</span>
+                                <x-icon.chevron-left/>
+                            </button>
+                            <button type="button" class="strip__btn" data-strip-next>
+                                <span class="visually-hidden">{{ __('app.next') }}</span>
+                                <x-icon.chevron-right/>
+                            </button>
+                        </div>
+                    @endif
                 </div>
 
-                {{-- Directly above the track: beside the heading these read as
-                     decoration on the words rather than as controls for the
-                     photographs three lines below them. --}}
-                @if($photos->isNotEmpty())
-                    <div class="strip__nav">
-                        <button type="button" class="strip__btn" data-strip-prev>
-                            <span class="visually-hidden">{{ __('app.previous') }}</span>
-                            <x-icon.chevron-left/>
-                        </button>
-                        <button type="button" class="strip__btn" data-strip-next>
-                            <span class="visually-hidden">{{ __('app.next') }}</span>
-                            <x-icon.chevron-right/>
-                        </button>
-                    </div>
-                @endif
-
-                <ul class="strip__track" data-strip-track>
+                <ul class="strip__track home-lede__track" data-strip-track>
                     <li class="strip__item">
                         <img src="{{ Vite::image('afx-building.jpg') }}" alt="{{ __('app.title') }}" loading="lazy" decoding="async"/>
                     </li>

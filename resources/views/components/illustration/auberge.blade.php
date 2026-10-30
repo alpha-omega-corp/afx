@@ -1,5 +1,5 @@
 {{-- The house on the Grand'Rue: two storeys, lit windows, a tree by the door. --}}
-<svg {{ $attributes->merge(['class' => 'illustration']) }} viewBox="0 0 220 150" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<svg {{ $attributes->merge(['class' => 'illustration']) }} viewBox="0 0 220 150" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="{{ __('illustration.auberge') }}" focusable="false">
     <ellipse class="ill-glow" cx="104" cy="104" rx="80" ry="40"/>
     <path class="ill-accent" d="M150 24c-6-5 4-9-2-15M158 22c-5-4 3-8-1-13"/>
     <path d="M144 48V28h12v28"/>

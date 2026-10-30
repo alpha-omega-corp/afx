@@ -14,10 +14,10 @@ Two kinds of file live here, and the difference matters:
 
 ## Page headers
 
-The generated headers are dark, low-key and composed with the subject right of
-centre, because `x-hero` lays a veil over the image, raises embers off the
-bottom edge, and sets the title, lead and buttons into the **lower left**. An
-image with detail in that corner loses the type. 2400px wide, progressive JPEG.
+The generated headers are dark and low-key. `x-hero` shows them in a 4:3
+frame beside the title (16:10 under it on a phone), cropped with
+`object-fit: cover`, so keep the subject near the centre. 2400px wide,
+progressive JPEG.
 
 | File             | Shows                                                     | Used by    |
 |------------------|-----------------------------------------------------------|------------|

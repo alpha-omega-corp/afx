@@ -1,4 +1,4 @@
-@props(['specials' => null, 'sections' => null, 'tuck' => true])
+@props(['specials' => null, 'sections' => null])
 
 @php
     // One block, not an @php(...) line and a block after it: Blade's inline
@@ -17,10 +17,7 @@
 {{-- Nothing at all when there is no card and nobody to write one: the page
      closes back up rather than leaving a hole where a dish should be. --}}
 @if($specials->isNotEmpty() || auth()->check())
-    {{-- `tuck` is the climb into the hero's fade. True on the home page,
-         where the card sits directly under the firelight; false anywhere it
-         follows something else. --}}
-    <section id="plat-du-jour" @class(['home-special', 'home-special--flat' => ! $tuck]) @if($specials->isNotEmpty()) aria-labelledby="daily-eyebrow" @endif>
+    <section id="plat-du-jour" class="home-special" @if($specials->isNotEmpty()) aria-labelledby="daily-eyebrow" @endif>
         <div class="container">
             @auth
                 {{-- Directly above the card, and only ever seen by staff. --}}

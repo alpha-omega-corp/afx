@@ -5,8 +5,12 @@
     $sections ??= collect();
 
     // Defaults to the next day the kitchen is open, which is what the card is
-    // nearly always for; clearing it takes the date off the card.
-    $defaultDate = ($specials->first()?->daily_on ?? App\Support\Opening::nextOpen(today()))->format('Y-m-d');
+    // nearly always for; clearing it takes the date off the card. A date that
+    // has gone by is not offered back: re-saving the card kept last month's.
+    $current = $specials->first();
+    $defaultDate = ($current?->daily_on && ! $current->isPast()
+        ? $current->daily_on
+        : App\Support\Opening::nextOpen(today()))->format('Y-m-d');
 
     // The rows the editor opens on. Ids and section ids are strings because
     // Alpine matches a <select>'s value by identity, and 3 is not "3".

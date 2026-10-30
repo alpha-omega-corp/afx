@@ -27,17 +27,18 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
     // Unless the plat du jour is on the page, in which case that card does
     // the tucking and the doors simply follow it. Written as a sibling
     // rather than a class on the section, so the layout follows what is
-    // actually rendered rather than a flag passed down beside it.
-    .home-special + & { margin-top: 0; }
+    // actually rendered rather than a flag passed down beside it. `~`, not
+    // `+`: for staff the daily editor's modal sits between the two.
+    .home-special ~ & { margin-top: 0; }
 
     &__grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: clamp(1rem, 2.2vw, 1.75rem);
+        gap: clamp(1.25rem, 3vw, 2.5rem);
 
         @include media-breakpoint-down(md) {
             grid-template-columns: 1fr;
-            gap: 1rem;
+            gap: 1.25rem;
         }
     }
 
@@ -51,35 +52,83 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
 
 // --- The house -----------------------------------------------
 // One raised band with hairlines top and bottom: the one chapter break on
-// the page. It holds the welcome and the photograph strip together —
-// the words, then the look around.
+// the page. The words hold the left edge and the photographs run beside
+// them, off the right edge of the screen, so the two read as one spread
+// rather than a paragraph with a carousel parked under it.
 .home-lede {
+    // Distance from the container's content edge to the edge of the screen.
+    // 100vw counts the scrollbar, hence the clip.
+    --bleed: calc(max(0px, (100vw - #{$container}) / 2) + #{$gutter});
+
     padding-block: $home-gap;
     background-color: $ink-2;
     border-block: 1px solid $line;
+    overflow-x: clip;
 
-    // The copy keeps its own measure under the full-width title, and the
-    // gap below it is the only thing separating it from the photographs.
-    &__text {
-        margin: 0 0 clamp(2rem, 4vw, 2.75rem);
-    }
-
-    // The words and a drawing of the house beside them; on a phone the
-    // drawing would only push the photographs further down, so it goes.
-    &__intro {
+    &__body {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) clamp(14rem, 26vw, 20rem);
-        gap: clamp(2rem, 6vw, 5rem);
-        align-items: center;
+        grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+        gap: clamp(2.5rem, 5vw, 4.5rem);
 
-        @include media-breakpoint-down(md) { grid-template-columns: 1fr; }
+        @include media-breakpoint-down(lg) {
+            grid-template-columns: 1fr;
+            gap: clamp(1.75rem, 4vw, 2.5rem);
+        }
     }
 
+    &__intro {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    // The house drawn small over its own name, in the firelight's glow:
+    // the emblem the photographs open on. Too much height on a phone,
+    // where the strip is what the band is for.
     &__art {
+        width: clamp(8.5rem, 14vw, 11rem);
+        margin-bottom: 1.5rem;
         color: $paper-2;
-        margin-bottom: clamp(2rem, 4vw, 2.75rem);
 
         @include media-breakpoint-down(md) { display: none; }
+    }
+
+    &__text { margin: 0; }
+
+    // Pinned to the foot of the column, level with the bottom of the
+    // photographs beside it.
+    &__nav {
+        justify-content: flex-start;
+        margin-top: auto;
+        padding: clamp(1.5rem, 3vw, 2rem) 0 0;
+    }
+
+    &__track {
+        align-self: end;
+        grid-auto-columns: clamp(15rem, 26vw, 22rem);
+        margin-inline-end: calc(var(--bleed) * -1);
+        padding-inline-end: var(--bleed);
+        padding-bottom: 0;
+        margin-bottom: 0;
+
+        .strip__item {
+            aspect-ratio: 4 / 5;
+
+            @include media-breakpoint-down(md) { aspect-ratio: 1 / 1; }
+        }
+
+        // Stacked under the words: still running off the right edge, wider
+        // frames since the row has the full width.
+        @include media-breakpoint-down(lg) {
+            grid-auto-columns: minmax(260px, 40%);
+        }
+
+        // A phone keeps the strip's own full-bleed treatment.
+        @include media-breakpoint-down(md) {
+            margin-inline: calc(#{$gutter} * -1);
+            padding-inline: $gutter;
+            grid-auto-columns: 78%;
+        }
     }
 }
 
