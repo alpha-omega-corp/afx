@@ -10,6 +10,7 @@ return [
     'see_menu' => 'Voir la carte',
     'welcome' => 'Bienvenue',
     'daily' => 'Plat du jour',
+    'game' => 'Spécialité de chasse',
     'discover' => 'Découvrir',
     'login' => 'Connexion',
     'page' => 'Page',

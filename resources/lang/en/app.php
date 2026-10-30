@@ -10,6 +10,7 @@ return [
     'see_menu' => 'See the menu',
     'welcome' => 'Welcome',
     'daily' => 'Daily special',
+    'game' => 'Game is our speciality',
     'discover' => 'Discover',
     'login' => 'Login',
     'page' => 'Page',

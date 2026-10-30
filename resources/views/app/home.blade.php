@@ -49,6 +49,16 @@
             </a>
         </x-slot:actions>
 
+        {{-- What the house is known for, asked for in large by the owner
+             (ticket #1, client review 4): straight under the hero's buttons,
+             where the eye lands after the name, and above today's card so
+             the dish of the day reads as part of it. --}}
+        <section class="home-chasse" aria-labelledby="home-chasse-title">
+            <div class="container">
+                <h2 class="home-chasse__title" id="home-chasse-title">{{ __('app.game') }}</h2>
+            </div>
+        </section>
+
         {{-- The one thing on the page that is different tomorrow. It sits in
              the last of the hero's firelight, above the three doors, because
              it is the reason to come today rather than one day. --}}
