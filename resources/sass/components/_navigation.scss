@@ -34,17 +34,6 @@
         border-bottom-color: $hairline;
     }
 
-    // Opening the panel fills the bar too, so the two read as one surface.
-    // Only below lg: above it the panel cannot open, and a stale `open` left
-    // behind by a resize must not paint the bar.
-    @include media-breakpoint-down(lg) {
-        &.is-open {
-            background-color: rgba($ink-2, 0.94);
-            backdrop-filter: blur(8px);
-            border-bottom-color: $hairline;
-        }
-    }
-
     &__inner {
         display: flex;
         align-items: center;
@@ -130,8 +119,11 @@
     }
 
     // --- Mobile ---------------------------------------------
-    &__toggle {
-        display: none;
+    // The toggle in the bar and the close in the sidebar's head are the
+    // same square: one opens what the other shuts, in the same place.
+    &__toggle,
+    &__close {
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         width: $tap;
@@ -142,65 +134,184 @@
         border-radius: $r-control;
         background: transparent;
         color: $paper;
-
-        @include media-breakpoint-down(lg) { display: inline-flex; }
+        transition: border-color $t-fast, color $t-fast;
 
         svg { width: 22px; height: 22px; }
+
+        @include hoverable {
+            &:hover { border-color: $ember; color: $ember-hi; }
+        }
     }
 
-    &__panel {
+    &__toggle {
+        display: none;
+
+        @include media-breakpoint-down(lg) { display: inline-flex; }
+    }
+
+    // The dimmed page behind the sidebar. No blur: Alpine fades it, and a
+    // backdrop-filter composited through a group opacity is the shape
+    // WebKit renders worst — the alpha carries the veil on its own.
+    &__scrim {
         position: fixed;
-        // Starts where the bar ends, banner or no banner.
-        inset: calc(var(--banner-offset, 0px) + var(--nav-h)) 0 0 0;
-        z-index: 29;
-        background-color: $ink;
-        overflow-y: auto;
-        overscroll-behavior: contain;
+        inset: 0;
+        z-index: $z-scrim;
+        @include glass-scrim(0.68, $blur: false);
+
+        &--enter   { transition: opacity $d-ample $ease-out; }
+        &--leaving { transition: opacity $d-quick $ease-in; }
 
         @include media-breakpoint-up(lg) { display: none !important; }
     }
 
-    // The panel is a column: the pages, then the two things a guest most
-    // often opened the menu to find — a table, and the number to call.
+    // The sidebar: the full height of the screen, from the right edge,
+    // the ember bar along its top. A float, but without the blur — a
+    // filtered surface riding a translate shimmers on WebKit. Only the
+    // left corners round: the right side is flush with the screen.
     //
-    // The block padding lives here rather than on the panel so `min-height`
-    // and the padding measure against the same box and a short menu never
-    // scrolls by the height of its own margins. Alpine's focus trap locks the
-    // body, so this is the only thing that scrolls; the bottom pad clears the
-    // phone's home indicator.
-    &__panel-inner {
+    // visibility rides a 0s transition delayed by the slide, so a closed
+    // sidebar leaves the tab order and the accessibility tree only once it
+    // has finished leaving the screen.
+    &__panel {
+        position: fixed;
+        inset: 0 0 0 auto;
+        z-index: $z-drawer;
         display: flex;
         flex-direction: column;
-        min-height: 100%;
-        gap: 2rem;
-        padding-block: 1.5rem calc(2rem + env(safe-area-inset-bottom));
+        width: min(23rem, calc(100% - 3rem));
+        padding: 0 1.25rem max(1.5rem, env(safe-area-inset-bottom));
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        @include glass-float($blur: false, $radius: $r-float 0 0 $r-float);
+        // Opaque: without the blur, the float's 86% floor lets the page's
+        // own type read through the links.
+        background: linear-gradient(180deg, $surface-float-top 0%, $surface-float-bottom 100%);
+        border-right: 0;
+        transform: translateX(100%);
+        visibility: hidden;
+        transition: transform $d-ample $ease-out, visibility 0s linear $d-ample;
+
+        &.is-open {
+            transform: none;
+            visibility: visible;
+            transition: transform $d-ample $ease-out, visibility 0s linear 0s;
+        }
+
+        &::before {
+            content: "";
+            flex: none;
+            height: 4px;
+            margin-inline: -1.25rem;
+            background: linear-gradient(90deg, $ember 0 45%, $ember-hi 0 72%, $ink-3 0);
+        }
+
+        @include media-breakpoint-up(lg) { display: none !important; }
     }
 
+    &__panel-head {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-height: var(--nav-h);
+        padding-block: 0.5rem;
+    }
+
+    &__panel-brand {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: $font-heading;
+        font-size: 1.25rem;
+        font-weight: $fw-head-sm;
+        color: $paper;
+
+        &:hover { color: $paper; }
+    }
+
+    &__close { margin-left: auto; }
+
+    // The pages, large, under a firmer rule than the hairlines between
+    // them: each row is a full-width target, not a word-shaped one. They
+    // arrive one after another once the sidebar is in, and leave at once.
     &__panel-nav {
         list-style: none;
-        margin: 0;
+        margin: 1.25rem 0 2rem;
         padding: 0;
+        border-top: 1px solid $line-strong;
 
-        // Hairlines rather than gaps: the rows read as a list, and each one
-        // is a full-width target instead of a word-shaped one.
-        li + li { border-top: 1px solid $line; }
+        li {
+            border-bottom: 1px solid $line;
+            opacity: 0;
+            transform: translateX(1.5rem);
+            transition: opacity $d-ample $ease-out, transform $d-ample $ease-out;
+        }
 
         a {
             display: flex;
             align-items: center;
-            min-height: 56px;
-            padding-block: 0.5rem;
+            gap: 0.875rem;
+            min-height: 64px;
+            padding-block: 0.875rem;
             font-family: $font-heading;
-            font-size: 1.625rem;
-            line-height: 1.2;
+            font-size: 1.75rem;
+            font-weight: $fw-head-sm;
+            line-height: 1.1;
             color: $paper;
-        }
 
-        .active-item > a { color: $ember; }
+            &:hover { color: $paper; }
+        }
     }
 
-    // Pushed to the bottom of the panel when the list is short, so it always
-    // sits at thumb height rather than floating under five links.
+    &__panel.is-open &__panel-nav li {
+        opacity: 1;
+        transform: none;
+        transition-delay: calc(80ms + var(--i, 0) * 50ms);
+    }
+
+    // The plate number, set small and raised like a footnote mark.
+    &__index {
+        align-self: flex-start;
+        margin-top: 0.35em;
+        font-family: $font-body;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        font-variant-numeric: tabular-nums;
+        color: $ember;
+    }
+
+    // The page shown is underlined, not only coloured.
+    [aria-current] > &__label {
+        text-decoration: underline;
+        text-decoration-color: $ember;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 0.22em;
+    }
+
+    &__arrow {
+        flex: none;
+        width: 20px;
+        height: 20px;
+        margin-left: auto;
+        color: $paper-3;
+        transition: transform $d-base $ease-out, color $d-base $ease-out;
+    }
+
+    &__panel-nav a:focus-visible &__arrow {
+        transform: translateX(0.25rem);
+        color: $ember-hi;
+    }
+
+    @include hoverable {
+        &__panel-nav a:hover &__arrow {
+            transform: translateX(0.25rem);
+            color: $ember-hi;
+        }
+    }
+
+    // Pushed to the bottom of the sidebar when the list is short, so it
+    // always sits at thumb height rather than floating under five links.
     &__panel-foot {
         margin-top: auto;
         display: flex;
@@ -254,6 +365,17 @@
         line-height: 1.5;
 
         span { display: block; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &__panel,
+        &__panel.is-open,
+        &__panel-nav li,
+        &__panel.is-open &__panel-nav li,
+        &__arrow {
+            transition-duration: 0s;
+            transition-delay: 0s;
+        }
     }
 }
 

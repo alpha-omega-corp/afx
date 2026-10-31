@@ -313,7 +313,11 @@ body.admin {
 // not, rather than a label that wraps mid-number.
 .btn__aside {
     font-variant-numeric: tabular-nums;
-    opacity: 0.72;
+    // A quieter ink, not a thinner one: ink at 72% over ember was 4.0:1
+    // and failed for the number the button exists to show. $ink-soft is
+    // the ember band's own secondary colour, 4.5:1 there; on the hover
+    // ember it rises to 5.9:1.
+    color: $ink-soft;
 
     &::before {
         content: "·";
@@ -330,10 +334,12 @@ body.admin {
         font-size: 0.75rem;
         font-weight: 600;
         letter-spacing: 0.06em;
-        opacity: 0.8;
 
         &::before { content: none; }
     }
+
+    // Pressed, the button turns to paper on deep ember; the number follows.
+    .btn:active & { color: inherit; }
 }
 
 // Ink on ember: 6.1:1. White on ember would be 3:1 and fail.

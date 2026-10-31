@@ -12,9 +12,14 @@
 
 @php($quiet = $embers === 'quiet')
 {{-- A page with words of its own opens on one card, glass over the
-     full-screen photograph: the name, the words and the way to act on them,
-     the practical facts in a strip along the foot. --}}
+     full-screen photograph: the name, the words and the way to act on them. --}}
 @php($stage = filled($text))
+
+{{-- The house's real facts — hours from App\Support\Opening, the numbers and
+     the address, never anything the copy would have to invent — along the
+     foot of every photograph hero, under the words rather than inside them,
+     so the card stays a column of words and the picture keeps its room. --}}
+@php($practical = $facts && ($image || $stage))
 
 <header @class([
     'hero',
@@ -25,6 +30,7 @@
     'hero--rule' => $rule,
     'hero--quiet' => $quiet,
     'hero--cover' => $image,
+    'hero--facts' => $practical,
 ])>
     {{-- The page's photograph fills the whole first screen behind
          everything else, and scrolls away slower than the page (app.js,
@@ -51,9 +57,9 @@
     @endif
 
     <div class="hero__inner">
-        @if($stage)
-            <div class="container">
-                <div @class(['hero-stage', 'hero-stage--facts' => $facts])>
+        <div class="container">
+            @if($stage)
+                <div class="hero-stage">
                     <div class="hero-stage__body">
                         @isset($art)
                             <div class="hero-stage__art">{{ $art }}</div>
@@ -74,61 +80,60 @@
                             <div class="hero__actions hero-stage__actions">{{ $actions }}</div>
                         @endisset
                     </div>
-
-
-                    {{-- The house's real facts — hours from App\Support\Opening,
-                         the numbers and the address — never anything the copy
-                         would have to invent. --}}
-                    @if($facts)
-                        <dl class="hero-stage__facts" aria-label="{{ __('app.practical') }}">
-                            <div class="hero-stage__fact">
-                                @svg('heroicon-o-clock')
-                                <dt>{{ __('footer.hours') }}</dt>
-                                <dd>
-                                    @foreach(App\Support\Opening::schedule() as $line)
-                                        <span>{{ $line }}</span>
-                                    @endforeach
-                                </dd>
-                            </div>
-
-                            <div class="hero-stage__fact">
-                                @svg('heroicon-o-phone')
-                                <dt>{{ __('app.reservations') }}</dt>
-                                <dd>
-                                    <a href="tel:+41227761029">022 776 10 29</a>
-                                    · <a href="https://wa.me/+41786857845" target="_blank" rel="noopener">WhatsApp</a>
-                                </dd>
-                            </div>
-
-                            <div class="hero-stage__fact">
-                                @svg('heroicon-o-map-pin')
-                                <dt>{{ __('footer.address') }}</dt>
-                                <dd>
-                                    <a href="{{ route(__('route.contact')) }}">Grand'Rue 31, 1297 Founex</a>
-                                </dd>
-                            </div>
-                        </dl>
-                    @endif
                 </div>
-            </div>
-        @else
-            <div class="container hero__grid">
-                <div class="hero__text">
-                    @isset($eyebrow)
-                        <div class="hero__eyebrow">{{ $eyebrow }}</div>
-                    @endisset
+            @else
+                <div class="hero__grid">
+                    <div class="hero__text">
+                        @isset($eyebrow)
+                            <div class="hero__eyebrow">{{ $eyebrow }}</div>
+                        @endisset
 
-                    <h1 class="hero__title">{{ $title }}</h1>
+                        <h1 class="hero__title">{{ $title }}</h1>
 
-                    @if($lead)
-                        <p class="hero__lead">{{ $lead }}</p>
-                    @endif
+                        @if($lead)
+                            <p class="hero__lead">{{ $lead }}</p>
+                        @endif
 
-                    @if(isset($actions))
-                        <div class="hero__actions">{{ $actions }}</div>
-                    @endif
+                        @if(isset($actions))
+                            <div class="hero__actions">{{ $actions }}</div>
+                        @endif
+                    </div>
                 </div>
-            </div>
-        @endif
+            @endif
+
+            @if($practical)
+                <dl class="hero__facts" aria-label="{{ __('app.practical') }}">
+                    <div class="hero__fact">
+                        @svg('heroicon-o-clock')
+                        <dt>{{ __('footer.hours') }}</dt>
+                        <dd>
+                            {{-- A range is one thing: "11h30 – 14h00" never
+                                 breaks at its dash (a no-break space is not
+                                 enough, the dash itself is a break point). --}}
+                            @foreach(App\Support\Opening::schedule() as $line)
+                                <span>{!! preg_replace('/(\S+) – (\S+)/u', '<span class="text-nowrap">$1 – $2</span>', e($line)) !!}</span>
+                            @endforeach
+                        </dd>
+                    </div>
+
+                    <div class="hero__fact">
+                        @svg('heroicon-o-phone')
+                        <dt>{{ __('app.reservations') }}</dt>
+                        <dd>
+                            <a href="tel:+41227761029">022&nbsp;776&nbsp;10&nbsp;29</a>
+                            · <a href="https://wa.me/+41786857845" target="_blank" rel="noopener">WhatsApp</a>
+                        </dd>
+                    </div>
+
+                    <div class="hero__fact">
+                        @svg('heroicon-o-map-pin')
+                        <dt>{{ __('footer.address') }}</dt>
+                        <dd>
+                            <a href="{{ route(__('route.contact')) }}">Grand'Rue&nbsp;31, 1297&nbsp;Founex</a>
+                        </dd>
+                    </div>
+                </dl>
+            @endif
+        </div>
     </div>
 </header>

@@ -1,4 +1,4 @@
-<footer class="app-footer">
+<footer class="app-footer" data-kit="site-footer">
     <div class="container">
         <div class="app-footer__grid">
             <div>

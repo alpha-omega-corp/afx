@@ -54,6 +54,14 @@
         text-transform: uppercase;
         color: $paper-3;
         margin: 0 0 1rem;
+
+        // 11px capitals in a muted grey hold on a desktop screen; held at
+        // arm's length on a phone they are the one line in the footer that
+        // has to be squinted at. A pixel up, the tracking eased to match.
+        @include media-breakpoint-down(sm) {
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+        }
     }
 
     ul {
