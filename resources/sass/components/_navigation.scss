@@ -31,7 +31,7 @@
     &.is-stuck {
         background-color: rgba($ink-2, 0.94);
         backdrop-filter: blur(8px);
-        border-bottom-color: $line;
+        border-bottom-color: $hairline;
     }
 
     // Opening the panel fills the bar too, so the two read as one surface.
@@ -41,7 +41,7 @@
         &.is-open {
             background-color: rgba($ink-2, 0.94);
             backdrop-filter: blur(8px);
-            border-bottom-color: $line;
+            border-bottom-color: $hairline;
         }
     }
 
@@ -109,7 +109,7 @@
             padding: 0.5rem 0.85rem;
             font-family: $font-body;
             font-size: $fs-small;
-            color: $paper;
+            color: $paper-1;
 
             &:hover { color: $ember-hi; }
         }

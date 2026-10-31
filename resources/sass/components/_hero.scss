@@ -1,7 +1,6 @@
 // =============================================================
-// Hero — one image per page, framed beside the title over the firelight.
-// Not a full-bleed background: the photographs are too small to cover the
-// width of a screen without going soft.
+// Hero — one image per page, filling the whole first screen behind the
+// title, under a warm light, scrolling away slower than the page.
 // A real <img> so the browser can prioritise it as the LCP element.
 // =============================================================
 
@@ -52,8 +51,8 @@
     &--rule .hero__title::after {
         content: "";
         display: block;
-        width: 56px;
-        height: 3px;
+        width: 44px;
+        height: 2px;
         background: $ember;
         margin-top: clamp(1rem, 2vw, 1.5rem);
     }
@@ -62,11 +61,10 @@
     // it rather than the whole of the hero, as it is on the home page.
     &--quiet .hero__hearth {
         height: 62%;
-        opacity: 0.55;
+        opacity: 0.6;
     }
 
-    // With a photograph the hero grows to its content: the frame sets the
-    // height, and a phone stacks it under the words.
+    // With a photograph or a card the hero grows to its content.
     &--media {
         height: auto;
         max-height: none;
@@ -98,50 +96,15 @@
         }
     }
 
-    &__frame {
-        justify-self: end;
-        width: 100%;
-        max-width: 560px;
-        aspect-ratio: 4 / 3;
-        margin: 0;
-        overflow: hidden;
-        border: 1px solid rgba($ember, 0.28);
-        border-radius: $r-glass;
-        background: $ink-2;
-        box-shadow: 0 1.5rem 4rem -1.5rem rgba($ember-lo, 0.45);
-
-        @include media-breakpoint-down(md) {
-            justify-self: stretch;
-            max-width: none;
-            aspect-ratio: 16 / 10;
-        }
-    }
-
-    &__media {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-    }
-
     // Warm light from above: the gradient begins at the very top of the page,
     // behind the navigation, and has burned down to nothing by the time the
-    // cards arrive. The motes rise into it.
+    // cards arrive. Three stops, none above a fifth: a glow, not a stain.
     &__hearth {
         position: absolute;
         inset: 0 0 auto 0;
         height: 78%;
         background:
-            radial-gradient(78% 100% at 50% 0%, rgba($ember, 0.34) 0%, rgba($ember-lo, 0.15) 38%, rgba($ink, 0) 72%);
-        pointer-events: none;
-    }
-
-    &__embers {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
+            radial-gradient(70% 90% at 50% 0%, rgba($ember, 0.2) 0%, rgba($ember-lo, 0.08) 40%, rgba($ink, 0) 74%);
         pointer-events: none;
     }
 
@@ -162,10 +125,10 @@
         width: 100%;
         // The cards on the home page climb into this edge; the bottom pad has
         // to stay clear of them, so it is larger on a phone than 6vw gives.
-        padding-block-end: clamp(3.25rem, 6vw, 5rem);
+        padding-block-end: clamp(2.5rem, 4.5vw, 3.75rem);
         padding-block-start: calc(var(--nav-h) + 2rem);
 
-        // Tighter on a phone, where the frame stacks under the words.
+        // Tighter on a phone.
         //
         // The floor is set by the plat du jour, which climbs 1rem into this
         // edge on a phone: anything under about 2rem here and the card lands
@@ -183,8 +146,8 @@
 
     &__lead {
         margin: 1.25rem 0 0;
-        max-width: 46ch;
-        color: $paper;
+        max-width: 44ch;
+        color: $paper-1;
         font-size: $fs-lead;
         line-height: $lh-lead;
 
@@ -221,21 +184,279 @@
     }
 }
 
+// =============================================================
+// Hero cover — the photograph as a full-screen background.
+//
+// The picture fills the first screen and the words sit on its lower left,
+// under a scrim dark enough for paper-white type: heavier at the foot where
+// the words are and on the left where they start, lighter at the top so
+// the nav still reads. The firelight and the fade to the page stay on top.
+// =============================================================
+
+.hero.hero--cover {
+    height: auto;
+    max-height: none;
+    min-height: 100vh;
+    min-height: 100svh;
+    align-items: flex-end;
+
+    .hero__inner {
+        padding-block-end: clamp(3.5rem, 9vh, 7rem);
+
+        @include media-breakpoint-down(md) { padding-block-end: 3rem; }
+    }
+
+    .hero__title,
+    .hero__lead { text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45); }
+
+    // Without a photograph half, the card is a column of words: as wide as
+    // they need, not the whole container, so the picture shows beside it.
+    .hero-stage { max-width: 60rem; }
+}
+
+.hero__bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background-color: $ink;
+}
+
+.hero__bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    // Written by app.js as the page scrolls; `translate`, not `transform`,
+    // so the settle animation on the same image still runs.
+    translate: 0 var(--parallax, 0px);
+
+    .is-parallax & { will-change: translate; }
+}
+
+.hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(to right, rgba($ink, 0.6) 0%, rgba($ink, 0.15) 60%, rgba($ink, 0) 100%),
+        linear-gradient(to top, rgba($ink, 0.85) 0%, rgba($ink, 0.3) 50%, rgba($ink, 0.55) 100%);
+    pointer-events: none;
+}
+
+// =============================================================
+// Hero stage — a page that has words of its own opens on one card.
+//
+// The name, the words and the way to act on them; the practical facts in a
+// strip along the foot. One glass surface over the photograph, so the page
+// arrives as a single thing rather than a title over a void and a panel
+// below the fold.
+// =============================================================
+
+.hero--stage {
+    // The card throws a long shadow; the hero must not clip it. Nothing
+    // else in the hero reaches past its box — the hearth and the fade
+    // are inset to it.
+    overflow: visible;
+
+    .hero__inner {
+        padding-block: calc(var(--nav-h) + clamp(1rem, 3vw, 2.5rem)) clamp(1.5rem, 3vw, 2.5rem);
+
+        // A phone spends no height on air above the photograph.
+        @include media-breakpoint-down(md) {
+            padding-block-start: calc(var(--nav-h) + 0.75rem);
+        }
+    }
+
+    // Inside a card the name has a column, not the page, to fill.
+    .hero__title {
+        max-width: 14ch;
+        font-size: clamp(2.375rem, 5vw, 4.5rem);
+    }
+}
+
+.hero-stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "body"
+        "facts";
+    border: 1px solid $hairline;
+    border-radius: $r-panel * 2;
+    background:
+        radial-gradient(80% 110% at 0% 0%, rgba($ember, 0.07) 0%, rgba($ember, 0) 62%),
+        linear-gradient(to bottom, rgba($ink-3, 0.88), rgba($ink-2, 0.86));
+    box-shadow:
+        0 2.5rem 5rem -2.5rem rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 $hairline;
+    overflow: hidden;
+    isolation: isolate;
+
+    // The firelight shows through, softly, where the card is not opaque.
+    @supports (backdrop-filter: blur(1px)) {
+        backdrop-filter: blur(10px) saturate(110%);
+    }
+
+    // One ember hairline along the top edge, brightest over the words and
+    // gone before the photograph: the same shine as the plat du jour card.
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        z-index: 2;
+        height: 1px;
+        background: linear-gradient(to right,
+            rgba($ember, 0) 0%,
+            rgba($ember-hi, 0.4) 28%,
+            rgba($ember, 0) 62%);
+        pointer-events: none;
+    }
+
+    // --- The words -------------------------------------------
+    &__body {
+        grid-area: body;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: clamp(1.75rem, 4.5vw, 3.75rem);
+
+        @include media-breakpoint-down(md) { padding: 1.5rem 1.5rem 1.75rem; }
+    }
+
+    // The page's own drawing, small over its name: an emblem, not an
+    // illustration competing with the photograph beside it.
+    &__art {
+        width: clamp(4.25rem, 6.5vw, 5.75rem);
+        margin-bottom: clamp(1rem, 2vw, 1.5rem);
+        color: $paper-3;
+
+        @include media-breakpoint-down(lg) { display: none; }
+    }
+
+    &__text {
+        margin: clamp(1.25rem, 2.5vw, 1.75rem) 0 0;
+        max-width: 46ch;
+        color: $paper-1;
+        font-size: $fs-lead;
+        line-height: $lh-lead;
+        text-wrap: pretty;
+
+        @include media-breakpoint-down(md) {
+            font-size: 1.0625rem;
+            line-height: 1.6;
+        }
+    }
+
+    &__actions {
+        margin-top: clamp(1.5rem, 3vw, 2.25rem);
+    }
+
+    // --- The facts -------------------------------------------
+    // A strip along the foot of the card: what a guest needs to come.
+    &__facts {
+        grid-area: facts;
+        display: grid;
+        // Each fact as wide as its own words, the gaps shared out between
+        // them: the hours then keep "– 22h00" on the line it belongs to.
+        grid-template-columns: repeat(3, auto);
+        justify-content: space-between;
+        gap: 1.25rem clamp(1.5rem, 3vw, 2.5rem);
+        margin: 0;
+        padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.75rem, 4.5vw, 3.75rem);
+        border-top: 1px solid $hairline;
+        background: rgba($ink, 0.32);
+
+        @include media-breakpoint-down(lg) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+
+        @include media-breakpoint-down(md) {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 1.1rem;
+            padding: 1.25rem 1.5rem 1.5rem;
+        }
+    }
+
+    &__fact {
+        display: grid;
+        grid-template-columns: 2.25rem 1fr;
+        column-gap: 0.85rem;
+        align-content: start;
+
+        // The hours run longest: on a tablet they take the strip's whole
+        // first row and the two short facts share the second.
+        &:first-child {
+            @include media-breakpoint-between(md, lg) { grid-column: 1 / -1; }
+        }
+
+        // The icon chip, one per fact.
+        > svg {
+            grid-row: span 2;
+            width: 2.25rem;
+            height: 2.25rem;
+            padding: 0.5rem;
+            border: 1px solid $hairline-hi;
+            border-radius: 50%;
+            background: rgba($paper, 0.025);
+            color: $ember;
+        }
+
+        dt {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: $paper-3;
+        }
+
+        dd {
+            margin: 0.15rem 0 0;
+            font-size: $fs-small;
+            color: $paper-1;
+            overflow-wrap: anywhere;
+
+            span { display: block; }
+
+            a {
+                color: $paper-1;
+                text-decoration: underline;
+                text-decoration-color: rgba($paper, 0.25);
+                text-underline-offset: 3px;
+                @include tap;
+            }
+
+            a:hover { color: $ember-hi; text-decoration-color: currentColor; }
+        }
+    }
+}
+
 // The single orchestrated moment on the site.
 @media (prefers-reduced-motion: no-preference) {
     .hero__text > *,
-    .hero__frame {
+    .hero-stage,
+    .hero-stage__body > * {
         animation: hero-rise 600ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
     }
 
+    // The card arrives, then its words line up inside it, and the
+    // photograph behind settles from a touch closer.
+    .hero-stage__body > :nth-child(2) { animation-delay: 80ms; }
+    .hero-stage__body > :nth-child(3) { animation-delay: 160ms; }
+    .hero-stage__body > :nth-child(4) { animation-delay: 240ms; }
+    .hero__bg-img { animation: hero-settle 1100ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
     .hero__lead    { animation-delay: 90ms; }
     .hero__actions { animation-delay: 180ms; }
-    .hero__frame   { animation-delay: 120ms; }
 }
 
 @keyframes hero-rise {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: none; }
+}
+
+@keyframes hero-settle {
+    from { transform: scale(1.06); }
+    to   { transform: none; }
 }
 
 // =============================================================
@@ -252,7 +473,7 @@
     max-width: 100%;
     min-height: $tap;
     padding: 0.35rem 0.9rem 0.35rem 0.4rem;
-    border: 1px solid rgba($ember, 0.45);
+    border: 1px solid $hairline-hi;
     border-radius: 1.5rem;
     background: rgba($ink, 0.55);
     -webkit-backdrop-filter: blur(10px);
@@ -263,7 +484,7 @@
 
     &:hover,
     &:focus-visible {
-        border-color: $ember-hi;
+        border-color: rgba($ember, 0.55);
         background: rgba($ink, 0.75);
         color: $paper;
 

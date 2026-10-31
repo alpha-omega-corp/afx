@@ -7,7 +7,7 @@
 // surface, so the page reads in chapters instead of one long scroll.
 // =============================================================
 
-$home-gap: clamp(3.75rem, 11vw, 9.5rem);
+$home-gap: clamp(3.5rem, 8vw, 6.5rem);
 
 // --- Spécialité de chasse ------------------------------------
 // The house's calling card, as large as the owner asked: one line of
@@ -36,15 +36,17 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
         align-items: center;
         gap: clamp(1rem, 2.5vw, 2.25rem);
         padding: clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 3vw, 2.5rem);
-        border: 1px solid rgba($ember, 0.22);
+        border: 1px solid $hairline;
         border-radius: $r-panel * 2;
         background:
             radial-gradient(60% 140% at var(--chasse-x) var(--chasse-y),
-                rgba($ember, 0.16) 0%,
-                rgba($ember-lo, 0.06) 45%,
+                rgba($ember, 0.1) 0%,
+                rgba($ember-lo, 0.04) 45%,
                 rgba($ink-2, 0) 75%),
-            rgba($ink-2, 0.55);
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+            linear-gradient(to bottom, rgba($ink-3, 0.7), rgba($ink-2, 0.5));
+        box-shadow:
+            0 24px 56px -24px rgba(0, 0, 0, 0.6),
+            inset 0 1px 0 $hairline;
         transform: perspective(1200px) rotateX(var(--chasse-rx, 0deg)) rotateY(var(--chasse-ry, 0deg));
         transition:
             --chasse-x 600ms $ease-out,
@@ -53,7 +55,7 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
             border-color $d-base $ease-standard;
 
         @include hoverable {
-            &:hover { border-color: rgba($ember, 0.42); }
+            &:hover { border-color: rgba($ember, 0.3); }
         }
 
         // A phone: the stag above the words, both centred.
@@ -70,7 +72,7 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
     &__art {
         width: clamp(5.5rem, 9vw, 8.5rem);
         margin-block: -0.5rem;
-        color: $paper-2;
+        color: $paper-3;
 
         // Each antler stroke is 1 long (pathLength), so 1 hides it whole.
         .ill-antlers path {
@@ -111,11 +113,12 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
         gap: clamp(0.75rem, 2vw, 1.5rem);
         margin: 0;
         font-family: $font-heading;
-        font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+        font-size: clamp(2rem, 4.5vw, 3.5rem);
         font-style: italic;
         font-weight: $fw-head;
-        line-height: 1.05;
-        color: $ember-hi;
+        line-height: 1.08;
+        letter-spacing: -0.01em;
+        color: $ember;
         text-wrap: balance;
 
         // The hairline runs out to the sign's edge, so the words read as a
@@ -125,7 +128,7 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
             flex: 1 1 1.5rem;
             min-width: 1.5rem;
             height: 1px;
-            background: linear-gradient(to left, rgba($ember, 0), $ember);
+            background: linear-gradient(to left, rgba($ember, 0), rgba($ember, 0.45));
         }
 
         // A phone has no room for the hairline and the words on one line:
@@ -199,18 +202,15 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
 
 // --- The house -----------------------------------------------
 // One raised band with hairlines top and bottom: the one chapter break on
-// the page. The words open it and the photographs run under them, off the
-// right edge of the screen; the arrows sit level with the words' last line,
-// so the two read as one spread rather than a paragraph with a carousel
-// parked under it.
+// the page. The words open it, centred at a reading measure, and the
+// photographs follow inside the container, centred, an arrow on either
+// side of them.
 .home-lede {
-    // Distance from the container's content edge to the edge of the screen.
-    // 100vw counts the scrollbar, hence the clip.
-    --bleed: calc(max(0px, (100vw - #{$container}) / 2) + #{$gutter});
-
     padding-block: $home-gap;
-    background-color: $ink-2;
-    border-block: 1px solid $line;
+    // A plane a shade up from the page, lit along its top edge and sinking
+    // back to the page colour at its foot: a chapter, not a box.
+    background: linear-gradient(to bottom, $ink-2 0%, mix($ink-2, $ink, 40%) 100%);
+    border-top: 1px solid $hairline;
     overflow-x: clip;
 
     &__body {
@@ -219,45 +219,49 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
         gap: clamp(1.75rem, 4vw, 3rem);
     }
 
-    // The words on the left at a reading measure, the arrows on the right.
-    &__intro {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: clamp(1.5rem, 4vw, 3rem);
+    // Centred over the words, the ember bar under it centred too. The band's
+    // gap already spaces it from the text; doubled up so .app-section__title's
+    // own bottom margin, compiled later, does not add to it.
+    & &__title {
+        margin: 0;
+        text-align: center;
+
+        &::after { margin-inline: auto; }
     }
 
-    &__words {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+    &__text {
+        margin: 0 auto;
         max-width: 40rem;
+        text-align: center;
     }
 
-    // The house drawn small over its own name, in the firelight's glow:
-    // the emblem the photographs open on. Too much height on a phone,
-    // where the strip is what the band is for.
-    &__art {
-        width: clamp(8.5rem, 14vw, 11rem);
-        margin-bottom: 1.5rem;
-        color: $paper-2;
+    // Arrow, photographs, arrow: the buttons sit level with the middle of
+    // the frames, on the two edges the strip scrolls to.
+    &__stage {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: clamp(0.75rem, 2vw, 1.5rem);
+
+        // A finger drags the track; the arrows would only take the width
+        // the photographs need.
+        @include media-breakpoint-down(md) { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    &__btn {
+        flex-shrink: 0;
 
         @include media-breakpoint-down(md) { display: none; }
     }
 
-    &__text { margin: 0; }
-
-    &__nav {
-        flex-shrink: 0;
-        justify-content: flex-end;
-        padding: 0;
-    }
-
     &__track {
-        grid-auto-columns: clamp(15rem, 24vw, 21rem);
-        margin-inline-end: calc(var(--bleed) * -1);
-        padding-inline-end: var(--bleed);
-        padding-bottom: 0;
+        // Three frames to a view, flush with both edges of the track.
+        --per-view: 3;
+
+        grid-auto-columns: calc((100% - (var(--per-view) - 1) * 1rem) / var(--per-view));
+        // The reboot's list indent would push the first frame off the
+        // arrow and let a sliver of the fourth show at the other end.
+        padding: 0;
         margin-bottom: 0;
 
         .strip__item {
@@ -266,11 +270,7 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
             @include media-breakpoint-down(md) { aspect-ratio: 1 / 1; }
         }
 
-        // A tablet: still running off the right edge, wider frames for the
-        // narrower screen.
-        @include media-breakpoint-down(lg) {
-            grid-auto-columns: minmax(260px, 40%);
-        }
+        @include media-breakpoint-down(lg) { --per-view: 2; }
 
         // A phone keeps the strip's own full-bleed treatment.
         @include media-breakpoint-down(md) {

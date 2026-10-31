@@ -2,9 +2,8 @@
 // La carte — a list you can read, not a stack of parallax banners.
 // =============================================================
 
-// The rail follows the intro panel every page opens with, at the same
-// distance the panel keeps from the hero.
-.intro + .menu-anchors { margin-top: clamp(1.75rem, 5vw, 4rem); }
+// The rail follows the card every page opens with, clear of its shadow.
+.app-page__content > .menu-anchors:first-child { margin-top: clamp(1.25rem, 3vw, 2rem); }
 
 .menu-anchors {
     position: sticky;

@@ -23,10 +23,10 @@ One manner for every picture that is not a photograph: **ember line**.
 |-------------------------------|-------------------------|
 | Home, welcome lede            | `auberge`               |
 | Plat du jour card (home, carte) | `cloche`              |
-| Restaurant intro              | `table`                 |
-| La carte intro                | `carte`                 |
-| Hôtel intro                   | `room`                  |
-| Contact intro                 | `map`                   |
+| Restaurant hero card          | `table`                 |
+| La carte hero card            | `carte`                 |
+| Hôtel hero card               | `room`                  |
+| Contact hero card             | `map`                   |
 
 `public/images/generated/` holds an older, filled-gradient set (library collection
 `auberge-lamplit`) in a different manner. Nothing references it; do not wire it in.

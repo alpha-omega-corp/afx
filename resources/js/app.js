@@ -134,181 +134,48 @@ if (document.querySelector('#gallery')) {
     sign.addEventListener('pointerleave', rest);
 })();
 
-// --- Hearth embers -------------------------------------------
-// The home hero has no photograph, so firelight carries it. Motes rise
-// from the bottom edge, drift, flicker and burn out before they reach the
-// type. Additive blending is what makes them read as light rather than
-// as dots. Sparse on purpose: this is a hearth, not weather.
+// --- Hero parallax -------------------------------------------
+// The hero photograph fills the first screen and scrolls away slower than
+// the page: once the page passes the top of the hero, the picture slides
+// down inside it by a fraction of the distance. Its top edge stays above
+// the screen's top the whole way, so it needs no overscan and is never
+// enlarged past its frame. Works only while the hero is on screen, once a
+// frame at most; still for anyone who asked for less motion.
 (() => {
-    const canvas = document.querySelector('[data-embers]');
-    if (!canvas) return;
+    const layers = document.querySelectorAll('[data-parallax]');
+    if (!layers.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!('IntersectionObserver' in window)) return;
 
-    const ctx = canvas.getContext('2d', { alpha: true });
-    if (!ctx) return;
-
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-    // Every hero but the home page's has a photograph doing the work, so the
-    // firelight over it is a suggestion rather than the whole effect: fewer
-    // motes, spread thinner, and dimmer with it.
-    const quiet = canvas.dataset.embers === 'quiet';
-    const AREA_PER_MOTE = quiet ? 19000 : 8500;
-    const MOST_MOTES = quiet ? 55 : 150;
-    const GLOW = quiet ? 0.6 : 1;
-
-    const EMBER = [
-        [242, 107, 29],  // $ember
-        [255, 138, 61],  // $ember-hi
-        [184, 74, 14],   // $ember-lo
-    ];
-
-    let width = 0;
-    let height = 0;
-    let motes = [];
+    const RATE = 0.4;   // the picture keeps 40% of the page's travel back
+    const visible = new Set();
     let frame = null;
-    let onScreen = true;
-    let last = 0;
 
-    const rand = (min, max) => min + Math.random() * (max - min);
-
-    // 0 at the boundary, 1 once `soft` pixels inside it. Applied to alpha so
-    // the field has no edge: motes fade out rather than vanishing at a line.
-    const falloff = (value, extent, soft) =>
-        Math.max(0, Math.min(1, Math.min(value, extent - value) / soft));
-
-    // `seeded` scatters the first field over the whole hero so the effect
-    // is already running when the page paints, instead of climbing in.
-    const mote = (seeded = false) => {
-        const radius = rand(0.8, 3);
-
-        return {
-            x: rand(0, width),
-            // A seeded field fills the lower half only: embers come off the
-            // fire, so the top of the hero starts clear and stays that way.
-            y: seeded ? rand(height * 0.45, height) : height + rand(0, 60),
-            radius,
-            // Larger motes read as nearer, so they climb faster.
-            speed: 7 + radius * 9,
-            drift: rand(-0.5, 0.5),
-            sway: rand(16, 40),
-            phase: rand(0, Math.PI * 2),
-            flicker: rand(1.6, 3.4),
-            life: seeded ? rand(0, 3) : 0,
-            span: rand(6, 12),
-            tint: EMBER[(Math.random() * EMBER.length) | 0],
-        };
-    };
-
-    const resize = () => {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const rect = canvas.getBoundingClientRect();
-
-        width = rect.width;
-        height = rect.height;
-        canvas.width = Math.round(width * dpr);
-        canvas.height = Math.round(height * dpr);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-        const count = Math.round(Math.min(MOST_MOTES, (width * height) / AREA_PER_MOTE));
-        motes = Array.from({ length: count }, () => mote(true));
-    };
-
-    const paint = (elapsed) => {
-        ctx.clearRect(0, 0, width, height);
-        ctx.globalCompositeOperation = 'lighter';
-
-        for (const m of motes) {
-            const t = m.life / m.span;
-            // In fast, out slow: an ember brightens as it leaves the fire
-            // and dims for most of its climb.
-            const fade = t < 0.12 ? t / 0.12 : 1 - (t - 0.12) / 0.88;
-            const pulse = 0.72 + 0.28 * Math.sin(m.phase + elapsed * m.flicker);
-            const x = m.x + Math.sin(m.phase + m.life * 0.9) * m.sway;
-
-            // The field fades at the sides, and thins toward the top so the
-            // motes dissolve into the light rather than crowding the wordmark.
-            const edge = falloff(x, width, width * 0.16) * falloff(m.y, height * 2, height * 0.55);
-            const alpha = Math.max(0, fade) * pulse * edge * GLOW;
-
-            if (alpha <= 0.002) continue;
-            const [r, g, b] = m.tint;
-
-            // A hot core inside a soft halo. Two stops do the work that a
-            // blur filter would, without the per-frame cost.
-            const reach = m.radius * 5.5;
-            const glow = ctx.createRadialGradient(x, m.y, 0, x, m.y, reach);
-            glow.addColorStop(0, `rgba(255, 226, 196, ${alpha})`);
-            glow.addColorStop(0.22, `rgba(${r}, ${g}, ${b}, ${alpha * 0.85})`);
-            glow.addColorStop(0.55, `rgba(${r}, ${g}, ${b}, ${alpha * 0.22})`);
-            glow.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
-
-            ctx.fillStyle = glow;
-            ctx.beginPath();
-            ctx.arc(x, m.y, reach, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        ctx.globalCompositeOperation = 'source-over';
-    };
-
-    const step = (now) => {
-        const delta = Math.min((now - last) / 1000, 0.05);
-        last = now;
-
-        for (let i = 0; i < motes.length; i += 1) {
-            const m = motes[i];
-            m.life += delta;
-            m.y -= m.speed * delta;
-            m.x += m.drift * delta * 30;
-
-            if (m.life > m.span || m.y < -20) motes[i] = mote();
-        }
-
-        paint(now / 1000);
-        frame = requestAnimationFrame(step);
-    };
-
-    const start = () => {
-        if (frame !== null || still.matches) return;
-        last = performance.now();
-        frame = requestAnimationFrame(step);
-    };
-
-    const stop = () => {
-        if (frame === null) return;
-        cancelAnimationFrame(frame);
+    const update = () => {
         frame = null;
+        visible.forEach((el) => {
+            // How far the page has scrolled past the top of the hero.
+            const passed = Math.max(0, -el.getBoundingClientRect().top);
+            el.style.setProperty('--parallax', `${(passed * RATE).toFixed(1)}px`);
+        });
     };
 
-    const sync = () => {
-        if (still.matches) {
-            stop();
-            resize();
-            paint(0);   // A single still frame: the firelight without the motion.
-            return;
-        }
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
 
-        onScreen && !document.hidden ? start() : stop();
-    };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            entry.isIntersecting ? visible.add(entry.target) : visible.delete(entry.target);
+        });
+        schedule();
+    });
 
-    resize();
-    sync();
+    layers.forEach((el) => {
+        el.classList.add('is-parallax');
+        observer.observe(el);
+    });
 
-    // Nothing runs while the hero is scrolled away or the tab is in the
-    // background.
-    new IntersectionObserver(([entry]) => {
-        onScreen = entry.isIntersecting;
-        sync();
-    }).observe(canvas);
-
-    document.addEventListener('visibilitychange', sync);
-    still.addEventListener('change', sync);
-
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => { resize(); sync(); }, 150);
-    }, { passive: true });
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
 })();
 
 // --- Closed banner offset ------------------------------------

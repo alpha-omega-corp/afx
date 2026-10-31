@@ -14,7 +14,6 @@
 @import "components/hero";
 @import "components/page";
 @import "components/illustration";
-@import "components/intro";
 @import "components/tile";
 @import "components/daily";
 @import "components/strip";
@@ -105,10 +104,14 @@ h1, h2, h3, h4 {
     color: $paper;
     font-weight: $fw-head;
     letter-spacing: -0.01em;
+    font-optical-sizing: auto;
+    font-kerning: normal;
     text-wrap: balance;
 }
 
-h1 { font-size: $fs-display; line-height: $lh-display; }
+// Playfair's hairlines open up at display size; a touch of negative
+// tracking keeps the big names set as one word-shape.
+h1 { font-size: $fs-display; line-height: $lh-display; letter-spacing: -0.02em; }
 h2 { font-size: $fs-h2;      line-height: $lh-h2; }
 h3 { font-size: $fs-h3;      line-height: $lh-h3; font-weight: 600; }
 
@@ -250,8 +253,8 @@ body.admin {
         &::after {
             content: "";
             display: block;
-            width: 56px;
-            height: 3px;
+            width: 44px;
+            height: 2px;
             background: $ember;
             margin-top: 1rem;
         }
@@ -263,7 +266,7 @@ body.admin {
             margin-bottom: 1.25rem;
 
             &::after {
-                width: 48px;
+                width: 36px;
                 margin-top: 0.75rem;
             }
         }
@@ -273,7 +276,7 @@ body.admin {
 // Prose is capped at a comfortable measure rather than the full grid.
 .prose {
     max-width: $measure;
-    color: $paper-2;
+    color: $paper-1;
     font-size: $fs-lead;
     line-height: $lh-lead;
 
@@ -281,8 +284,8 @@ body.admin {
     // turns into a tall thin ribbon. A step down buys back two words a line
     // without dropping to body size.
     @include media-breakpoint-down(md) {
-        font-size: 1.125rem;
-        line-height: 1.55;
+        font-size: 1.0625rem;
+        line-height: 1.6;
     }
 
     a { text-decoration: underline; text-underline-offset: 3px; }
@@ -298,8 +301,8 @@ body.admin {
     font-family: $font-body;
     font-weight: 600;
     font-size: $fs-small;
-    letter-spacing: 0.01em;
-    padding: 0.9rem 1.5rem;
+    letter-spacing: 0.015em;
+    padding: 0.85rem 1.5rem;
     border-radius: $r-control;
     border: 1px solid transparent;
     transition: background-color $t-fast, border-color $t-fast, color $t-fast;
@@ -350,14 +353,15 @@ body.admin {
 }
 
 .btn-ghost {
-    background-color: transparent;
-    border-color: $paper;
+    background-color: rgba($paper, 0.03);
+    border-color: rgba($paper, 0.3);
     color: $paper;
 
     &:hover,
     &:focus-visible {
-        border-color: $ember;
-        color: $ember;
+        background-color: rgba($paper, 0.06);
+        border-color: rgba($paper, 0.6);
+        color: $paper;
     }
 }
 
@@ -378,7 +382,7 @@ body.admin {
 
     .prose { font-weight: $fw-body-sm; }
 
-    .btn { font-weight: 700; }
+    .btn { font-weight: 650; }
 }
 
 // =============================================================
