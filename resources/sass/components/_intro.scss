@@ -127,7 +127,7 @@
             color: $paper;
             overflow-wrap: anywhere;
 
-            a { color: $paper; text-decoration: underline; text-decoration-color: rgba($paper, 0.35); text-underline-offset: 3px; }
+            a { color: $paper; text-decoration: underline; text-decoration-color: rgba($paper, 0.35); text-underline-offset: 3px; @include tap; }
             a:hover { color: $ember-hi; text-decoration-color: currentColor; }
         }
     }

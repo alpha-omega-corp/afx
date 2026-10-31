@@ -1,5 +1,5 @@
 {{-- A folded map with the way in marked: where to find the house. --}}
-<svg {{ $attributes->merge(['class' => 'illustration']) }} viewBox="0 0 160 128" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<svg {{ $attributes->merge(['class' => 'illustration']) }} viewBox="0 0 160 128" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="{{ __('illustration.map') }}" focusable="false">
     <ellipse class="ill-glow" cx="80" cy="84" rx="64" ry="34"/>
     <path d="M18 52l36-12 52 12 36-12v72l-36 12-52-12-36 12Z"/>
     <path d="M54 40v72M106 52v72"/>

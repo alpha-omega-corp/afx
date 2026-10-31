@@ -1,5 +1,5 @@
 {{-- A covered dish, still steaming: the plat du jour. --}}
-<svg {{ $attributes->merge(['class' => 'illustration']) }} viewBox="0 0 160 128" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<svg {{ $attributes->merge(['class' => 'illustration']) }} viewBox="0 0 160 128" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="{{ __('illustration.cloche') }}" focusable="false">
     <ellipse class="ill-glow" cx="80" cy="84" rx="58" ry="30"/>
     <path class="ill-accent" d="M64 30c-5-6 5-9 0-17M80 26c-5-6 5-9 0-17M96 30c-5-6 5-9 0-17"/>
     <circle cx="80" cy="42" r="5"/>

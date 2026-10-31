@@ -50,7 +50,7 @@
             // phone it has to be allowed to fold rather than widen the page.
             overflow-wrap: anywhere;
 
-            a { color: $paper; text-decoration: underline; text-underline-offset: 3px; }
+            a { color: $paper; text-decoration: underline; text-underline-offset: 3px; @include tap; }
             a:hover { color: $ember; }
         }
     }
@@ -65,6 +65,14 @@
             align-items: center;
             gap: 0.6rem;
             text-decoration: none;
+        }
+
+        // Two 28px rows 8px apart: a halo each would overlap, so on touch
+        // the rows themselves are the 44px.
+        @media (pointer: coarse) {
+            gap: 0;
+
+            a { min-height: $tap; }
         }
 
         svg { width: 18px; height: 18px; flex: none; color: $paper-2; }

@@ -10,7 +10,7 @@
          lockup is anchored to the bottom edge, so the rule's height is the
          25px that had the title sitting lower here than anywhere else. --}}
     <x-page :page="$page" :title="$page?->locale?->title ?: ucfirst(__('nav.menu'))">
-        <x-slot:art><x-illustration.cloche/></x-slot:art>
+        <x-slot:art><x-illustration.carte/></x-slot:art>
 
         @if($carte->isNotEmpty())
             {{-- Nine sections never fit the rail, on any screen. The rail
@@ -66,12 +66,6 @@
                 </div>
             </nav>
         @endif
-
-        {{-- The card of the day heads the carte it belongs to, above the
-             words about the carte in general. Its dishes are printed here and
-             nowhere else on the page — `$carte` has already taken them out of
-             their own sections, so no name appears twice. --}}
-        <x-daily :specials="$specials" :sections="$sections" :tuck="false"/>
 
         <div class="container menu-list">
             @foreach($carte as $section)

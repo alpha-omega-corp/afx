@@ -10,7 +10,9 @@
 
     &__grid {
         display: grid;
-        grid-template-columns: 1.4fr 1fr 1fr 1fr;
+        // Contact gets the width the two round social icons do not need, so
+        // the email address reads on one line on a desktop.
+        grid-template-columns: 1.4fr 1fr 1.25fr 0.75fr;
         gap: clamp(1.5rem, 4vw, 3rem);
 
         @include media-breakpoint-down(lg) { grid-template-columns: 1fr 1fr; }
@@ -75,7 +77,9 @@
         // in the intrinsic minimum the grid is measuring.
         overflow-wrap: anywhere;
 
-        @media (pointer: coarse) { padding-block: 0.5rem; }
+        @media (pointer: coarse) { padding-block: 0.625rem; }
+        // "Hôtel" is 38px wide; the halo makes up the width.
+        @include tap;
 
         &:hover { color: $ember; }
     }
@@ -95,6 +99,7 @@
             border-radius: 50%;
             color: $paper-2;
             transition: border-color $t-fast, color $t-fast;
+            @include tap;
 
             &:hover { border-color: $ember; color: $ember; }
         }
@@ -165,6 +170,7 @@
         gap: 0.5rem;
         color: $paper-2;
         font-size: $fs-small;
+        @include tap;
 
         &:hover,
         &:focus-visible {

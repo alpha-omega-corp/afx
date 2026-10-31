@@ -1,5 +1,5 @@
 {{-- A laid place: plate, fork, knife and a glass of wine. --}}
-<svg {{ $attributes->merge(['class' => 'illustration']) }} viewBox="0 0 180 128" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<svg {{ $attributes->merge(['class' => 'illustration']) }} viewBox="0 0 180 128" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="{{ __('illustration.table') }}" focusable="false">
     <ellipse class="ill-glow" cx="80" cy="72" rx="56" ry="44"/>
     <circle cx="80" cy="70" r="36"/>
     <circle class="ill-accent" cx="80" cy="70" r="24"/>

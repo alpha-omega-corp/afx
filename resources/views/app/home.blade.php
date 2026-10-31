@@ -3,10 +3,9 @@
 @section('description', Str::limit(trim(strip_tags($page?->locale?->content ?? '')), 155) ?: __('footer.blurb'))
 
 @section('content')
-    {{-- The house itself, under the firelight: the embers rise over the
-         photograph, and it drifts at a third of the page's speed as the
-         hero scrolls away. The image is the home page's own, changed from
-         Administration → Pages like every other hero on the site.
+    {{-- The house itself, framed in the firelight beside the name. The
+         image is the home page's own, changed from Administration → Pages
+         like every other hero on the site.
 
          Every reference to the record is optional. A database whose pages
          have not been seeded is a database a member of staff can still log
@@ -19,7 +18,6 @@
         :lead="$page?->locale?->title"
         :tall="true"
         :embers="true"
-        :parallax="true"
         :rule="false"
         :intro="false"
     >
@@ -51,6 +49,27 @@
             </a>
         </x-slot:actions>
 
+        {{-- What the house is known for, asked for in large by the owner
+             (ticket #1, client review 4): straight under the hero's buttons,
+             where the eye lands after the name, and above today's card so
+             the dish of the day reads as part of it.
+
+             Interactive since ticket #2 (client review 4): the stag's antlers
+             draw themselves in as the sign arrives, and the hearth's light
+             follows the pointer across it. It is a sign, not a control —
+             nothing to press, so nothing to focus; without the script it is
+             the same sign, standing still. --}}
+        <section class="home-chasse" aria-labelledby="home-chasse-title">
+            {{-- The reveal on the container, not the sign: the reveal's own
+                 transform would otherwise overwrite the sign's lean. --}}
+            <div class="container" data-reveal>
+                <div class="home-chasse__sign" data-chasse>
+                    <x-illustration.cerf class="home-chasse__art"/>
+                    <h2 class="home-chasse__title" id="home-chasse-title">{{ __('app.game') }}</h2>
+                </div>
+            </div>
+        </section>
+
         {{-- The one thing on the page that is different tomorrow. It sits in
              the last of the hero's firelight, above the three doors, because
              it is the reason to come today rather than one day. --}}
@@ -76,40 +95,41 @@
         {{-- One chapter, not two: the house in its own words and the look
              around it were the same subject under two headings, and on a
              phone the second title arrived before the first photograph had
-             finished being looked at. The words open the band, the
-             photographs run under them, and the house itself is the frame
-             the strip opens on. Raised off the page, as one movement. --}}
+             finished being looked at. The words open the band, above the
+             photographs, which run under them out to the edge of the screen,
+             and the house itself is the frame the strip opens on. Raised off
+             the page, as one movement. --}}
         @php($photos = $gallery?->items ?? collect())
 
         <section class="home-lede">
-            <div class="container" data-strip>
+            <div class="container home-lede__body" data-strip>
                 <div class="home-lede__intro">
-                    <div>
+                    <div class="home-lede__words">
+                        <x-illustration.auberge class="home-lede__art"/>
+
                         <h2 class="app-section__title">{{ __('app.welcome') }}</h2>
 
                         <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
                     </div>
 
-                    <x-illustration.auberge class="home-lede__art"/>
+                    {{-- Level with the last line of the words, right over the
+                         strip: the arrows read as the way into it rather than
+                         as decoration beside the heading. --}}
+                    @if($photos->isNotEmpty())
+                        <div class="strip__nav home-lede__nav">
+                            <button type="button" class="strip__btn" data-strip-prev>
+                                <span class="visually-hidden">{{ __('app.previous') }}</span>
+                                <x-icon.chevron-left/>
+                            </button>
+                            <button type="button" class="strip__btn" data-strip-next>
+                                <span class="visually-hidden">{{ __('app.next') }}</span>
+                                <x-icon.chevron-right/>
+                            </button>
+                        </div>
+                    @endif
                 </div>
 
-                {{-- Directly above the track: beside the heading these read as
-                     decoration on the words rather than as controls for the
-                     photographs three lines below them. --}}
-                @if($photos->isNotEmpty())
-                    <div class="strip__nav">
-                        <button type="button" class="strip__btn" data-strip-prev>
-                            <span class="visually-hidden">{{ __('app.previous') }}</span>
-                            <x-icon.chevron-left/>
-                        </button>
-                        <button type="button" class="strip__btn" data-strip-next>
-                            <span class="visually-hidden">{{ __('app.next') }}</span>
-                            <x-icon.chevron-right/>
-                        </button>
-                    </div>
-                @endif
-
-                <ul class="strip__track" data-strip-track>
+                <ul class="strip__track home-lede__track" data-strip-track>
                     <li class="strip__item">
                         <img src="{{ Vite::image('afx-building.jpg') }}" alt="{{ __('app.title') }}" loading="lazy" decoding="async"/>
                     </li>

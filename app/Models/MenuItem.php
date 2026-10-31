@@ -81,6 +81,15 @@ class MenuItem extends Model
         return $this->daily_on !== null && ! $this->daily_on->isSameDay($this->servedOn());
     }
 
+    /**
+     * True once the day it was served has gone by. Guests are not shown a
+     * card that is weeks old; an undated card is never past.
+     */
+    public function isPast(): bool
+    {
+        return $this->servedOn()?->isBefore(today()) ?? false;
+    }
+
     /** The dishes on today's card: every dish carrying the flag. */
     public function scopeDaily(Builder $query): void
     {
@@ -103,5 +112,19 @@ class MenuItem extends Model
             ->orderByRaw('daily_position IS NULL, daily_position')
             ->orderBy('id')
             ->get();
+    }
+
+    /**
+     * The card as the public pages show it: staff still see a stale card, with
+     * its old date and the edit button, so they know to write today's; a
+     * guest sees no card rather than last month's.
+     *
+     * @return Collection<int, self>
+     */
+    public static function currentSpecials(): Collection
+    {
+        $specials = static::specials();
+
+        return auth()->check() ? $specials : $specials->reject->isPast()->values();
     }
 }
