@@ -199,9 +199,10 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
 
 // --- The house -----------------------------------------------
 // One raised band with hairlines top and bottom: the one chapter break on
-// the page. The words hold the left edge and the photographs run beside
-// them, off the right edge of the screen, so the two read as one spread
-// rather than a paragraph with a carousel parked under it.
+// the page. The words open it and the photographs run under them, off the
+// right edge of the screen; the arrows sit level with the words' last line,
+// so the two read as one spread rather than a paragraph with a carousel
+// parked under it.
 .home-lede {
     // Distance from the container's content edge to the edge of the screen.
     // 100vw counts the scrollbar, hence the clip.
@@ -214,19 +215,23 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
 
     &__body {
         display: grid;
-        grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
-        gap: clamp(2.5rem, 5vw, 4.5rem);
-
-        @include media-breakpoint-down(lg) {
-            grid-template-columns: 1fr;
-            gap: clamp(1.75rem, 4vw, 2.5rem);
-        }
+        grid-template-columns: minmax(0, 1fr);
+        gap: clamp(1.75rem, 4vw, 3rem);
     }
 
+    // The words on the left at a reading measure, the arrows on the right.
     &__intro {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    &__words {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        max-width: 40rem;
     }
 
     // The house drawn small over its own name, in the firelight's glow:
@@ -242,17 +247,14 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
 
     &__text { margin: 0; }
 
-    // Pinned to the foot of the column, level with the bottom of the
-    // photographs beside it.
     &__nav {
-        justify-content: flex-start;
-        margin-top: auto;
-        padding: clamp(1.5rem, 3vw, 2rem) 0 0;
+        flex-shrink: 0;
+        justify-content: flex-end;
+        padding: 0;
     }
 
     &__track {
-        align-self: end;
-        grid-auto-columns: clamp(15rem, 26vw, 22rem);
+        grid-auto-columns: clamp(15rem, 24vw, 21rem);
         margin-inline-end: calc(var(--bleed) * -1);
         padding-inline-end: var(--bleed);
         padding-bottom: 0;
@@ -264,8 +266,8 @@ $home-gap: clamp(3.75rem, 11vw, 9.5rem);
             @include media-breakpoint-down(md) { aspect-ratio: 1 / 1; }
         }
 
-        // Stacked under the words: still running off the right edge, wider
-        // frames since the row has the full width.
+        // A tablet: still running off the right edge, wider frames for the
+        // narrower screen.
         @include media-breakpoint-down(lg) {
             grid-auto-columns: minmax(260px, 40%);
         }

@@ -95,24 +95,26 @@
         {{-- One chapter, not two: the house in its own words and the look
              around it were the same subject under two headings, and on a
              phone the second title arrived before the first photograph had
-             finished being looked at. The words open the band, the
-             photographs run beside them out to the edge of the screen, and
-             the house itself is the frame the strip opens on. Raised off the
-             page, as one movement. --}}
+             finished being looked at. The words open the band, above the
+             photographs, which run under them out to the edge of the screen,
+             and the house itself is the frame the strip opens on. Raised off
+             the page, as one movement. --}}
         @php($photos = $gallery?->items ?? collect())
 
         <section class="home-lede">
             <div class="container home-lede__body" data-strip>
                 <div class="home-lede__intro">
-                    <x-illustration.auberge class="home-lede__art"/>
+                    <div class="home-lede__words">
+                        <x-illustration.auberge class="home-lede__art"/>
 
-                    <h2 class="app-section__title">{{ __('app.welcome') }}</h2>
+                        <h2 class="app-section__title">{{ __('app.welcome') }}</h2>
 
-                    <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
+                        <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
+                    </div>
 
-                    {{-- Under the words, on the edge the photographs run
-                         from: the arrows read as the way into the strip
-                         rather than as decoration beside the heading. --}}
+                    {{-- Level with the last line of the words, right over the
+                         strip: the arrows read as the way into it rather than
+                         as decoration beside the heading. --}}
                     @if($photos->isNotEmpty())
                         <div class="strip__nav home-lede__nav">
                             <button type="button" class="strip__btn" data-strip-prev>
