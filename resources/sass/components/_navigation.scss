@@ -17,6 +17,13 @@
 .app-navigation {
     position: fixed;
     inset-inline: 0;
+    // Fixed to the screen but as wide as the frame, centred over it, and
+    // inside its two hairlines once they are drawn (app.scss, .site-frame).
+    max-width: $frame;
+    margin-inline: auto;
+
+    @media (min-width: #{$frame + 1px}) { max-width: $frame - 2px; }
+
     // Sits under the closed banner while it is on screen, then rises to the
     // top with it. The offset is 0 whenever there is no banner.
     top: var(--banner-offset, 0px);

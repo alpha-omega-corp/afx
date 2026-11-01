@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="is-framed">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,15 +25,20 @@
 
 <a class="skip-link" href="#main">{{ __('app.skip') }}</a>
 
-<x-site-banner/>
+{{-- The whole site stands in one centred column, its edges drawn as two
+     hairlines down the screen: the banner, the bar, every hero photograph
+     and the footer stop at them, never at the window's edge. --}}
+<div class="site-frame">
+    <x-site-banner/>
 
-@include('components.navigation')
+    @include('components.navigation')
 
-<main id="main" class="app-main">
-    @yield('content')
-</main>
+    <main id="main" class="app-main">
+        @yield('content')
+    </main>
 
-<x-footer/>
+    <x-footer/>
+</div>
 
 <x-modal.index
     :name="Modal::APP_LOGIN"

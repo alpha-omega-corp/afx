@@ -50,9 +50,17 @@ Colour means something here; it is never decoration.
 (`.hero--rule`), and the same ember hairline along the top edge of the glass cards. It is the one
 ornament the site allows; anything else that wants to glow is lit in an illustration instead.
 
+## Frame
+
+The whole guest site stands in one centred column (`.site-frame`, `$frame` = `$container`,
+1200px): the banner, the fixed bar, every hero photograph, the bands and the footer stop at its
+edges, never at the window's. Once the window is wider than the frame, its edges are drawn as two
+`$line` hairlines with a soft shadow, on a `$wall` (`#0B0A09`) a step darker than `$ink`. On
+anything narrower the frame is the screen and draws no edge. The back office is not framed.
+
 ## First screen (the hero)
 
-Every page opens on the house's own photograph (`.hero--cover`), scrolling away slower than the
+Every page opens on the house's own photograph (`.hero--cover`), the width of the frame, scrolling away slower than the
 page. Nothing sits on it in a card or panel:
 
 - **Home** is the one full-screen hero (`100svh`): name, lead and the two actions straight on the

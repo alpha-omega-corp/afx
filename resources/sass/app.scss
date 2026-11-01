@@ -231,6 +231,34 @@ body.admin {
 // Layout primitives
 // =============================================================
 
+// The guest site's frame. Everything a guest sees lives inside it, so the
+// hero's photograph is the width of the column and not of the window, and
+// the two edges are drawn once the window is wider than the frame — on
+// anything narrower they would be a stray pixel against the glass.
+//
+// `overflow-x: clip` and NOT `hidden`: hidden makes the frame a scroll
+// container, and the carte's sticky bar would stick to the frame instead
+// of to the screen.
+html.is-framed { background-color: $wall; }
+
+.site-frame {
+    // The containing block of the bar's sentinel (position: absolute,
+    // width: 100%): without it the sentinel is a window wide from the
+    // frame's left edge, and the page scrolls sideways.
+    position: relative;
+    max-width: $frame;
+    min-height: 100vh;
+    min-height: 100svh;
+    margin-inline: auto;
+    background-color: $ink;
+    overflow-x: clip;
+
+    @media (min-width: #{$frame + 1px}) {
+        border-inline: 1px solid $line;
+        box-shadow: 0 0 6rem rgba(0, 0, 0, 0.45);
+    }
+}
+
 .container {
     width: 100%;
     max-width: $container;
