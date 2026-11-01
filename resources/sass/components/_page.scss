@@ -9,8 +9,8 @@
         color: $paper;
     }
 
-    // The hero card already closes on its own padding and shadow: the first
-    // section under it needs a step, not a whole section gap.
+    // An inner page's hero already closes on its own padding and fade: the
+    // first section under it needs a step, not a whole section gap.
     .hero--stage + &__content > :is(.app-section, .app-gallery-grid__wrap, .app-contact):first-child {
         padding-block-start: clamp(1.75rem, 4vw, 3.25rem);
     }

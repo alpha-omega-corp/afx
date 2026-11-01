@@ -217,38 +217,6 @@
     .hero__title,
     .hero__lead { text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45); }
 
-    // The card is a column of words, as wide as a comfortable line and no
-    // wider: the photograph is the other half of the page, not a texture
-    // behind a panel.
-    .hero-stage { max-width: 38rem; }
-
-    // A phone has no "beside": the photograph goes above instead. It fills
-    // a band at the top rather than the whole of a tall hero — a full-height
-    // crop of a landscape picture would show a sliver of wall — and the
-    // card climbs onto its lower edge, so the first screen is the picture
-    // with the name under it, and the words follow as the page scrolls.
-    &.hero--stage {
-        @include media-breakpoint-down(md) {
-            .hero__bg,
-            .hero__scrim {
-                inset: 0 0 auto 0;
-                height: 52vh;
-                height: 52svh;
-            }
-
-            .hero__scrim {
-                background: linear-gradient(to bottom,
-                    rgba($ink, 0.55) 0%,
-                    rgba($ink, 0.1) 30%,
-                    rgba($ink, 0.35) 70%,
-                    $ink 100%);
-            }
-
-            .hero__inner {
-                padding-block-start: max(calc(var(--nav-h) + 0.75rem), 36svh);
-            }
-        }
-    }
 }
 
 .hero__bg {
@@ -282,100 +250,74 @@
 }
 
 // =============================================================
-// Hero stage — a page that has words of its own opens on one card.
+// Hero page — the hero of every page but the home one.
 //
-// The name, the words and the way to act on them; the practical facts in a
-// strip along the foot. One glass surface over the photograph, so the page
-// arrives as a single thing rather than a title over a void and a panel
-// below the fold.
+// Quieter than the home page's: a band rather than the whole first screen,
+// and no card. The name, the words and the action sit straight on the
+// scrim, lower left, the same lockup as the home page at a smaller size.
+// The photograph is a backdrop here, toned down further so the words need
+// no surface of their own, and the page itself begins sooner.
 // =============================================================
 
-.hero--stage {
-    // The card throws a long shadow; the hero must not clip it. Nothing
-    // else in the hero reaches past its box — the hearth and the fade
-    // are inset to it.
-    overflow: visible;
+.hero.hero--stage {
+    min-height: clamp(460px, 68vh, 720px);
+    min-height: clamp(460px, 68svh, 720px);
 
     .hero__inner {
-        padding-block: calc(var(--nav-h) + clamp(1rem, 3vw, 2.5rem)) clamp(1.5rem, 3vw, 2.5rem);
-
-        // A phone spends no height on air above the photograph.
-        @include media-breakpoint-down(md) {
-            padding-block-start: calc(var(--nav-h) + 0.75rem);
-        }
+        padding-block: calc(var(--nav-h) + clamp(2rem, 5vw, 4rem)) clamp(2.5rem, 7vh, 4.5rem);
     }
 
-    // Inside a card the name has a column, not the page, to fill.
     .hero__title {
-        max-width: 14ch;
-        font-size: clamp(2.375rem, 5vw, 4.5rem);
+        max-width: 18ch;
+        font-size: clamp(2.25rem, 4.2vw, 3.5rem);
+    }
+
+    // Darker than the home page's and heaviest under the words: the picture
+    // reads as a room behind the name, not as the thing to look at.
+    .hero__scrim {
+        background:
+            linear-gradient(to right, rgba($ink, 0.72) 0%, rgba($ink, 0.3) 55%, rgba($ink, 0.1) 100%),
+            linear-gradient(to top, $ink 0%, rgba($ink, 0.55) 35%, rgba($ink, 0.35) 70%, rgba($ink, 0.6) 100%);
+    }
+
+    // A phone has no "beside": the photograph is a band at the top — a
+    // full-height crop of a landscape picture would show a sliver of wall —
+    // with the name on its lower edge and the words under it on the page.
+    @include media-breakpoint-down(md) {
+        min-height: 0;
+
+        .hero__bg,
+        .hero__scrim {
+            inset: 0 0 auto 0;
+            height: 44vh;
+            height: 44svh;
+        }
+
+        .hero__scrim {
+            background: linear-gradient(to bottom,
+                rgba($ink, 0.55) 0%,
+                rgba($ink, 0.15) 30%,
+                rgba($ink, 0.45) 70%,
+                $ink 100%);
+        }
+
+        .hero__inner {
+            padding-block: max(calc(var(--nav-h) + 0.75rem), 30svh) 2rem;
+        }
     }
 }
 
-.hero-stage {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    border: 1px solid $hairline;
-    border-radius: $r-panel * 2;
-    background:
-        radial-gradient(80% 110% at 0% 0%, rgba($ember, 0.07) 0%, rgba($ember, 0) 62%),
-        linear-gradient(to bottom, rgba($ink-3, 0.88), rgba($ink-2, 0.86));
-    box-shadow:
-        0 2.5rem 5rem -2.5rem rgba(0, 0, 0, 0.8),
-        inset 0 1px 0 $hairline;
-    overflow: hidden;
-    isolation: isolate;
-
-    // The firelight shows through, softly, where the card is not opaque.
-    @supports (backdrop-filter: blur(1px)) {
-        backdrop-filter: blur(10px) saturate(110%);
-    }
-
-    // One ember hairline along the top edge, brightest over the words and
-    // gone before the photograph: the same shine as the plat du jour card.
-    &::before {
-        content: "";
-        position: absolute;
-        inset: 0 0 auto 0;
-        z-index: 2;
-        height: 1px;
-        background: linear-gradient(to right,
-            rgba($ember, 0) 0%,
-            rgba($ember-hi, 0.4) 28%,
-            rgba($ember, 0) 62%);
-        pointer-events: none;
-    }
-
-    // --- The words -------------------------------------------
-    &__body {
-        grid-area: body;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        padding: clamp(1.75rem, 4.5vw, 3.75rem);
-
-        @include media-breakpoint-down(md) { padding: 1.5rem 1.5rem 1.75rem; }
-    }
-
-    // The page's own drawing, small over its name: an emblem, not an
-    // illustration competing with the photograph beside it.
-    &__art {
-        width: clamp(4.25rem, 6.5vw, 5.75rem);
-        margin-bottom: clamp(1rem, 2vw, 1.5rem);
-        color: $paper-3;
-
-        @include media-breakpoint-down(lg) { display: none; }
-    }
+.hero-page {
+    max-width: 40rem;
 
     &__text {
-        margin: clamp(1.25rem, 2.5vw, 1.75rem) 0 0;
-        max-width: 46ch;
+        margin: clamp(1rem, 2vw, 1.5rem) 0 0;
+        max-width: 52ch;
         color: $paper-1;
-        font-size: $fs-lead;
-        line-height: $lh-lead;
+        font-size: 1.125rem;
+        line-height: 1.65;
         text-wrap: pretty;
+        text-shadow: 0 1px 16px rgba(0, 0, 0, 0.5);
 
         @include media-breakpoint-down(md) {
             font-size: 1.0625rem;
@@ -384,7 +326,7 @@
     }
 
     &__actions {
-        margin-top: clamp(1.5rem, 3vw, 2.25rem);
+        margin-top: clamp(1.5rem, 3vw, 2rem);
     }
 }
 
@@ -503,17 +445,16 @@
 // The single orchestrated moment on the site.
 @media (prefers-reduced-motion: no-preference) {
     .hero__text > *,
-    .hero-stage,
-    .hero-stage__body > *,
+    .hero-page > *,
     .hero__facts > * {
         animation: hero-rise 600ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
     }
 
-    // The card arrives, then its words line up inside it, and the
-    // photograph behind settles from a touch closer.
-    .hero-stage__body > :nth-child(2) { animation-delay: 80ms; }
-    .hero-stage__body > :nth-child(3) { animation-delay: 160ms; }
-    .hero-stage__body > :nth-child(4) { animation-delay: 240ms; }
+    // The words line up one after another, and the photograph behind
+    // settles from a touch closer.
+    .hero-page > :nth-child(2) { animation-delay: 80ms; }
+    .hero-page > :nth-child(3) { animation-delay: 160ms; }
+    .hero-page > :nth-child(4) { animation-delay: 240ms; }
     .hero__bg-img { animation: hero-settle 1100ms cubic-bezier(0.16, 1, 0.3, 1) both; }
 
     .hero__lead    { animation-delay: 90ms; }

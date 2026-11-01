@@ -52,16 +52,18 @@ ornament the site allows; anything else that wants to glow is lit in an illustra
 
 ## First screen (the hero)
 
-Every page opens on the house's own photograph, full screen (`.hero--cover`, `100svh`), scrolling
-away slower than the page. The photograph is the subject of the first screen, so nothing may hide
-it without a job:
+Every page opens on the house's own photograph (`.hero--cover`), scrolling away slower than the
+page. Nothing sits on it in a card or panel:
 
-- **Home** has no card: name, lead and the two actions sit straight on the scrim, lower left.
-- **Inner pages** carry their words in one glass card no wider than the words' measure, with the
-  page's ember-line emblem over the name (from `lg`). An empty stretch of glass over the picture
-  is a fault: it blurs the candle, the window, the plate the photograph was chosen for.
+- **Home** is the one full-screen hero (`100svh`): name, lead and the two actions straight on the
+  scrim, lower left. The photograph is the subject of the first screen.
+- **Inner pages** are quieter (`.hero--stage`): a band of `clamp(460px, 68svh, 720px)`, a darker
+  scrim, the name at a smaller size with its ember rule, the page's words and its one action
+  straight on the scrim, lower left. The photograph is a backdrop there; no card, no emblem. On a
+  phone it is a `44svh` band with the words following on the page under it.
 - **The practical facts** (hours from `App\Support\Opening`, the numbers, the address) close the
-  hero on a hairline of their own; they are the house's real facts and never copy.
+  home hero on a hairline of their own; they are the house's real facts and never copy. Inner
+  heroes leave them to the footer (and the contact page's own panel).
 - One primary action in the first screen, ember; the reservation number it dials is shown on it
   in `$ink-soft`.
 
@@ -93,14 +95,14 @@ One manner for every picture that is not a photograph: **ember line**.
 |----------------------------------------------|-----------|--------------------------------|
 | Home, “Spécialité de chasse” sign (animated) | `cerf`    | `tete-de-cerf`                 |
 | Plat du jour card (home, carte)              | `cloche`  | `cloche-fumante`               |
-| Restaurant hero card, emblem over the name   | `table`   | `couvert-et-verre-de-vin`      |
-| La carte hero card, emblem over the name     | `carte`   | `carte-ouverte`                |
-| Hôtel hero card, emblem over the name        | `room`    | `lit-sous-la-fenetre`          |
-| Contact hero card, emblem over the name      | `map`     | `carte-pliee-et-repere`        |
+| *(spare — was the restaurant hero card)*     | `table`   | `couvert-et-verre-de-vin`      |
+| *(spare — was the carte hero card)*          | `carte`   | `carte-ouverte`                |
+| *(spare — was the hôtel hero card)*          | `room`    | `lit-sous-la-fenetre`          |
+| *(spare — was the contact hero card)*        | `map`     | `carte-pliee-et-repere`        |
 | *(spare — no slot since the photo hero)*     | `auberge` | `auberge-aux-fenetres-allumees`|
 
-The hero card's emblem is hidden below `lg`; the home hero has no card, so no drawing. `auberge`
-is the drawing to reach for if a page ever opens without its photograph (a bare hero or a door
+No hero carries a drawing since the cards went; the four page emblems stay in
+`components/illustration/` for a slot that wants them. `auberge` is the drawing to reach for if a page ever opens without its photograph (a bare hero or a door
 tile with no image) — never as a stand-in on a page that has one.
 
 `public/images/generated/` holds an older, filled-gradient set (library collection

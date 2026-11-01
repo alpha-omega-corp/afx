@@ -11,15 +11,16 @@
 ])
 
 @php($quiet = $embers === 'quiet')
-{{-- A page with words of its own opens on one card, glass over the
-     full-screen photograph: the name, the words and the way to act on them. --}}
+{{-- A page with words of its own (every page but the home one) opens on a
+     short, quiet hero: the name, the words and the way to act on them over
+     the photograph, without a card. The home page keeps the full screen. --}}
 @php($stage = filled($text))
 
 {{-- The house's real facts — hours from App\Support\Opening, the numbers and
      the address, never anything the copy would have to invent — along the
-     foot of every photograph hero, under the words rather than inside them,
-     so the card stays a column of words and the picture keeps its room. --}}
-@php($practical = $facts && ($image || $stage))
+     foot of the home page's full-screen hero. The inner pages' quieter
+     heroes leave them to the footer. --}}
+@php($practical = $facts && ! $stage && $image)
 
 <header @class([
     'hero',
@@ -59,27 +60,25 @@
     <div class="hero__inner">
         <div class="container">
             @if($stage)
-                <div class="hero-stage">
-                    <div class="hero-stage__body">
-                        @isset($art)
-                            <div class="hero-stage__art">{{ $art }}</div>
-                        @endisset
+                {{-- An inner page: its name and words straight on the scrim,
+                     no card — the photograph is a backdrop here, not the
+                     subject, so the hero stays short and quiet and the page
+                     itself starts sooner. --}}
+                <div class="hero-page">
+                    @isset($eyebrow)
+                        <div class="hero__eyebrow">{{ $eyebrow }}</div>
+                    @endisset
 
-                        @isset($eyebrow)
-                            <div class="hero__eyebrow">{{ $eyebrow }}</div>
-                        @endisset
+                    <h1 class="hero__title hero-page__title">{{ $title }}</h1>
 
-                        <h1 class="hero__title hero-stage__title">{{ $title }}</h1>
+                    {{-- French puts a space before : ; ? ! — a thin
+                         non-breaking one, so the mark never starts a
+                         line on its own. --}}
+                    <p class="hero-page__text">{{ preg_replace('/ ([:;?!])/u', "\u{202F}$1", $text) }}</p>
 
-                        {{-- French puts a space before : ; ? ! — a thin
-                             non-breaking one, so the mark never starts a
-                             line on its own. --}}
-                        <p class="hero-stage__text">{{ preg_replace('/ ([:;?!])/u', "\u{202F}$1", $text) }}</p>
-
-                        @isset($actions)
-                            <div class="hero__actions hero-stage__actions">{{ $actions }}</div>
-                        @endisset
-                    </div>
+                    @isset($actions)
+                        <div class="hero__actions hero-page__actions">{{ $actions }}</div>
+                    @endisset
                 </div>
             @else
                 <div class="hero__grid">
