@@ -73,7 +73,7 @@
         {{-- The one thing on the page that is different tomorrow. It sits in
              the last of the hero's firelight, above the three doors, because
              it is the reason to come today rather than one day. --}}
-        <x-daily :specials="$specials" :sections="$sections"/>
+        <x-daily :specials="$specials" :editing="$editing" :sections="$sections"/>
 
         {{-- The three ways into the house: a table, the carte, a bed.
              This band has no top gap and no seam — the cards climb into the

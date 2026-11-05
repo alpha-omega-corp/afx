@@ -1,6 +1,8 @@
 // =============================================================
-// Hero — one image per page, filling the whole first screen behind the
-// title, under a warm light, scrolling away slower than the page.
+// Hero — one image per page, a band of a fixed 300px behind the title,
+// under a warm light, scrolling away slower than the page. The band holds
+// the name alone; the lead, the words, the actions and the facts follow
+// under it in `.hero-body`.
 // A real <img> so the browser can prioritise it as the LCP element.
 // =============================================================
 
@@ -8,43 +10,11 @@
     position: relative;
     display: flex;
     align-items: flex-end;
-    // svh is the viewport with the mobile browser's bars showing, so the hero
-    // does not jump by 60-odd pixels the first time the address bar retracts.
-    // vh stays as the fallback for anything that does not know the unit.
-    height: 52vh;
-    height: 52svh;
-    min-height: 420px;
-    max-height: 620px;
+    // One height on every page and at every width: the photograph is a
+    // band, and the page itself begins under it.
+    height: 300px;
     overflow: hidden;
     background-color: $ink;
-
-    // A phone has one scarce axis. These heroes carry a name and a rule and
-    // nothing else, so they can give a third of their height back to the
-    // page and still read as an arrival. The home page is the exception and
-    // keeps its own size, below.
-    @include media-breakpoint-down(md) {
-        height: 40vh;
-        height: 40svh;
-        min-height: 300px;
-        max-height: 460px;
-    }
-
-    &--tall {
-        height: 78vh;
-        height: 78svh;
-        min-height: 540px;
-        max-height: 860px;
-
-        // 78svh of a phone is the whole screen, and a 540px floor is more
-        // than a small one has: the page opens with nothing but the hero and
-        // the cards below never hint at themselves. Shorter here, so the
-        // first card shows an edge above the fold.
-        @include media-breakpoint-down(md) {
-            height: 62vh;
-            height: 62svh;
-            min-height: 420px;
-        }
-    }
 
     // The ember bar that marks a section title, under the name of a page.
     // Not on the carte, where the sticky rail already rules the page there.
@@ -64,35 +34,13 @@
         opacity: 0.6;
     }
 
-    // With a photograph or a card the hero grows to its content.
-    &--media {
-        height: auto;
-        max-height: none;
-    }
-
     // No photograph: the type sits on warm black over firelight. Centred
     // rather than bottom-anchored, because there is no image edge to sit on.
     &--bare {
         align-items: center;
 
-        .hero__inner {
-            padding-block: clamp(3rem, 8vw, 6rem);
-        }
-
         .hero__title {
             max-width: 20ch;
-        }
-    }
-
-    &__grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
-        align-items: end;
-        gap: clamp(2rem, 5vw, 4.5rem);
-
-        @include media-breakpoint-down(md) {
-            grid-template-columns: 1fr;
-            gap: 1.75rem;
         }
     }
 
@@ -123,25 +71,16 @@
         position: relative;
         z-index: 1;
         width: 100%;
-        // The cards on the home page climb into this edge; the bottom pad has
-        // to stay clear of them, so it is larger on a phone than 6vw gives.
-        padding-block-end: clamp(2.5rem, 4.5vw, 3.75rem);
-        padding-block-start: calc(var(--nav-h) + 2rem);
-
-        // Tighter on a phone.
-        //
-        // The floor is set by the plat du jour, which climbs 1rem into this
-        // edge on a phone: anything under about 2rem here and the card lands
-        // on the buttons.
-        @include media-breakpoint-down(md) {
-            padding-block-start: calc(var(--nav-h) + 1.25rem);
-            padding-block-end: 2rem;
-        }
+        // Clear of the fixed bar above, the name on the band's lower edge.
+        padding-block: calc(var(--nav-h) + 1rem) clamp(1.25rem, 3vw, 2rem);
     }
 
+    // Sized for the band: two lines and the ember rule fit under the bar
+    // at every width, where the display size would not.
     &__title {
         margin: 0;
-        max-width: 16ch;
+        max-width: 18ch;
+        font-size: clamp(2rem, 4.5vw, 3.75rem);
     }
 
     &__lead {
@@ -194,28 +133,7 @@
 // =============================================================
 
 .hero.hero--cover {
-    height: auto;
-    max-height: none;
-    min-height: 100vh;
-    min-height: 100svh;
-    align-items: flex-end;
-
-    .hero__inner {
-        padding-block-end: clamp(3.5rem, 9vh, 7rem);
-
-        @include media-breakpoint-down(md) { padding-block-end: 3rem; }
-    }
-
-    // The facts close the hero themselves: the words above them need no
-    // more air under them than the strip's own rule gives.
-    &.hero--facts .hero__inner {
-        padding-block-end: clamp(1.25rem, 3.5vh, 2.25rem);
-
-        @include media-breakpoint-down(md) { padding-block-end: 1.75rem; }
-    }
-
-    .hero__title,
-    .hero__lead { text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45); }
+    .hero__title { text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45); }
 
 }
 
@@ -260,51 +178,42 @@
 // =============================================================
 
 .hero.hero--stage {
-    min-height: clamp(460px, 68vh, 720px);
-    min-height: clamp(460px, 68svh, 720px);
-
-    .hero__inner {
-        padding-block: calc(var(--nav-h) + clamp(2rem, 5vw, 4rem)) clamp(2.5rem, 7vh, 4.5rem);
-    }
-
     .hero__title {
         max-width: 18ch;
-        font-size: clamp(2.25rem, 4.2vw, 3.5rem);
+        font-size: clamp(2rem, 4.2vw, 3.5rem);
     }
 
-    // Darker than the home page's and heaviest under the words: the picture
-    // reads as a room behind the name, not as the thing to look at.
+    // Darker than the home page's and heaviest under the name: the picture
+    // reads as a room behind it, not as the thing to look at.
     .hero__scrim {
         background:
             linear-gradient(to right, rgba($ink, 0.72) 0%, rgba($ink, 0.3) 55%, rgba($ink, 0.1) 100%),
             linear-gradient(to top, $ink 0%, rgba($ink, 0.55) 35%, rgba($ink, 0.35) 70%, rgba($ink, 0.6) 100%);
     }
+}
 
-    // A phone has no "beside": the photograph is a band at the top — a
-    // full-height crop of a landscape picture would show a sliver of wall —
-    // with the name on its lower edge and the words under it on the page.
+// =============================================================
+// Hero body — what used to sit on the photograph, on the page under it:
+// the eyebrow, the lead or the page's words, the actions and the facts.
+// =============================================================
+
+.hero-body {
+    position: relative;
+    background-color: $ink;
+    // The cards on the home page climb into this bottom edge, so it stays
+    // clear of them: the plat du jour tucks 1rem in on a phone, and anything
+    // under about 2rem here lands it on the buttons.
+    padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(2.5rem, 4.5vw, 3.75rem);
+
     @include media-breakpoint-down(md) {
-        min-height: 0;
-
-        .hero__bg,
-        .hero__scrim {
-            inset: 0 0 auto 0;
-            height: 44vh;
-            height: 44svh;
-        }
-
-        .hero__scrim {
-            background: linear-gradient(to bottom,
-                rgba($ink, 0.55) 0%,
-                rgba($ink, 0.15) 30%,
-                rgba($ink, 0.45) 70%,
-                $ink 100%);
-        }
-
-        .hero__inner {
-            padding-block: max(calc(var(--nav-h) + 0.75rem), 30svh) 2rem;
-        }
+        padding-block: 1.25rem 2rem;
     }
+
+    .hero__text > :first-child,
+    .hero-page > :first-child { margin-top: 0; }
+
+    // An inner page's first section brings its own step (_page.scss).
+    &--stage { padding-block-end: 0; }
 }
 
 .hero-page {
@@ -444,6 +353,7 @@
 
 // The single orchestrated moment on the site.
 @media (prefers-reduced-motion: no-preference) {
+    .hero__title,
     .hero__text > *,
     .hero-page > *,
     .hero__facts > * {

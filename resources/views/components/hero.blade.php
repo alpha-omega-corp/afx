@@ -11,14 +11,14 @@
 ])
 
 @php($quiet = $embers === 'quiet')
-{{-- A page with words of its own (every page but the home one) opens on a
-     short, quiet hero: the name, the words and the way to act on them over
-     the photograph, without a card. The home page keeps the full screen. --}}
+{{-- Every hero is a 300px photograph band with the page's name on it. A
+     page with words of its own (every page but the home one) is the quieter
+     kind: darker scrim, its words and its action under the band. --}}
 @php($stage = filled($text))
 
 {{-- The house's real facts — hours from App\Support\Opening, the numbers and
-     the address, never anything the copy would have to invent — along the
-     foot of the home page's full-screen hero. The inner pages' quieter
+     the address, never anything the copy would have to invent — under the
+     home page's lead and actions. The inner pages' quieter
      heroes leave them to the footer. --}}
 @php($practical = $facts && ! $stage && $image)
 
@@ -33,8 +33,8 @@
     'hero--cover' => $image,
     'hero--facts' => $practical,
 ])>
-    {{-- The page's photograph fills the whole first screen behind
-         everything else, and scrolls away slower than the page (app.js,
+    {{-- The page's photograph fills the band behind the name, and
+         scrolls away slower than the page (app.js,
          "Hero parallax"). Still a real <img>, so the browser can fetch it
          first as the largest thing on the page. --}}
     @if($image)
@@ -57,19 +57,26 @@
         <div class="hero__fade" aria-hidden="true"></div>
     @endif
 
+    {{-- The band holds the name and nothing else: at a fixed 300px under
+         the bar there is room for a title, not for a paragraph and buttons
+         as well. Everything else follows on the page, under the photograph. --}}
     <div class="hero__inner">
         <div class="container">
+            <h1 @class(['hero__title', 'hero-page__title' => $stage])>{{ $title }}</h1>
+        </div>
+    </div>
+</header>
+
+@if(isset($eyebrow) || $lead || $stage || isset($actions) || $practical)
+    <div @class(['hero-body', 'hero-body--stage' => $stage])>
+        <div class="container">
             @if($stage)
-                {{-- An inner page: its name and words straight on the scrim,
-                     no card — the photograph is a backdrop here, not the
-                     subject, so the hero stays short and quiet and the page
-                     itself starts sooner. --}}
+                {{-- An inner page: its words and its one action, straight
+                     under the photograph, no card. --}}
                 <div class="hero-page">
                     @isset($eyebrow)
                         <div class="hero__eyebrow">{{ $eyebrow }}</div>
                     @endisset
-
-                    <h1 class="hero__title hero-page__title">{{ $title }}</h1>
 
                     {{-- French puts a space before : ; ? ! — a thin
                          non-breaking one, so the mark never starts a
@@ -81,25 +88,20 @@
                     @endisset
                 </div>
             @else
-                <div class="hero__grid">
-                    <div class="hero__text">
-                        @isset($eyebrow)
-                            <div class="hero__eyebrow">{{ $eyebrow }}</div>
-                        @endisset
+                <div class="hero__text">
+                    @isset($eyebrow)
+                        <div class="hero__eyebrow">{{ $eyebrow }}</div>
+                    @endisset
 
-                        <h1 class="hero__title">{{ $title }}</h1>
+                    @if($lead)
+                        <p class="hero__lead">{{ $lead }}</p>
+                    @endif
 
-                        @if($lead)
-                            <p class="hero__lead">{{ $lead }}</p>
-                        @endif
-
-                        @if(isset($actions))
-                            <div class="hero__actions">{{ $actions }}</div>
-                        @endif
-                    </div>
+                    @if(isset($actions))
+                        <div class="hero__actions">{{ $actions }}</div>
+                    @endif
                 </div>
             @endif
-
             @if($practical)
                 <dl class="hero__facts" aria-label="{{ __('app.practical') }}">
                     <div class="hero__fact">
@@ -135,4 +137,4 @@
             @endif
         </div>
     </div>
-</header>
+@endif

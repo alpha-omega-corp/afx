@@ -1,9 +1,9 @@
 @props(['page' => null, 'title' => null, 'lead' => null, 'tall' => false, 'embers' => 'quiet', 'rule' => true, 'intro' => true, 'facts' => true])
 
-{{-- Every page opens the same way: its record's photograph with its name and
-     words over it, then whatever the page itself is about. The home page's
-     hero fills the screen and carries the practical facts; the others are a
-     short, quiet band with no card. All of it reads from the Page row edited under
+{{-- Every page opens the same way: its record's photograph as a 300px band
+     with its name on it, its words under it, then whatever the page itself
+     is about. The home page's carries the practical facts; the others are
+     quieter, with no card. All of it reads from the Page row edited under
      Administration → Pages, so a photograph or a paragraph changed there
      lands in the same place on every page. Without words (the home page, or
      a record not yet written) the hero is the name beside the photograph. --}}

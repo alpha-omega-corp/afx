@@ -60,17 +60,16 @@ anything narrower the frame is the screen and draws no edge. The back office is 
 
 ## First screen (the hero)
 
-Every page opens on the house's own photograph (`.hero--cover`), the width of the frame, scrolling away slower than the
-page. Nothing sits on it in a card or panel:
+Every page opens on the house's own photograph (`.hero--cover`), the width of the frame, in a band
+of a fixed `300px` at every width, scrolling away slower than the page. The band carries the page's
+name and nothing else; everything that used to sit on the photograph follows straight under it in
+`.hero-body`, on `$ink`, no card or panel:
 
-- **Home** is the one full-screen hero (`100svh`): name, lead and the two actions straight on the
-  scrim, lower left. The photograph is the subject of the first screen.
-- **Inner pages** are quieter (`.hero--stage`): a band of `clamp(460px, 68svh, 720px)`, a darker
-  scrim, the name at a smaller size with its ember rule, the page's words and its one action
-  straight on the scrim, lower left. The photograph is a backdrop there; no card, no emblem. On a
-  phone it is a `44svh` band with the words following on the page under it.
+- **Home**: name on the band; the daily chip, the lead and the two actions under it.
+- **Inner pages** (`.hero--stage`): a darker scrim, the name with its ember rule on the band; the
+  page's words and its one action under it. The photograph is a backdrop there; no card, no emblem.
 - **The practical facts** (hours from `App\Support\Opening`, the numbers, the address) close the
-  home hero on a hairline of their own; they are the house's real facts and never copy. Inner
+  home page's hero body on a hairline of their own; they are the house's real facts and never copy. Inner
   heroes leave them to the footer (and the contact page's own panel).
 - One primary action in the first screen, ember; the reservation number it dials is shown on it
   in `$ink-soft`.
