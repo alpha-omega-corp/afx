@@ -17,7 +17,8 @@
     <path d="M66 62c-2 11 0 23 6 35c3 7 13 7 16 0c6-12 8-24 6-35"/>
     <path d="M66 67c-9-7-20-8-27-3c6 7 16 9 26 7"/>
     <path d="M94 67c9-7 20-8 27-3c-6 7-16 9-26 7"/>
-    <circle cx="72" cy="76" r="1.4" fill="currentColor"/>
-    <circle cx="88" cy="76" r="1.4" fill="currentColor"/>
-    <path d="M75 95c3 2 7 2 10 0"/>
+    <circle cx="71" cy="76" r="1.4" fill="currentColor"/>
+    <circle cx="89" cy="76" r="1.4" fill="currentColor"/>
+    {{-- A nose, not a mouth: a curve under the muzzle read as a grin. --}}
+    <path d="M75 92c2-2 8-2 10 0c-1 2.5-3 3.5-5 3.5s-4-1-5-3.5Z" fill="currentColor"/>
 </svg>

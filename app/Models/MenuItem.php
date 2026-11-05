@@ -115,16 +115,18 @@ class MenuItem extends Model
     }
 
     /**
-     * The card as the public pages show it: staff still see a stale card, with
-     * its old date and the edit button, so they know to write today's; a
-     * guest sees no card rather than last month's.
+     * The card as the public pages show it, to everybody: once its day has
+     * gone by it is gone from the page. Staff used to keep seeing a stale card,
+     * old date and all, as a reminder to write today's — but the owner reads
+     * the site logged in, and "plat du jour vendredi 16 octobre" still sitting
+     * on the home page in November read as the site being wrong, not as a
+     * reminder (client review 4, ticket #3). The editor still opens on the old
+     * dishes: GuestController hands it specials() separately.
      *
      * @return Collection<int, self>
      */
     public static function currentSpecials(): Collection
     {
-        $specials = static::specials();
-
-        return auth()->check() ? $specials : $specials->reject->isPast()->values();
+        return static::specials()->reject->isPast()->values();
     }
 }

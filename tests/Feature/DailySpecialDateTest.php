@@ -23,7 +23,7 @@ class DailySpecialDateTest extends TestCase
         ]);
     }
 
-    public function test_guests_do_not_get_a_past_card_but_staff_do(): void
+    public function test_nobody_gets_a_past_card_not_even_staff(): void
     {
         Carbon::setTestNow('2026-10-16 12:00'); // a Friday, open
 
@@ -34,7 +34,26 @@ class DailySpecialDateTest extends TestCase
         $this->assertEqualsCanonicalizing([$today->id, $undated->id], MenuItem::currentSpecials()->pluck('id')->all());
 
         $this->actingAs(User::factory()->create());
-        $this->assertCount(3, MenuItem::currentSpecials());
+        $this->assertEqualsCanonicalizing([$today->id, $undated->id], MenuItem::currentSpecials()->pluck('id')->all());
+    }
+
+    /** Client review 4, ticket #3: "c'est toujours marqué plat du jour vendredi 16 octobre". */
+    public function test_a_stale_card_is_off_the_home_page_but_still_in_the_editor(): void
+    {
+        $stale = $this->special('2026-10-16');
+        Carbon::setTestNow('2026-11-03 12:00'); // a Tuesday, open
+
+        $this->get(route('guest.fr.home'))
+            ->assertOk()
+            ->assertDontSee('vendredi 16 octobre')
+            ->assertDontSee('id="plat-du-jour"', false);
+
+        $this->actingAs(User::factory()->create())
+            ->get(route('guest.fr.home'))
+            ->assertOk()
+            ->assertDontSee('vendredi 16 octobre')
+            ->assertDontSee('daily__dish', false)
+            ->assertViewHas('editing', fn ($editing) => $editing->pluck('id')->all() === [$stale->id]);
     }
 
     public function test_the_editor_does_not_offer_a_past_date_back(): void

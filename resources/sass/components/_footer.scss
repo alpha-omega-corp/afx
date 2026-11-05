@@ -3,8 +3,9 @@
 // =============================================================
 
 .app-footer {
-    background-color: $ink;
-    border-top: 1px solid $line;
+    // A half-step below the page: the house ends, the ground begins.
+    background-color: mix($ink, $g-void, 55%);
+    border-top: 1px solid $hairline;
     padding-block: clamp(2.5rem, 5vw, 4rem) 2rem;
     font-family: $font-body;
 
@@ -47,12 +48,20 @@
     // strokes at label sizes, and these are labels.
     &__title {
         font-family: $font-body;
-        font-size: 0.8125rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: $paper;
+        color: $paper-3;
         margin: 0 0 1rem;
+
+        // 11px capitals in a muted grey hold on a desktop screen; held at
+        // arm's length on a phone they are the one line in the footer that
+        // has to be squinted at. A pixel up, the tracking eased to match.
+        @include media-breakpoint-down(sm) {
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+        }
     }
 
     ul {
@@ -95,7 +104,7 @@
             height: 40px;
             align-items: center;
             justify-content: center;
-            border: 1px solid $line-strong;
+            border: 1px solid $hairline-hi;
             border-radius: 50%;
             color: $paper-2;
             transition: border-color $t-fast, color $t-fast;
@@ -110,7 +119,7 @@
     &__hours {
         margin-top: clamp(2rem, 4vw, 3rem);
         padding-top: 1.5rem;
-        border-top: 1px solid $line;
+        border-top: 1px solid $hairline;
 
         .app-footer__title { margin-bottom: 0.5rem; }
     }

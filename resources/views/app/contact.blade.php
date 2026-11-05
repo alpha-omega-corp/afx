@@ -8,7 +8,6 @@
     <x-page :page="$page" :title="$page?->locale?->title ?: ucfirst(__('nav.contact'))" :facts="false">
         {{-- The facts follow in full below, so the panel carries only the
              words and the drawing. --}}
-        <x-slot:art><x-illustration.map/></x-slot:art>
 
         <div class="container app-contact">
             {{-- The details and nothing else. There was a message form here;

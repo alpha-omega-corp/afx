@@ -18,6 +18,10 @@ class GuestController extends Controller
         return view('app.home', [
             'page' => Page::where('name', PageEnum::HOME)->first(),
             'specials' => MenuItem::currentSpecials(),
+            // The editor opens on the card as it was last written, past or
+            // not, so staff can carry yesterday's dishes over to a new date;
+            // the page itself shows only a card whose day has not gone by.
+            'editing' => Auth::check() ? MenuItem::specials() : collect(),
             // Only the editor needs the list of sections to file the special
             // under; a guest never sees that field, so never pays for it.
             // `locales`, not `locale`: the editor names each section in the

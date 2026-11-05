@@ -18,7 +18,16 @@ $ember-hi:   #FF8A3D; // hover, focus ring — 8.0:1 on $ink
 $ember-lo:   #B84A0E; // pressed state and borders only, never small text
 
 $paper:      #F3EDE4; // primary text on dark — 16:1 on $ink
+$paper-1:    #DCD4C9; // running copy and leads — 12.7:1 on $ink
 $paper-2:    #B0A79B; // secondary text — 7.9:1 on $ink
+$paper-3:    #928A80; // labels, meta, captions — 5.5:1 on $ink, 4.75:1 on $ink-3
+
+// The steps between surfaces are deliberately small: a page of warm black
+// reads in planes when each one is a shade apart, and in blocks when the
+// gap is the size of $ink → $ink-2 with a hairline drawn round it.
+$ink-3:      #24201C; // the lift above $ink-2: chips, wells, the sign
+$hairline:    rgba($paper, 0.07); // a seam between two planes
+$hairline-hi: rgba($paper, 0.13); // the lit top edge of a raised plane
 
 // Text on an ember surface is always $ink. $paper on $ember is 2.6:1 and fails.
 
@@ -32,7 +41,7 @@ $font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
 $fs-display: clamp(2.375rem, 6vw, 5.5rem);
 $fs-h2:      clamp(1.75rem, 3vw, 2.75rem);
 $fs-h3:      1.375rem;
-$fs-lead:    1.25rem;
+$fs-lead:    1.1875rem;
 $fs-body:    1.0625rem;
 $fs-small:   0.9375rem;
 
@@ -42,9 +51,9 @@ $fs-small:   0.9375rem;
 $fw-body:      400;
 $fw-body-sm:   450;   // body copy on a phone
 $fw-head:      400;
-$fw-head-sm:   600;   // Playfair headlines on a phone
+$fw-head-sm:   500;   // Playfair headlines on a phone — 600 read as bold
 
-$lh-display: 1.02;
+$lh-display: 1.04;
 $lh-h2:      1.1;
 $lh-h3:      1.25;
 $lh-lead:    1.6;
@@ -56,8 +65,14 @@ $measure:    68ch;
 // 20px of edge on a 390px screen reads as a page that ran out of room. 24px
 // is the floor a phone needs before the inset looks chosen rather than left over.
 $gutter:      clamp(1.5rem, 4vw, 3rem);
-$section-gap: clamp(3.25rem, 9vw, 7.5rem);
+$section-gap: clamp(3rem, 7vw, 6rem);
 $container:   1200px;
+
+// The site's frame: one centred column the width of the content, its edges
+// drawn as hairlines in $line, standing on a darker wall. Every band —
+// banner, bar, hero photograph, footer — stops at it.
+$frame:       $container;
+$wall:        #0B0A09; // outside the frame, a step under $ink
 
 // The bar is shorter on a phone, where vertical space is the scarce axis.
 // Everything that has to clear it — the mobile panel, the sticky carte bar,

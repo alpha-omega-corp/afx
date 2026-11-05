@@ -1,7 +1,8 @@
 // =============================================================
-// Hero — one image per page, framed beside the title over the firelight.
-// Not a full-bleed background: the photographs are too small to cover the
-// width of a screen without going soft.
+// Hero — one image per page, a band of a fixed 300px behind the title,
+// under a warm light, scrolling away slower than the page. The band holds
+// the name alone; the lead, the words, the actions and the facts follow
+// under it in `.hero-body`.
 // A real <img> so the browser can prioritise it as the LCP element.
 // =============================================================
 
@@ -9,51 +10,19 @@
     position: relative;
     display: flex;
     align-items: flex-end;
-    // svh is the viewport with the mobile browser's bars showing, so the hero
-    // does not jump by 60-odd pixels the first time the address bar retracts.
-    // vh stays as the fallback for anything that does not know the unit.
-    height: 52vh;
-    height: 52svh;
-    min-height: 420px;
-    max-height: 620px;
+    // One height on every page and at every width: the photograph is a
+    // band, and the page itself begins under it.
+    height: 300px;
     overflow: hidden;
     background-color: $ink;
-
-    // A phone has one scarce axis. These heroes carry a name and a rule and
-    // nothing else, so they can give a third of their height back to the
-    // page and still read as an arrival. The home page is the exception and
-    // keeps its own size, below.
-    @include media-breakpoint-down(md) {
-        height: 40vh;
-        height: 40svh;
-        min-height: 300px;
-        max-height: 460px;
-    }
-
-    &--tall {
-        height: 78vh;
-        height: 78svh;
-        min-height: 540px;
-        max-height: 860px;
-
-        // 78svh of a phone is the whole screen, and a 540px floor is more
-        // than a small one has: the page opens with nothing but the hero and
-        // the cards below never hint at themselves. Shorter here, so the
-        // first card shows an edge above the fold.
-        @include media-breakpoint-down(md) {
-            height: 62vh;
-            height: 62svh;
-            min-height: 420px;
-        }
-    }
 
     // The ember bar that marks a section title, under the name of a page.
     // Not on the carte, where the sticky rail already rules the page there.
     &--rule .hero__title::after {
         content: "";
         display: block;
-        width: 56px;
-        height: 3px;
+        width: 44px;
+        height: 2px;
         background: $ember;
         margin-top: clamp(1rem, 2vw, 1.5rem);
     }
@@ -62,14 +31,7 @@
     // it rather than the whole of the hero, as it is on the home page.
     &--quiet .hero__hearth {
         height: 62%;
-        opacity: 0.55;
-    }
-
-    // With a photograph the hero grows to its content: the frame sets the
-    // height, and a phone stacks it under the words.
-    &--media {
-        height: auto;
-        max-height: none;
+        opacity: 0.6;
     }
 
     // No photograph: the type sits on warm black over firelight. Centred
@@ -77,71 +39,20 @@
     &--bare {
         align-items: center;
 
-        .hero__inner {
-            padding-block: clamp(3rem, 8vw, 6rem);
-        }
-
         .hero__title {
             max-width: 20ch;
         }
     }
 
-    &__grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
-        align-items: end;
-        gap: clamp(2rem, 5vw, 4.5rem);
-
-        @include media-breakpoint-down(md) {
-            grid-template-columns: 1fr;
-            gap: 1.75rem;
-        }
-    }
-
-    &__frame {
-        justify-self: end;
-        width: 100%;
-        max-width: 560px;
-        aspect-ratio: 4 / 3;
-        margin: 0;
-        overflow: hidden;
-        border: 1px solid rgba($ember, 0.28);
-        border-radius: $r-glass;
-        background: $ink-2;
-        box-shadow: 0 1.5rem 4rem -1.5rem rgba($ember-lo, 0.45);
-
-        @include media-breakpoint-down(md) {
-            justify-self: stretch;
-            max-width: none;
-            aspect-ratio: 16 / 10;
-        }
-    }
-
-    &__media {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-    }
-
     // Warm light from above: the gradient begins at the very top of the page,
     // behind the navigation, and has burned down to nothing by the time the
-    // cards arrive. The motes rise into it.
+    // cards arrive. Three stops, none above a fifth: a glow, not a stain.
     &__hearth {
         position: absolute;
         inset: 0 0 auto 0;
         height: 78%;
         background:
-            radial-gradient(78% 100% at 50% 0%, rgba($ember, 0.34) 0%, rgba($ember-lo, 0.15) 38%, rgba($ink, 0) 72%);
-        pointer-events: none;
-    }
-
-    &__embers {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
+            radial-gradient(70% 90% at 50% 0%, rgba($ember, 0.2) 0%, rgba($ember-lo, 0.08) 40%, rgba($ink, 0) 74%);
         pointer-events: none;
     }
 
@@ -160,31 +71,22 @@
         position: relative;
         z-index: 1;
         width: 100%;
-        // The cards on the home page climb into this edge; the bottom pad has
-        // to stay clear of them, so it is larger on a phone than 6vw gives.
-        padding-block-end: clamp(3.25rem, 6vw, 5rem);
-        padding-block-start: calc(var(--nav-h) + 2rem);
-
-        // Tighter on a phone, where the frame stacks under the words.
-        //
-        // The floor is set by the plat du jour, which climbs 1rem into this
-        // edge on a phone: anything under about 2rem here and the card lands
-        // on the buttons.
-        @include media-breakpoint-down(md) {
-            padding-block-start: calc(var(--nav-h) + 1.25rem);
-            padding-block-end: 2rem;
-        }
+        // Clear of the fixed bar above, the name on the band's lower edge.
+        padding-block: calc(var(--nav-h) + 1rem) clamp(1.25rem, 3vw, 2rem);
     }
 
+    // Sized for the band: two lines and the ember rule fit under the bar
+    // at every width, where the display size would not.
     &__title {
         margin: 0;
-        max-width: 16ch;
+        max-width: 18ch;
+        font-size: clamp(2rem, 4.5vw, 3.75rem);
     }
 
     &__lead {
         margin: 1.25rem 0 0;
-        max-width: 46ch;
-        color: $paper;
+        max-width: 44ch;
+        color: $paper-1;
         font-size: $fs-lead;
         line-height: $lh-lead;
 
@@ -221,21 +123,267 @@
     }
 }
 
+// =============================================================
+// Hero cover — the photograph as a full-screen background.
+//
+// The picture fills the first screen and the words sit on its lower left,
+// under a scrim dark enough for paper-white type: heavier at the foot where
+// the words are and on the left where they start, lighter at the top so
+// the nav still reads. The firelight and the fade to the page stay on top.
+// =============================================================
+
+.hero.hero--cover {
+    .hero__title { text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45); }
+
+}
+
+.hero__bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background-color: $ink;
+}
+
+.hero__bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    // Written by app.js as the page scrolls; `translate`, not `transform`,
+    // so the settle animation on the same image still runs.
+    translate: 0 var(--parallax, 0px);
+
+    .is-parallax & { will-change: translate; }
+}
+
+.hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(to right, rgba($ink, 0.6) 0%, rgba($ink, 0.15) 60%, rgba($ink, 0) 100%),
+        linear-gradient(to top, rgba($ink, 0.85) 0%, rgba($ink, 0.3) 50%, rgba($ink, 0.55) 100%);
+    pointer-events: none;
+}
+
+// =============================================================
+// Hero page — the hero of every page but the home one.
+//
+// Quieter than the home page's: a band rather than the whole first screen,
+// and no card. The name, the words and the action sit straight on the
+// scrim, lower left, the same lockup as the home page at a smaller size.
+// The photograph is a backdrop here, toned down further so the words need
+// no surface of their own, and the page itself begins sooner.
+// =============================================================
+
+.hero.hero--stage {
+    .hero__title {
+        max-width: 18ch;
+        font-size: clamp(2rem, 4.2vw, 3.5rem);
+    }
+
+    // Darker than the home page's and heaviest under the name: the picture
+    // reads as a room behind it, not as the thing to look at.
+    .hero__scrim {
+        background:
+            linear-gradient(to right, rgba($ink, 0.72) 0%, rgba($ink, 0.3) 55%, rgba($ink, 0.1) 100%),
+            linear-gradient(to top, $ink 0%, rgba($ink, 0.55) 35%, rgba($ink, 0.35) 70%, rgba($ink, 0.6) 100%);
+    }
+}
+
+// =============================================================
+// Hero body — what used to sit on the photograph, on the page under it:
+// the eyebrow, the lead or the page's words, the actions and the facts.
+// =============================================================
+
+.hero-body {
+    position: relative;
+    background-color: $ink;
+    // The cards on the home page climb into this bottom edge, so it stays
+    // clear of them: the plat du jour tucks 1rem in on a phone, and anything
+    // under about 2rem here lands it on the buttons.
+    padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(2.5rem, 4.5vw, 3.75rem);
+
+    @include media-breakpoint-down(md) {
+        padding-block: 1.25rem 2rem;
+    }
+
+    .hero__text > :first-child,
+    .hero-page > :first-child { margin-top: 0; }
+
+    // An inner page's first section brings its own step (_page.scss).
+    &--stage { padding-block-end: 0; }
+}
+
+.hero-page {
+    max-width: 40rem;
+
+    &__text {
+        margin: clamp(1rem, 2vw, 1.5rem) 0 0;
+        max-width: 52ch;
+        color: $paper-1;
+        font-size: 1.125rem;
+        line-height: 1.65;
+        text-wrap: pretty;
+        text-shadow: 0 1px 16px rgba(0, 0, 0, 0.5);
+
+        @include media-breakpoint-down(md) {
+            font-size: 1.0625rem;
+            line-height: 1.6;
+        }
+    }
+
+    &__actions {
+        margin-top: clamp(1.5rem, 3vw, 2rem);
+    }
+}
+
+// =============================================================
+// Hero facts — what a guest needs to come, along the foot of the hero.
+//
+// Hours, the numbers and the address on one hairline under the words, the
+// whole width of the page: read at a glance on arrival, without opening a
+// panel or scrolling to the footer. Over the darkest part of the scrim, so
+// no surface of its own.
+// =============================================================
+
+.hero__facts {
+    display: grid;
+    // Each fact as wide as its own words, the gaps shared out between them.
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+    gap: 1.25rem clamp(1.5rem, 4vw, 3.5rem);
+    margin: clamp(2rem, 6vh, 3.5rem) 0 0;
+    padding-top: clamp(1.1rem, 2.5vh, 1.6rem);
+    border-top: 1px solid $hairline-hi;
+
+    // A tablet: the hours take the first row, the two short facts the next.
+    @include media-breakpoint-down(lg) {
+        grid-template-columns: repeat(2, auto);
+        justify-content: start;
+        column-gap: clamp(2rem, 6vw, 4rem);
+    }
+
+    // A phone: the hours across, the two short facts side by side under
+    // them, the icons standing for their labels. Three stacked rows of
+    // label-and-value pushed the name off the top of the photograph.
+    @include media-breakpoint-down(md) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 0.85rem 1rem;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+    }
+}
+
+.hero__fact {
+    display: grid;
+    grid-template-columns: 2.25rem auto;
+    column-gap: 0.85rem;
+    align-content: start;
+
+    &:first-child {
+        @include media-breakpoint-down(lg) { grid-column: 1 / -1; }
+    }
+
+    @include media-breakpoint-down(md) {
+        grid-template-columns: 1.75rem minmax(0, 1fr);
+        column-gap: 0.6rem;
+        align-items: center;
+
+        > svg {
+            grid-row: auto;
+            width: 1.75rem;
+            height: 1.75rem;
+            padding: 0.35rem;
+        }
+
+        // Still read out, just not drawn: the icon says it on screen.
+        dt {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+
+        dd { margin: 0; }
+    }
+
+    // The icon chip, one per fact.
+    > svg {
+        grid-row: span 2;
+        width: 2.25rem;
+        height: 2.25rem;
+        padding: 0.5rem;
+        border: 1px solid $hairline-hi;
+        border-radius: 50%;
+        background: rgba($ink, 0.35);
+        color: $ember;
+    }
+
+    dt {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: $paper-2;
+    }
+
+    dd {
+        margin: 0.15rem 0 0;
+        font-size: $fs-small;
+        color: $paper-1;
+        text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
+
+        > span { display: block; }
+
+        a {
+            color: $paper-1;
+            text-decoration: underline;
+            text-decoration-color: rgba($paper, 0.25);
+            text-underline-offset: 3px;
+            @include tap;
+        }
+
+        a:hover { color: $ember-hi; text-decoration-color: currentColor; }
+    }
+}
+
 // The single orchestrated moment on the site.
 @media (prefers-reduced-motion: no-preference) {
+    .hero__title,
     .hero__text > *,
-    .hero__frame {
+    .hero-page > *,
+    .hero__facts > * {
         animation: hero-rise 600ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
     }
 
+    // The words line up one after another, and the photograph behind
+    // settles from a touch closer.
+    .hero-page > :nth-child(2) { animation-delay: 80ms; }
+    .hero-page > :nth-child(3) { animation-delay: 160ms; }
+    .hero-page > :nth-child(4) { animation-delay: 240ms; }
+    .hero__bg-img { animation: hero-settle 1100ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
     .hero__lead    { animation-delay: 90ms; }
     .hero__actions { animation-delay: 180ms; }
-    .hero__frame   { animation-delay: 120ms; }
+
+    // The facts last, one after another along the rule.
+    .hero__facts > :nth-child(1) { animation-delay: 300ms; }
+    .hero__facts > :nth-child(2) { animation-delay: 360ms; }
+    .hero__facts > :nth-child(3) { animation-delay: 420ms; }
 }
 
 @keyframes hero-rise {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: none; }
+}
+
+@keyframes hero-settle {
+    from { transform: scale(1.06); }
+    to   { transform: none; }
 }
 
 // =============================================================
@@ -252,7 +400,7 @@
     max-width: 100%;
     min-height: $tap;
     padding: 0.35rem 0.9rem 0.35rem 0.4rem;
-    border: 1px solid rgba($ember, 0.45);
+    border: 1px solid $hairline-hi;
     border-radius: 1.5rem;
     background: rgba($ink, 0.55);
     -webkit-backdrop-filter: blur(10px);
@@ -263,7 +411,7 @@
 
     &:hover,
     &:focus-visible {
-        border-color: $ember-hi;
+        border-color: rgba($ember, 0.55);
         background: rgba($ink, 0.75);
         color: $paper;
 

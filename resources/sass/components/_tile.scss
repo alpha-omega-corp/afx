@@ -36,6 +36,18 @@
     overflow: hidden;
     background-color: $ink-2;
     isolation: isolate;
+
+    // A hairline over the photograph's edge, so a dark picture still has a
+    // border against the dark page.
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 1px solid $hairline;
+        border-radius: inherit;
+        pointer-events: none;
+    }
+
     transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
                 box-shadow 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
 
@@ -104,7 +116,7 @@
         height: 34px;
         flex: none;
         border-radius: 50%;
-        border: 1px solid rgba($paper, 0.35);
+        border: 1px solid rgba($paper, 0.24);
         color: $paper;
         transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
                     border-color $t-fast, background-color $t-fast, color $t-fast;

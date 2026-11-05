@@ -9,6 +9,12 @@
         color: $paper;
     }
 
+    // An inner page's hero body already closes the opening: the first
+    // section under it needs a step, not a whole section gap.
+    .hero-body--stage + &__content > :is(.app-section, .app-gallery-grid__wrap, .app-contact):first-child {
+        padding-block-start: clamp(1.75rem, 4vw, 3.25rem);
+    }
+
     // Intro paragraph under a hero. Only a top gap: whatever follows
     // brings its own, so the two never stack into a void.
     &__intro {

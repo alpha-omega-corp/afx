@@ -73,7 +73,7 @@
         {{-- The one thing on the page that is different tomorrow. It sits in
              the last of the hero's firelight, above the three doors, because
              it is the reason to come today rather than one day. --}}
-        <x-daily :specials="$specials" :sections="$sections"/>
+        <x-daily :specials="$specials" :editing="$editing" :sections="$sections"/>
 
         {{-- The three ways into the house: a table, the carte, a bed.
              This band has no top gap and no seam — the cards climb into the
@@ -93,53 +93,45 @@
         </section>
 
         {{-- One chapter, not two: the house in its own words and the look
-             around it were the same subject under two headings, and on a
-             phone the second title arrived before the first photograph had
-             finished being looked at. The words open the band, above the
-             photographs, which run under them out to the edge of the screen,
-             and the house itself is the frame the strip opens on. Raised off
-             the page, as one movement. --}}
+             around it were the same subject under two headings. The words
+             open the band, the photographs follow, centred under them with
+             an arrow on either side, and the house itself is the frame the
+             strip opens on. Raised off the page, as one movement. --}}
         @php($photos = $gallery?->items ?? collect())
 
-        <section class="home-lede">
+        <section class="home-lede" aria-labelledby="home-lede-title">
             <div class="container home-lede__body" data-strip>
-                <div class="home-lede__intro">
-                    <div class="home-lede__words">
-                        <x-illustration.auberge class="home-lede__art"/>
+                <h2 class="app-section__title home-lede__title" id="home-lede-title">{{ __('app.welcome') }}</h2>
 
-                        <h2 class="app-section__title">{{ __('app.welcome') }}</h2>
+                <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
 
-                        <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
-                    </div>
-
-                    {{-- Level with the last line of the words, right over the
-                         strip: the arrows read as the way into it rather than
-                         as decoration beside the heading. --}}
+                <div class="home-lede__stage">
                     @if($photos->isNotEmpty())
-                        <div class="strip__nav home-lede__nav">
-                            <button type="button" class="strip__btn" data-strip-prev>
-                                <span class="visually-hidden">{{ __('app.previous') }}</span>
-                                <x-icon.chevron-left/>
-                            </button>
-                            <button type="button" class="strip__btn" data-strip-next>
-                                <span class="visually-hidden">{{ __('app.next') }}</span>
-                                <x-icon.chevron-right/>
-                            </button>
-                        </div>
+                        <button type="button" class="strip__btn home-lede__btn" data-strip-prev>
+                            <span class="visually-hidden">{{ __('app.previous') }}</span>
+                            <x-icon.chevron-left/>
+                        </button>
+                    @endif
+
+                    <ul class="strip__track home-lede__track" data-strip-track>
+                        <li class="strip__item">
+                            <img src="{{ Vite::image('afx-building.jpg') }}" alt="{{ __('app.title') }}" loading="lazy" decoding="async"/>
+                        </li>
+
+                        @foreach($photos as $item)
+                            <li class="strip__item">
+                                <img src="{{ asset($item->image) }}" alt="" loading="lazy" decoding="async"/>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    @if($photos->isNotEmpty())
+                        <button type="button" class="strip__btn home-lede__btn" data-strip-next>
+                            <span class="visually-hidden">{{ __('app.next') }}</span>
+                            <x-icon.chevron-right/>
+                        </button>
                     @endif
                 </div>
-
-                <ul class="strip__track home-lede__track" data-strip-track>
-                    <li class="strip__item">
-                        <img src="{{ Vite::image('afx-building.jpg') }}" alt="{{ __('app.title') }}" loading="lazy" decoding="async"/>
-                    </li>
-
-                    @foreach($photos as $item)
-                        <li class="strip__item">
-                            <img src="{{ asset($item->image) }}" alt="" loading="lazy" decoding="async"/>
-                        </li>
-                    @endforeach
-                </ul>
             </div>
         </section>
     </x-page>

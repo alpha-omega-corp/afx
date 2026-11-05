@@ -1,10 +1,13 @@
-@props(['specials' => null, 'sections' => null])
+@props(['specials' => null, 'editing' => null, 'sections' => null])
 
 @php
     // One block, not an @php(...) line and a block after it: Blade's inline
     // form has no closing tag of its own and swallows the next @php whole.
     $specials ??= collect();
     $sections ??= collect();
+    // What the editor opens on: the card as last written, even once its day
+    // has gone by and it no longer shows on the page.
+    $editing ??= $specials;
 
     // The day the card is actually served. It still steps over the days the
     // kitchen is shut — App\Support\Opening is the only place the serving
@@ -102,7 +105,7 @@
             :title="__('admin.action.edit_daily')"
             :route="route('admin.menu.daily')"
         >
-            <x-admin.daily-fields :specials="$specials" :sections="$sections"/>
+            <x-admin.daily-fields :specials="$editing" :sections="$sections"/>
         </x-modal.index>
     @endauth
 @endif

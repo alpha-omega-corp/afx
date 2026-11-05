@@ -10,7 +10,6 @@
          lockup is anchored to the bottom edge, so the rule's height is the
          25px that had the title sitting lower here than anywhere else. --}}
     <x-page :page="$page" :title="$page?->locale?->title ?: ucfirst(__('nav.menu'))">
-        <x-slot:art><x-illustration.carte/></x-slot:art>
 
         @if($carte->isNotEmpty())
             {{-- Nine sections never fit the rail, on any screen. The rail
