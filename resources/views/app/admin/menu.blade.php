@@ -15,12 +15,12 @@
          already eager-loaded (sections.items.locales): the numbers cost
          nothing, and no controller had to learn about this screen. --}}
     @php
-        $dishes = $sections->sum(fn ($section) => $section->items->reject->daily->count());
+        $dishes = $sections->sum(fn ($section) => $section->items->count());
 
         // The dishes whose English is still the machine's. The list is the
         // count, and it is also the thing to act on.
         $review = $sections->flatMap(
-            fn ($section) => $section->items->reject->daily->filter(
+            fn ($section) => $section->items->filter(
                 fn ($item) => $item->localeIn(Lang::EN)->isAuto('title')
             )
         );
@@ -36,85 +36,11 @@
             <p class="admin-metric__label">{{ __('admin.metric.dishes') }}</p>
             <p class="admin-metric__value u-tabular">{{ $dishes }}</p>
         </li>
-
-        <li class="admin-metric">
-            <p class="admin-metric__label">{{ __('admin.metric.daily') }}</p>
-            <p class="admin-metric__value u-tabular">{{ $specials->count() }}</p>
-            @if($servedOn)
-                <p class="admin-metric__note">{{ Str::ucfirst($servedOn->isoFormat('dddd D MMMM')) }}</p>
-            @endif
-        </li>
     </ul>
 
-    {{-- The plat du jour, first and on its own.
-         It is not a section of the carte and must not read as one: it changes
-         every day, it is the only thing on the site that does, and its dishes
-         are pulled out of the sections below so the same name never appears
-         twice on this screen — exactly as the guest carte prints them once,
-         in their own space, at the top.
-
-         Two thirds of the row: it has five internal columns, and 8/12 is the
-         width at which they stop collapsing. It is also the one heated
-         surface of this screen, and there is never a second. --}}
-    <section class="admin-daily bento-xl-8">
-        <header class="admin-daily__header">
-            <div>
-                <h2 class="admin-daily__title">{{ __('app.daily') }}</h2>
-                <p class="admin-daily__description">{{ __('admin.daily_description') }}</p>
-            </div>
-
-            <x-admin.action
-                :name="Modal::ADMIN_DAILY"
-                :action="Action::UPDATE"
-                :label="__('admin.action.edit_daily')"
-            />
-        </header>
-
-        @if($specials->isEmpty())
-            <p class="admin-daily__empty">{{ __('admin.empty.daily') }}</p>
-        @else
-            @if($servedOn)
-                <p class="admin-daily__date">{{ Str::ucfirst($servedOn->isoFormat('dddd D MMMM')) }}</p>
-            @endif
-
-            <ul class="admin-daily__list">
-                @foreach($specials as $dish)
-                    @php($fr = $dish->localeIn(Lang::FR))
-                    @php($en = $dish->localeIn(Lang::EN))
-
-                    <li class="admin-daily__dish">
-                        <span class="admin-daily__course">{{ $loop->iteration }}</span>
-
-                        <span class="admin-daily__name">{{ $fr->title }}</span>
-
-                        <span class="admin-daily__name-en">
-                            {{ $en->title }}
-                            @if($en->isAuto('title'))
-                                <span class="admin-auto" title="{{ __('admin.hint.auto') }}">{{ __('admin.auto') }}</span>
-                            @endif
-                        </span>
-
-                        <span class="admin-daily__section">{{ $dish->section?->localeIn(Lang::FR)->title }}</span>
-
-                        <span class="admin-daily__price u-tabular">{{ number_format($dish->price, 2, '.', "'") }}</span>
-                    </li>
-                @endforeach
-            </ul>
-        @endif
-    </section>
-
-    <x-modal.index
-        :name="Modal::ADMIN_DAILY"
-        :action="Action::UPDATE"
-        :title="__('admin.action.edit_daily')"
-        :route="route('admin.menu.daily')"
-    >
-        <x-admin.daily-fields :specials="$specials" :sections="$sections"/>
-    </x-modal.index>
-
-    {{-- The remaining third: what the machine wrote and nobody has read back
-         yet. It sits beside the card of the day rather than under the carte,
-         because it is a worklist, not a part of the menu. --}}
+    {{-- What the machine wrote and nobody has read back yet. It sits above
+         the carte rather than inside it, because it is a worklist, not a part
+         of the menu. --}}
     <x-admin.panel
         :title="__('admin.review_title')"
         :description="__('admin.review_description')"
@@ -200,7 +126,7 @@
                         </div>
 
                         <ul class="admin-section__items">
-                            @foreach($section->items->reject->daily as $item)
+                            @foreach($section->items as $item)
                                 @php($fr = $item->localeIn(Lang::FR))
                                 @php($en = $item->localeIn(Lang::EN))
 

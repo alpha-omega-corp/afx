@@ -54,20 +54,10 @@ class AdminController extends Controller
             ->orderBy('position')
             ->get();
 
-        // The card of the day is its own thing on this screen, above the
-        // carte rather than inside it, so its dishes are loaded separately
-        // and taken out of the sections below.
-        $specials = MenuItem::specials()->load(['locales', 'section.locales']);
-
         return view('app.admin.menu', [
             'sections' => $sections,
-            'specials' => $specials,
-            'servedOn' => $specials->first()?->servedOn(),
             'rows' => $sections->mapWithKeys(fn (MenuSection $section): array => [
-                // Rejected here as well as in the view: a dish on today's
-                // card is edited in the panel above, and offering it in two
-                // forms at once is how two edits end up disagreeing.
-                $section->id => $section->items->reject->daily->map(function (MenuItem $item): array {
+                $section->id => $section->items->map(function (MenuItem $item): array {
                     $fr = $item->localeIn(Language::FR);
                     $en = $item->localeIn(Language::EN);
 
@@ -79,7 +69,7 @@ class AdminController extends Controller
                         // purpose: anything in an English field comes back as
                         // typed, and typed means a person owns it from then
                         // on. Prefilling the machine's words froze them on the
-                        // first save. See the note in admin/daily-fields.
+                        // first save.
                         'title_en' => $en->isAuto('title') ? null : $en->title,
                         'description_en' => $en->isAuto('description') ? null : $en->description,
                         // Two decimals in the field, as on the carte itself:

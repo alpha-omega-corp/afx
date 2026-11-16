@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery;
-use App\Models\MenuItem;
 use App\Models\MenuSection;
 use App\Models\Page;
 use App\Enums\Page as PageEnum;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use App\Enums\Gallery as GalleryEnum;
 
@@ -17,19 +15,6 @@ class GuestController extends Controller
     {
         return view('app.home', [
             'page' => Page::where('name', PageEnum::HOME)->first(),
-            'specials' => MenuItem::currentSpecials(),
-            // The editor opens on the card as it was last written, past or
-            // not, so staff can carry yesterday's dishes over to a new date;
-            // the page itself shows only a card whose day has not gone by.
-            'editing' => Auth::check() ? MenuItem::specials() : collect(),
-            // Only the editor needs the list of sections to file the special
-            // under; a guest never sees that field, so never pays for it.
-            // `locales`, not `locale`: the editor names each section in the
-            // source language whichever one the page is being read in, and
-            // without them that is a query per section per staff page view.
-            'sections' => Auth::check()
-                ? MenuSection::with('locales')->orderBy('position')->get()
-                : collect(),
             'gallery' => Gallery::where('name', GalleryEnum::DELICACIES)->first(),
             'doors' => Page::whereIn('name', [
                 PageEnum::RESTAURANT,
@@ -43,8 +28,7 @@ class GuestController extends Controller
     {
         // `locale` is the row for the language being browsed; loading it here
         // keeps a nine-section carte to three queries rather than to one per
-        // heading and one per dish. The plat du jour is no card of its own
-        // here: its dishes sit in their sections like any other.
+        // heading and one per dish.
         return view('app.menu', [
             'page' => Page::where('name', PageEnum::MENU)->first(),
             'carte' => MenuSection::with(['locale', 'items.locale'])

@@ -21,21 +21,6 @@
         :rule="false"
         :intro="false"
     >
-        {{-- Today's dish, named in the hero itself: the first thing a
-             returning guest looks for, readable before any scrolling. --}}
-        @if($specials->isNotEmpty())
-            <x-slot:eyebrow>
-                <a href="#plat-du-jour" class="hero-chip">
-                    <span class="hero-chip__label"><span class="hero-chip__dot" aria-hidden="true"></span>{{ __('app.daily') }}</span>
-                    <span class="hero-chip__dish">{{ $specials->first()->locale?->title }}</span>
-                    @if($specials->count() > 1)
-                        <span class="hero-chip__more">+{{ $specials->count() - 1 }}</span>
-                    @endif
-                    @svg('heroicon-o-arrow-down', 'hero-chip__go')
-                </a>
-            </x-slot:eyebrow>
-        @endif
-
         <x-slot:actions>
             {{-- The number is the one this button opens a conversation with,
                  not the landline: a button that shows one number and dials
@@ -48,32 +33,6 @@
                 {{ __('app.see_menu') }}
             </a>
         </x-slot:actions>
-
-        {{-- What the house is known for, asked for in large by the owner
-             (ticket #1, client review 4): straight under the hero's buttons,
-             where the eye lands after the name, and above today's card so
-             the dish of the day reads as part of it.
-
-             Interactive since ticket #2 (client review 4): the stag's antlers
-             draw themselves in as the sign arrives, and the hearth's light
-             follows the pointer across it. It is a sign, not a control —
-             nothing to press, so nothing to focus; without the script it is
-             the same sign, standing still. --}}
-        <section class="home-chasse" aria-labelledby="home-chasse-title">
-            {{-- The reveal on the container, not the sign: the reveal's own
-                 transform would otherwise overwrite the sign's lean. --}}
-            <div class="container" data-reveal>
-                <div class="home-chasse__sign" data-chasse>
-                    <x-illustration.cerf class="home-chasse__art"/>
-                    <h2 class="home-chasse__title" id="home-chasse-title">{{ __('app.game') }}</h2>
-                </div>
-            </div>
-        </section>
-
-        {{-- The one thing on the page that is different tomorrow. It sits in
-             the last of the hero's firelight, above the three doors, because
-             it is the reason to come today rather than one day. --}}
-        <x-daily :specials="$specials" :editing="$editing" :sections="$sections"/>
 
         {{-- The three ways into the house: a table, the carte, a bed.
              This band has no top gap and no seam — the cards climb into the
