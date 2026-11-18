@@ -37,7 +37,7 @@ $home-gap-special: clamp(3.5rem, 8vw, 6.5rem); // the home page's own band gap
     &__eyebrow {
         margin: 0 0 clamp(2rem, 4.5vw, 2.75rem);
         font-family: $font-heading;
-        font-size: clamp(1.75rem, 3vw, 2.75rem);
+        font-size: clamp(1.5rem, 2.4vw, 2rem);
         font-weight: $fw-head;
         line-height: 1.1;
         color: $paper;
@@ -146,7 +146,7 @@ $home-gap-special: clamp(3.5rem, 8vw, 6.5rem); // the home page's own band gap
     &__title {
         margin: 0;
         font-family: $font-heading;
-        font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+        font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
         font-weight: $fw-head;
         line-height: 1.2;
         color: $paper;
@@ -159,7 +159,7 @@ $home-gap-special: clamp(3.5rem, 8vw, 6.5rem); // the home page's own band gap
         max-width: 38ch;
         margin: 0.4rem auto 0;
         color: $paper-2;
-        font-size: $fs-small;
+        font-size: 0.875rem;
         line-height: 1.5;
         text-wrap: pretty;
     }
@@ -167,7 +167,7 @@ $home-gap-special: clamp(3.5rem, 8vw, 6.5rem); // the home page's own band gap
     // Lining figures, never wrapped: the price is read at a glance.
     &__price {
         margin: 0.55rem 0 0;
-        font-size: 1rem;
+        font-size: 0.9375rem;
         font-weight: 600;
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
@@ -176,7 +176,7 @@ $home-gap-special: clamp(3.5rem, 8vw, 6.5rem); // the home page's own band gap
 
     &__currency {
         color: $paper-3;
-        font-size: 0.75rem;
+        font-size: 0.6875rem;
         font-weight: 600;
         letter-spacing: 0.14em;
     }

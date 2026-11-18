@@ -9,7 +9,18 @@
          hero measure the same as the restaurant's and the hotel's: the
          lockup is anchored to the bottom edge, so the rule's height is the
          25px that had the title sitting lower here than anywhere else. --}}
-    <x-page :page="$page" :title="$page?->locale?->title ?: ucfirst(__('nav.menu'))">
+    <x-page :page="$page" :title="$page?->locale?->title ?: ucfirst(__('nav.menu'))" emblem="carte">
+
+        <x-slot:preview>
+            @if($carte->isNotEmpty())
+                <ul class="page-preview__chips">
+                    @foreach($carte as $section)
+                        <li>{{ $section->locale?->title }}</li>
+                    @endforeach
+                </ul>
+                <p class="page-preview__meta">{{ __('app.preview_sections', ['count' => $carte->count()]) }}</p>
+            @endif
+        </x-slot:preview>
 
         @if($carte->isNotEmpty())
             {{-- Nine sections never fit the rail, on any screen. The rail

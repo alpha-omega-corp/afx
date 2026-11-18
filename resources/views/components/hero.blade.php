@@ -8,6 +8,8 @@
     'embers' => false,
     'rule' => false,
     'centered' => false,
+    'emblem' => null,
+    'preview' => null,
 ])
 
 @php($quiet = $embers === 'quiet')
@@ -90,6 +92,10 @@
             @if($stage)
                 {{-- An inner page: its words and its one action, straight
                      under the photograph, no card. --}}
+                {{-- The page's ember-line drawing stands to the right of its
+                     words, in the room their 52ch measure leaves. A drawing
+                     beside the words, never on the photograph. --}}
+                <div @class(['hero-page__row' => $emblem])>
                 <div class="hero-page">
                     @isset($eyebrow)
                         <div class="hero__eyebrow">{{ $eyebrow }}</div>
@@ -98,11 +104,35 @@
                     {{-- French puts a space before : ; ? ! — a thin
                          non-breaking one, so the mark never starts a
                          line on its own. --}}
-                    <p class="hero-page__text">{{ preg_replace('/ ([:;?!])/u', "\u{202F}$1", $text) }}</p>
+                    {{-- With a preview, the words under the band are the
+                         page's first sentence and an icon after it; the
+                         whole text, and the page in miniature, open in the
+                         modal x-page pushes (x-page-preview). --}}
+                    @php($words = trim((string) $text))
+                    @if($preview && preg_match('/^.+?[.!?…](?=\s|$)/us', $words, $first))
+                        @php($words = $first[0])
+                    @endif
+
+                    <p @class(['hero-page__text', 'hero-page__text--short' => $preview])>{{ preg_replace('/ ([:;?!])/u', "\u{202F}$1", $words) }}@if($preview)&nbsp;<button
+                            type="button"
+                            class="hero-page__more"
+                            data-bs-toggle="modal"
+                            data-bs-target="#{{ $preview }}"
+                            aria-haspopup="dialog"
+                            aria-label="{{ __('app.preview_open') }}"
+                            title="{{ __('app.preview_open') }}"
+                        >@svg('heroicon-o-arrows-pointing-out', ['aria-hidden' => 'true'])</button>@endif</p>
 
                     @isset($actions)
                         <div class="hero__actions hero-page__actions">{{ $actions }}</div>
                     @endisset
+                </div>
+
+                @if($emblem)
+                    <div class="hero-page__emblem">
+                        <x-dynamic-component :component="'illustration.' . $emblem"/>
+                    </div>
+                @endif
                 </div>
             @else
                 <div class="hero__text">

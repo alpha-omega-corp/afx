@@ -1,34 +1,19 @@
 <footer class="app-footer" data-kit="site-footer">
     <div class="container">
+        {{-- Two rows and a line. The house on the left, what a guest comes
+             back for on the right, each block parted from the next by a
+             hairline rather than by more empty space. --}}
         <div class="app-footer__grid">
-            <div>
+            <div class="app-footer__brand">
+                {{-- The house itself, lit, over its name: the last picture
+                     on every page. --}}
+                <x-illustration.auberge class="app-footer__drawing"/>
+
                 <p class="app-footer__wordmark">{{ __('app.title') }}</p>
                 <p class="app-footer__blurb">{{ __('footer.blurb') }}</p>
-            </div>
 
-            <div>
-                <h2 class="app-footer__title">{{ __('footer.sitemap') }}</h2>
-                <ul>
-                    <li><a class="app-footer__link" href="{{ route(__('route.home')) }}">{{ ucfirst(__('nav.home')) }}</a></li>
-                    <li><a class="app-footer__link" href="{{ route(__('route.menu')) }}">{{ ucfirst(__('nav.menu')) }}</a></li>
-                    <li><a class="app-footer__link" href="{{ route(__('route.restaurant')) }}">{{ ucfirst(__('nav.restaurant')) }}</a></li>
-                    <li><a class="app-footer__link" href="{{ route(__('route.hotel')) }}">{{ ucfirst(__('nav.hotel')) }}</a></li>
-                    <li><a class="app-footer__link" href="{{ route(__('route.contact')) }}">{{ ucfirst(__('nav.contact')) }}</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h2 class="app-footer__title">{{ ucfirst(__('nav.contact')) }}</h2>
-                <ul>
-                    <li><a class="app-footer__link" href="https://www.google.ch/maps/place/Grand-Rue+31,+1297+Founex/@46.3325566,6.1902006,17z/" target="_blank" rel="noopener">Grand'Rue 31, 1297 Founex</a></li>
-                    <li><a class="app-footer__link" href="tel:+41227761029">022 776 10 29</a></li>
-                    <li><a class="app-footer__link" href="mailto:aubergedefounex@bluewin.ch">aubergedefounex@<wbr>bluewin.ch</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h2 class="app-footer__title">{{ __('footer.social') }}</h2>
-                <div class="app-footer__social">
+                {{-- Two round icons need no heading of their own. --}}
+                <div class="app-footer__social" aria-label="{{ __('footer.social') }}">
                     <a href="https://www.facebook.com/AubergeFounex" target="_blank" rel="noopener">
                         <span class="visually-hidden">Facebook</span>
                         <x-icon.facebook/>
@@ -39,21 +24,37 @@
                     </a>
                 </div>
             </div>
-        </div>
 
-        {{-- The schedule closes the footer: the last thing read before the
-             copyright, and the thing a guest most often comes back for. --}}
-        <div class="app-footer__hours">
-            <h2 class="app-footer__title">{{ __('footer.hours') }}</h2>
+            <div class="app-footer__col">
+                <h2 class="app-footer__title">{{ ucfirst(__('nav.contact')) }}</h2>
+                <ul>
+                    <li><a class="app-footer__link" href="https://www.google.ch/maps/place/Grand-Rue+31,+1297+Founex/@46.3325566,6.1902006,17z/" target="_blank" rel="noopener">Grand'Rue 31, 1297 Founex</a></li>
+                    <li><a class="app-footer__link" href="tel:+41227761029">022 776 10 29</a></li>
+                    <li><a class="app-footer__link" href="mailto:aubergedefounex@bluewin.ch">aubergedefounex@<wbr>bluewin.ch</a></li>
+                </ul>
+            </div>
 
             {{-- Written in Administration → Ouverture, and the same list the
                  plat du jour reads to know which days it can be served on. --}}
-            <p class="app-footer__hours-lines">
-                @foreach(App\Support\Opening::schedule() as $line)
-                    <span>{{ $line }}</span>
-                @endforeach
-            </p>
+            <div class="app-footer__col">
+                <h2 class="app-footer__title">{{ __('footer.hours') }}</h2>
+                <ul class="app-footer__hours">
+                    @foreach(App\Support\Opening::schedule() as $line)
+                        <li>{{ $line }}</li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
+
+        {{-- The pages again, as one quiet line: the bar above already lists
+             them, so here they are a way round, not a column of their own. --}}
+        <nav class="app-footer__pages" aria-label="{{ __('footer.sitemap') }}">
+            <a class="app-footer__link" href="{{ route(__('route.home')) }}">{{ ucfirst(__('nav.home')) }}</a>
+            <a class="app-footer__link" href="{{ route(__('route.menu')) }}">{{ ucfirst(__('nav.menu')) }}</a>
+            <a class="app-footer__link" href="{{ route(__('route.restaurant')) }}">{{ ucfirst(__('nav.restaurant')) }}</a>
+            <a class="app-footer__link" href="{{ route(__('route.hotel')) }}">{{ ucfirst(__('nav.hotel')) }}</a>
+            <a class="app-footer__link" href="{{ route(__('route.contact')) }}">{{ ucfirst(__('nav.contact')) }}</a>
+        </nav>
 
         <div class="app-footer__bottom">
             <div class="app-footer__meta">

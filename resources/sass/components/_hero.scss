@@ -277,6 +277,64 @@
     &__actions {
         margin-top: clamp(1.5rem, 3vw, 2rem);
     }
+
+    // The first sentence alone, and the icon that opens the rest of the
+    // page's words in its preview (x-page-preview). A round ember-ringed
+    // glyph set on the last line of the sentence, never wrapped away from it.
+    &__more {
+        display: inline-grid;
+        place-items: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        margin-left: 0.25rem;
+        vertical-align: -0.4rem;
+        border: 1px solid rgba($ember, 0.55);
+        border-radius: 50%;
+        background: rgba($ember, 0.08);
+        color: $ember;
+        cursor: pointer;
+        transition: color $t-fast, background-color $t-fast, border-color $t-fast, transform $t-fast;
+
+        svg { width: 1rem; height: 1rem; }
+
+        &:hover {
+            color: $ink;
+            background: $ember;
+            border-color: $ember;
+        }
+
+        &:active { transform: scale(0.94); }
+
+        &:focus-visible {
+            outline: 2px solid $ember-hi;
+            outline-offset: 3px;
+        }
+    }
+
+    // Words on the left, the page's drawing on the right, level with the
+    // top of the words so a short paragraph is not pushed down to its middle.
+    &__row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: clamp(2rem, 6vw, 5rem);
+    }
+
+    &__emblem {
+        flex: none;
+        width: clamp(8rem, 13vw, 11rem);
+        margin-top: clamp(1rem, 2vw, 1.5rem);
+        color: $paper-3;
+
+        // A phone has no room beside the words; the page's photograph
+        // already says what it is about.
+        @include media-breakpoint-down(md) { display: none; }
+
+        @media (prefers-reduced-motion: no-preference) {
+            animation: hero-rise 700ms 200ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+        }
+    }
 }
 
 // The single orchestrated moment on the site.

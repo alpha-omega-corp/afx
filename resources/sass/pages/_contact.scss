@@ -1,84 +1,150 @@
 // =============================================================
-// Contact
+// Visit — where the house is and how to reach it. On the home page
+// (`--home`) with the hours and the map beside them; on the contact page
+// (`--single`) the address and the ways to write, in one column.
+//
+// The UI kit's left-aligned description list with an inline action: a
+// label column, the value beside it, hairline between rows, the row's one
+// action at its end. The map takes the larger half of the grid.
 // =============================================================
 
-.app-contact {
+.app-visit {
     padding-block: $section-gap;
 
-    // The details and the map side by side once there is room: the list on
-    // its own left half the page empty beside it.
-    @include media-breakpoint-up(lg) {
+    &__grid {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-        gap: clamp(2.5rem, 5vw, 4.5rem);
-        align-items: start;
+        grid-template-columns: minmax(0, 1fr);
+        gap: clamp(1.75rem, 4vw, 3rem);
+
+        @include media-breakpoint-up(lg) {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+            gap: clamp(2.5rem, 5vw, 4.5rem);
+            align-items: center;
+        }
 
         .app-map { margin-top: 0; }
-        .app-map__frame { height: clamp(320px, 46vh, 460px); }
+
+        @include media-breakpoint-up(lg) {
+            .app-map__frame { height: clamp(340px, 48vh, 460px); }
+        }
     }
 
-    // The details used to share the row with a message form. On their own
-    // they are a short list, and a short list read across the full grid is a
-    // line of type with a metre of nothing after it.
-    &__information {
-        max-width: 34rem;
-    }
+    & &__title { margin-top: 0; }
 
     &__list {
         margin: 0;
+        border-top: 1px solid $line;
     }
 
     &__row {
-        padding-block: 1.1rem;
+        padding-block: 1.25rem;
         border-bottom: 1px solid $line;
 
-        &:first-child { padding-block-start: 0; }
-        &:last-child  { border-bottom: 0; }
+        @include media-breakpoint-up(sm) {
+            display: grid;
+            grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+            gap: 1rem;
+        }
 
         dt {
-            font-family: $font-body;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.4rem;
             font-size: $fs-small;
             font-weight: 600;
             color: $paper-2;
-            margin-bottom: 0.35rem;
+
+            svg { width: 18px; height: 18px; flex: none; color: $ember; }
+
+            @include media-breakpoint-up(sm) { margin-bottom: 0; align-self: start; }
         }
 
         dd {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.5rem 1rem;
             margin: 0;
-            color: $paper;
-            // The email address is one long unbreakable word; on a narrow
-            // phone it has to be allowed to fold rather than widen the page.
-            overflow-wrap: anywhere;
-
-            a { color: $paper; text-decoration: underline; text-underline-offset: 3px; @include tap; }
-            a:hover { color: $ember; }
         }
     }
 
-    &__social {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+    &__value {
+        margin: 0;
+        font-style: normal;
+        color: $paper;
+        line-height: 1.55;
 
-        a {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            text-decoration: none;
-        }
-
-        // Two 28px rows 8px apart: a halo each would overlap, so on touch
-        // the rows themselves are the 44px.
-        @media (pointer: coarse) {
-            gap: 0;
-
-            a { min-height: $tap; }
-        }
-
-        svg { width: 18px; height: 18px; flex: none; color: $paper-2; }
-        a:hover svg { color: $ember; }
+        > span { display: block; }
     }
 
+    // The week as a small timetable: the days on one line, each service
+    // under them with its opening and closing times in two columns that line
+    // up from one service to the next, and an arrow down between them.
+    &__days {
+        margin: 0 0 0.5rem;
+        color: $paper;
+        font-weight: 600;
+    }
+
+    &__services {
+        display: grid;
+        grid-template-columns: max-content auto max-content;
+        justify-content: start;
+        column-gap: 0.75rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-variant-numeric: tabular-nums;
+    }
+
+    &__service {
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: subgrid;
+        align-items: baseline;
+    }
+
+    &__dash { color: $paper-2; }
+
+    // Centred under the range, from the noon service down to the evening.
+    &__then {
+        grid-column: 1 / -1;
+        justify-self: center;
+        line-height: 0;
+        padding-block: 0.3rem;
+        color: $ember;
+
+        svg { width: 18px; height: 18px; }
+    }
+
+    &__services + &__days { margin-top: 1rem; }
+
+    &__closed {
+        margin: 0.85rem 0 0;
+        color: $paper-2;
+        font-size: $fs-small;
+    }
+
+    a.app-visit__value {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        @include tap;
+
+        &:hover { color: $ember; }
+    }
+
+    // The row's inline action, as in the kit: a quiet text link at the end.
+    &__action {
+        font-size: $fs-small;
+        font-weight: 600;
+        color: $ember;
+        text-decoration: none;
+        @include tap;
+
+        &:hover { color: $ember-hi; text-decoration: underline; text-underline-offset: 3px; }
+    }
 }
 
 // =============================================================
@@ -141,3 +207,45 @@
         }
     }
 }
+
+// The two contact rows the home band did not have: an address that has to
+// fold on a phone, and the social links stacked.
+.app-visit {
+    &__email { overflow-wrap: anywhere; }
+
+    &__social {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: $paper;
+            text-decoration: none;
+
+            &:hover { color: $ember; }
+        }
+
+        // On touch the rows themselves are the 44px.
+        @media (pointer: coarse) {
+            gap: 0;
+
+            a { min-height: $tap; }
+        }
+
+        svg { width: 18px; height: 18px; flex: none; color: $paper-2; }
+        a:hover svg { color: $ember; }
+    }
+}
+
+// The home page's band: its own rhythm and a seam above it, like the
+// other home bands.
+.app-visit--home {
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+    border-top: 1px solid $hairline;
+}
+
+// No map beside it: the list alone, at a reading width.
+.app-visit--single .app-visit__info { max-width: 40rem; }

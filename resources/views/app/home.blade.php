@@ -101,9 +101,8 @@
         </section>
 
         {{-- Where and when: the address, the hours and the number, with
-             the map beside them — moved out of the hero, where they were
-             two small cards between the buttons and the doors. --}}
-        <x-visit/>
+             the map beside them. --}}
+        <x-visit :home="true"/>
     </x-page>
 
     {{-- Only what the site already says: the footer's address, phone, mail

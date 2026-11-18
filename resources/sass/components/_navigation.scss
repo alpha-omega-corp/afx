@@ -48,8 +48,43 @@
         gap: 1.5rem;
         width: 100%;
         min-height: var(--nav-h);
+        // The open/closed tab hangs from the bottom of this row.
+        position: relative;
 
         @include media-breakpoint-down(lg) { gap: 0.75rem; }
+    }
+
+    // The open/closed tab: a paper tab hanging from the bar's lower edge,
+    // under the name, shown only once the bar is stuck (the top bar, which
+    // says the same thing, has scrolled away by then).
+    &__tab {
+        position: absolute;
+        top: 100%;
+        left: calc(#{$gutter} - 0.85rem);
+        padding: 0.35rem 0.85rem 0.4rem;
+        border-radius: 0 0 $r-panel * 1.5 $r-panel * 1.5;
+        background: $paper;
+        color: $ink;
+        font-size: 0.8125rem;
+        box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-0.5rem);
+        transition:
+            opacity 250ms ease,
+            transform 250ms ease,
+            visibility 0s linear 250ms;
+        pointer-events: none;
+    }
+
+    &.is-stuck &__tab {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        transition:
+            opacity 250ms ease,
+            transform 250ms ease,
+            visibility 0s;
     }
 
     // One line, in paper. The wordmark is the brand, not a logotype

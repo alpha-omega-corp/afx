@@ -1,4 +1,4 @@
-@props(['page' => null, 'title' => null, 'lead' => null, 'tall' => false, 'embers' => 'quiet', 'rule' => true, 'intro' => true, 'centered' => false])
+@props(['page' => null, 'title' => null, 'lead' => null, 'tall' => false, 'embers' => 'quiet', 'rule' => true, 'intro' => true, 'centered' => false, 'emblem' => null])
 
 {{-- Every page opens the same way: its record's photograph as a 300px band
      with its name on it, its words under it, then whatever the page itself
@@ -19,6 +19,8 @@
         :embers="$embers"
         :rule="$rule"
         :centered="$centered"
+        :emblem="$emblem"
+        :preview="filled($text) ? 'page-preview' : null"
         :priority="true"
     >
         @isset($eyebrow)
@@ -32,6 +34,21 @@
             <x-slot:actions>{{ $actions }}</x-slot:actions>
         @endif
     </x-hero>
+
+    {{-- The page in miniature, opened from the icon after its first
+         sentence: the photograph, all of its words, what the page holds
+         (its `preview` slot) and the same call to action. --}}
+    @if(filled($text))
+        @push('modals')
+            <x-page-preview id="page-preview" :image="$page?->image" :title="$title" :text="$text" :emblem="$emblem">
+                {{ $preview ?? '' }}
+
+                @isset($cta)
+                    <x-slot:actions>{{ $cta }}</x-slot:actions>
+                @endisset
+            </x-page-preview>
+        @endpush
+    @endif
 
     <div class="app-page__content">
         {{ $slot }}

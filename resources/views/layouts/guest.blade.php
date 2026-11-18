@@ -52,5 +52,9 @@
     <x-forms.input :icon="Icon::PASSWORD" :label="__('form.password')" :required="true" name="password" type="password"/>
 </x-modal.index>
 
+{{-- Modals a page brings (x-page's preview), outside the frame so no
+     stacking context in it can hold them under the backdrop. --}}
+@stack('modals')
+
 </body>
 </html>

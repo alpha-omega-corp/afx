@@ -18,6 +18,12 @@
                 {{ __('app.title') }}
             </a>
 
+            {{-- Once the top bar has scrolled away, the same open/closed
+                 line hangs under the bar as a small paper tab, under the
+                 name, so it is still there further down the page. Hidden
+                 from screen readers: the top bar already says it. --}}
+            <x-open-status class="app-navigation__tab" aria-hidden="true"/>
+
             <div class="app-navigation__right">
                 <ul class="app-navigation__menu">
                     @include('app.partials.navigation')

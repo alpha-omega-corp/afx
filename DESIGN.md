@@ -59,6 +59,9 @@ demain à 11h30", "ouvre mardi à 11h30", or the reopening date during a holiday
 (`Opening::status()`, Founex time, holidays and the manual switch on top). Then the address with
 a pin, linking to the contact page (hidden on a phone). It scrolls away; the fixed bar follows it
 up (`--banner-offset`, measured from the closed banner and this strip together).
+Once the bar is stuck, the same line hangs from its lower edge as a small paper tab under the
+name (`.app-navigation__tab`, rounded bottom corners), so it stays in view down the page; it fades
+away again when the top bar comes back. `aria-hidden`: the top bar already says it.
 
 ## Frame
 
@@ -132,15 +135,18 @@ One manner for every picture that is not a photograph: **ember line**.
 |----------------------------------------------|-----------|--------------------------------|
 | Home, “Spécialité de chasse” sign (animated) | `cerf`    | `tete-de-cerf`                 |
 | Plat du jour card (home, carte)              | `cloche`  | `cloche-fumante`               |
-| *(spare — was the restaurant hero card)*     | `table`   | `couvert-et-verre-de-vin`      |
-| *(spare — was the carte hero card)*          | `carte`   | `carte-ouverte`                |
-| *(spare — was the hôtel hero card)*          | `room`    | `lit-sous-la-fenetre`          |
-| *(spare — was the contact hero card)*        | `map`     | `carte-pliee-et-repere`        |
-| *(spare — no slot since the photo hero)*     | `auberge` | `auberge-aux-fenetres-allumees`|
+| Restaurant, beside the page's words         | `table`   | `couvert-et-verre-de-vin`      |
+| La carte, beside the page's words           | `carte`   | `carte-ouverte`                |
+| Hôtel, beside the page's words              | `room`    | `lit-sous-la-fenetre`          |
+| Contact, beside the page's words            | `map`     | `carte-pliee-et-repere`        |
+| Footer, over the wordmark, on every page     | `auberge` | `auberge-aux-fenetres-allumees`|
 
-No hero carries a drawing since the cards went; the four page emblems stay in
-`components/illustration/` for a slot that wants them. `auberge` is the drawing to reach for if a page ever opens without its photograph (a bare hero or a door
-tile with no image) — never as a stand-in on a page that has one.
+Each inner page names its drawing with `<x-page emblem="…">`; it stands to the right of the
+page's words under the photograph (`.hero-page__emblem`, `$paper-3`, 8–11rem, top-aligned with
+the words) and is dropped below `md`, where the photograph alone says what the page is. The
+drawing never goes on the photograph. The footer opens its first column with `auberge`. It is
+also the drawing to reach for if a page ever opens without its photograph, but never as a
+stand-in on a page that has one.
 
 `public/images/generated/` holds an older, filled-gradient set (library collection
 `auberge-lamplit`) in a different manner. Nothing references it; do not wire it in.

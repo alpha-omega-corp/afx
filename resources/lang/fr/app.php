@@ -32,6 +32,12 @@ return [
     'map_title' => 'Carte : Auberge de Founex, Grand’Rue 31, 1297 Founex',
     'show_more' => 'Lire la suite',
     'show_less' => 'Réduire',
+    // The page's preview: the icon after its first sentence, and the modal.
+    'preview_open' => 'Aperçu de la page',
+    'preview_inside' => 'Sur cette page',
+    'preview_photos' => ':count photographies',
+    'preview_sections' => ':count rubriques',
+    'preview_view' => 'Voir la page',
     'skip' => 'Aller au contenu',
     'previous' => 'Précédent',
     'next' => 'Suivant',

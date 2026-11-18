@@ -1,0 +1,175 @@
+// =============================================================
+// Page preview — the page in miniature, in the modal the icon after a
+// hero's first sentence opens (x-page-preview). The same order as the
+// page: its photograph as a band with its name and ember rule, its words
+// (all of them here), what the page holds, and its one action.
+// The surface, scrim and motion are the modal's own (_modal.scss).
+// =============================================================
+
+.page-preview {
+    .modal-content { overflow: hidden; }
+
+    &__band {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        flex: none;
+        height: clamp(9rem, 26vh, 13rem);
+        padding: 1.25rem 1.5rem;
+        background-color: $ink;
+        border-top-left-radius: var(--bs-modal-inner-border-radius);
+        border-top-right-radius: var(--bs-modal-inner-border-radius);
+        overflow: hidden;
+
+        &--bare {
+            height: auto;
+            padding-top: 3.5rem;
+            background:
+                radial-gradient(70% 120% at 50% 0%, rgba($ember, 0.18) 0%, rgba($ink, 0) 70%),
+                $ink;
+        }
+    }
+
+    &__img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    // The inner hero's scrim, heaviest under the name.
+    &__scrim {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(to right, rgba($ink, 0.7) 0%, rgba($ink, 0.25) 60%, rgba($ink, 0.1) 100%),
+            linear-gradient(to top, $ink 0%, rgba($ink, 0.45) 45%, rgba($ink, 0.35) 100%);
+    }
+
+    &__title {
+        position: relative;
+        margin: 0;
+        max-width: 20ch;
+        color: $paper;
+        font-size: clamp(1.625rem, 3.4vw, 2.25rem);
+        line-height: 1.15;
+
+        &::after {
+            content: "";
+            display: block;
+            width: 36px;
+            height: 2px;
+            margin-top: 0.75rem;
+            background: $ember;
+        }
+    }
+
+    // On the photograph, so it gets a disc of its own to read against.
+    &__close {
+        position: absolute;
+        top: 0.875rem;
+        right: 0.875rem;
+        z-index: 1;
+        margin: 0;
+        padding: 0.6rem;
+        border-radius: 50%;
+        background-color: rgba($ink, 0.55);
+        background-size: 0.75rem;
+    }
+
+    &__body {
+        padding: clamp(1.25rem, 3vw, 1.75rem) 1.5rem;
+    }
+
+    &__row {
+        display: flex;
+        align-items: flex-start;
+        gap: clamp(1.5rem, 4vw, 2.5rem);
+    }
+
+    &__words { min-width: 0; }
+
+    &__text {
+        margin: 0 0 1em;
+        max-width: 60ch;
+        color: $paper-1;
+        font-size: $fs-body;
+        line-height: 1.65;
+        text-wrap: pretty;
+
+        &:last-child { margin-bottom: 0; }
+    }
+
+    &__emblem {
+        flex: none;
+        width: 7rem;
+        color: $paper-3;
+
+        @include media-breakpoint-down(md) { display: none; }
+    }
+
+    &__inside {
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid $hairline-hi;
+    }
+
+    // The site's one all-caps voice: a small fact label.
+    &__label {
+        margin-bottom: 0.75rem;
+        color: $paper-3;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    &__photos {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+
+        @include media-breakpoint-down(sm) { grid-template-columns: repeat(2, 1fr); }
+
+        img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            border-radius: $r-panel;
+            background: $ink-3;
+        }
+    }
+
+    &__chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+            padding: 0.3rem 0.75rem;
+            border: 1px solid $hairline-hi;
+            border-radius: 999px;
+            background: $ink-3;
+            color: $paper-2;
+            font-size: $fs-small;
+        }
+    }
+
+    &__meta {
+        margin: 0.625rem 0 0;
+        color: $paper-3;
+        font-size: $fs-small;
+    }
+
+    &__footer {
+        gap: 0.75rem;
+
+        @include media-breakpoint-down(sm) {
+            .btn { flex: 1 0 100%; text-align: center; }
+        }
+    }
+}
