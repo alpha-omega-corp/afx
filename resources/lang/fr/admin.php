@@ -82,7 +82,6 @@ return [
         'description_fr' => 'Description (français)',
         'description_en' => 'Description (anglais)',
         'price' => 'Prix',
-        'daily_on' => 'Date affichée sur la carte du jour',
         'daily_dishes' => 'Plats de la carte du jour',
         'closed_all_day' => 'Fermé toute la journée',
         'lunch_from' => 'Midi — de',

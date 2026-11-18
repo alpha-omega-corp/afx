@@ -38,5 +38,13 @@ return [
     'today' => 'Aujourd’hui',
     'see_daily' => 'Voir le plat du jour',
     'practical' => 'Infos pratiques',
+    'open_now' => 'Ouvert',
+    'closed_now' => 'Fermé',
+    'open_until' => 'jusqu’à :time',
+    'opens_at' => 'ouvre à :time',
+    'opens_tomorrow' => 'ouvre demain à :time',
+    'opens_on' => 'ouvre :day à :time',
+    'reopens_on' => 'réouverture le :date',
+    'top_bar' => 'Ouverture et adresse',
     'reservations' => 'Réservations',
 ];

@@ -38,6 +38,7 @@ Colour means something here; it is never decoration.
 | `$ember-hi` | hover and focus | 8.0:1 |
 | `$ember-lo` | pressed state and borders, never small text | — |
 | `$ink-soft` `#3A2A18` | secondary text **on** ember | 4.5:1 on `$ember`, 5.9:1 on `$ember-hi` |
+| `$open-green-deep` `#2E9E5B` | **only** the "open" dot in the top bar (`x-open-status`); closed is a `$paper-3` dot | dot only, never text |
 
 - Text on ember is `$ink`, its quieter line `$ink-soft`. Never `$paper` (2.6:1), and never
   `$ink` thinned with `opacity` — ink at 72% over ember is 4.0:1 and fails.
@@ -49,6 +50,15 @@ Colour means something here; it is never decoration.
 **The ember rule under a name** — a 44 × 2px bar of `$ember` under each inner page's `h1`
 (`.hero--rule`), and the same ember hairline along the top edge of the glass cards. It is the one
 ornament the site allows; anything else that wants to glow is lit in an illustration instead.
+
+## Top bar
+
+A thin `$paper` strip over the navigation on every page (`x-top-bar`), ink text: a dot, **Ouvert**
+or **Fermé**, and the next change in `$ink-on-paper-2` — "jusqu'à 22h00", "ouvre à 18h00", "ouvre
+demain à 11h30", "ouvre mardi à 11h30", or the reopening date during a holiday
+(`Opening::status()`, Founex time, holidays and the manual switch on top). Then the address with
+a pin, linking to the contact page (hidden on a phone). It scrolls away; the fixed bar follows it
+up (`--banner-offset`, measured from the closed banner and this strip together).
 
 ## Frame
 
@@ -65,14 +75,34 @@ of a fixed `300px` at every width, scrolling away slower than the page. The band
 name and nothing else; everything that used to sit on the photograph follows straight under it in
 `.hero-body`, on `$ink`, no card or panel:
 
-- **Home**: name on the band; the daily chip, the lead and the two actions under it.
+- **Home** (`.hero--centered`): taller (`clamp(26rem, 64vh, 38rem)`), and the name, the lead
+  and the two actions all on the photograph, centred, under an even scrim. The plat du jour is
+  not named in the hero.
 - **Inner pages** (`.hero--stage`): a darker scrim, the name with its ember rule on the band; the
   page's words and its one action under it. The photograph is a backdrop there; no card, no emblem.
-- **The practical facts** (hours from `App\Support\Opening`, the numbers, the address) close the
-  home page's hero body on a hairline of their own; they are the house's real facts and never copy. Inner
-  heroes leave them to the footer (and the contact page's own panel).
+- **The practical facts** (hours from `App\Support\Opening`, the address) close the home page's
+  hero body as two equal cards side by side, centred, each in a `$hairline-hi` border; stacked on a
+  phone. The phone numbers are not among them: the reservation button carries the one to dial and
+  the footer the rest. Inner heroes leave the facts to the footer (and the contact page's own panel).
 - One primary action in the first screen, ember; the reservation number it dials is shown on it
   in `$ink-soft`.
+
+## Plat du jour
+
+On the home page, between the three doors and the welcome band, with no card around it
+(`.daily`, `resources/sass/components/_daily.scss`): the name alone (no horizontal rule), then the
+courses side by side, centred, in the order they are eaten (stacked on a phone). Each course has:
+
+- a lit disc (`$ember` mixed 22% into `$ink`, a faint ember halo and glow) holding a covered dish
+  (`x-icon.concierge-bell`, paper);
+- the course number on a `$paper` pill at the disc's shoulder, `$ink` figures, cut out of the
+  disc by a ring of `$ink`;
+- the dish name in Playfair (paper), its line in `$paper-2`, and the price in `$ember-hi` after a
+  small-caps `CHF` in `$paper-3`.
+
+A dashed ember thread (2px, 45%) runs across from one disc to the next, level with their centres
+(down between the courses on a phone). No date anywhere: the
+card stays until staff take it off.
 
 ## Illustrations
 

@@ -20,6 +20,7 @@
         :embers="true"
         :rule="false"
         :intro="false"
+        :centered="true"
     >
         <x-slot:actions>
             {{-- The number is the one this button opens a conversation with,
@@ -50,6 +51,11 @@
                 </div>
             </div>
         </section>
+
+        {{-- The one thing on the page that is different tomorrow, set
+             like a slip of the printed carte: after the three doors, just
+             before the house introduces itself. --}}
+        <x-daily :specials="$specials" :sections="$sections"/>
 
         {{-- One chapter, not two: the house in its own words and the look
              around it were the same subject under two headings. The words
@@ -93,6 +99,11 @@
                 </div>
             </div>
         </section>
+
+        {{-- Where and when: the address, the hours and the number, with
+             the map beside them — moved out of the hero, where they were
+             two small cards between the buttons and the doors. --}}
+        <x-visit/>
     </x-page>
 
     {{-- Only what the site already says: the footer's address, phone, mail

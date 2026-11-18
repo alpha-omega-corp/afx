@@ -5,7 +5,7 @@
 @section('title', ucfirst(__('nav.contact')) . ' — ' . __('app.title'))
 
 @section('content')
-    <x-page :page="$page" :title="$page?->locale?->title ?: ucfirst(__('nav.contact'))" :facts="false">
+    <x-page :page="$page" :title="$page?->locale?->title ?: ucfirst(__('nav.contact'))">
         {{-- The facts follow in full below, so the panel carries only the
              words and the drawing. --}}
 

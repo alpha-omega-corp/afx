@@ -15,6 +15,9 @@ $line-strong:#736A60; // borders on interactive elements (3.2:1 on $ink-2)
 
 $ember:      #F26B1D; // brand orange — 6.1:1 on $ink
 $ember-hi:   #FF8A3D; // hover, focus ring — 8.0:1 on $ink
+$open-green: #7CC38A; // "open" dot on dark — 9.4:1 on $ink
+$open-green-deep: #2E9E5B; // the same "open" dot on the paper top bar
+$ink-on-paper-2: #524F4B; // secondary text on a paper surface — ~7.5:1 on $paper
 $ember-lo:   #B84A0E; // pressed state and borders only, never small text
 
 $paper:      #F3EDE4; // primary text on dark — 16:1 on $ink

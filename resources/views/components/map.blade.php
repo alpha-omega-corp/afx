@@ -1,6 +1,9 @@
 @props([
     'address' => "Grand'Rue 31, 1297 Founex",
     'destination' => "Auberge de Founex, Grand'Rue 31, 1297 Founex",
+    // The address and the Directions button under the frame. Off where the
+    // page already prints both beside the map (the home page's x-visit).
+    'bar' => true,
 ])
 
 @php
@@ -32,6 +35,7 @@
         ></iframe>
     </div>
 
+    @if($bar)
     <div class="app-map__bar">
         <p class="app-map__address">{{ $address }}</p>
 
@@ -47,4 +51,5 @@
             {{ __('app.itinerary') }}
         </a>
     </div>
+    @endif
 </section>

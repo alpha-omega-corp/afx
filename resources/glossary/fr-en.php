@@ -112,6 +112,14 @@ return [
     'coulis de fruits rouges chaud et deux boules vanille' => 'Warm red berry coulis and two scoops of vanilla',
     'parfums du jour' => "Today's flavours",
 
+    // --- Plats du jour seeded by MenuSeeder ------------------------------
+    'velouté de courge' => 'Cream of pumpkin soup',
+    'graines de courge torréfiées et crème fraîche' => 'Toasted pumpkin seeds and crème fraîche',
+    'civet de chevreuil' => 'Venison civet',
+    'spätzli maison, chou rouge et marrons glacés' => 'Homemade spätzli, red cabbage and glazed chestnuts',
+    'tarte aux pruneaux' => 'Plum tart',
+    'servie tiède, crème double de la gruyère' => 'Served warm, with Gruyère double cream',
+
     // --- Everyday words, for phrases the lines above do not cover ---------
     'maison' => 'Homemade',
     'nouveau' => 'New',

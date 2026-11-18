@@ -1,0 +1,78 @@
+// =============================================================
+// Top bar — a thin paper strip over the navigation, as on a shop's
+// awning: open or closed right now and until when, and the address.
+//
+// The one light strip on the site, so it is read before anything else.
+// Green marks "open" here and nowhere else: the one signal everybody reads,
+// where ember already means "the thing to press". Closed is a grey dot, a
+// fact rather than an alarm. Text is ink on paper (16:1).
+// =============================================================
+
+.top-bar {
+    position: relative;
+    z-index: 31;
+    background: $paper;
+    color: $ink;
+    font-size: 0.875rem;
+
+    &__inner {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.25rem 1.75rem;
+        min-height: 2.5rem;
+        padding-block: 0.4rem;
+    }
+
+    &__place {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: $ink;
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover { text-decoration: underline; text-underline-offset: 3px; color: $ink; }
+
+        // The address is in the footer and the visit band; a phone keeps
+        // the strip to one line.
+        @include media-breakpoint-down(sm) { display: none; }
+    }
+
+    &__icon {
+        width: 16px;
+        height: 16px;
+        flex: none;
+        color: $ember-lo;
+    }
+}
+
+.open-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    white-space: nowrap;
+
+    &__dot {
+        width: 9px;
+        height: 9px;
+        flex: none;
+        border-radius: 50%;
+        background: $paper-3;
+    }
+
+    &__word { font-weight: 700; }
+
+    &__detail { color: $ink-on-paper-2; }
+
+    &.is-open &__dot {
+        background: $open-green-deep;
+        animation: open-status-pulse 2.4s ease-out infinite;
+    }
+}
+
+@keyframes open-status-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba($open-green-deep, 0.5); }
+    70%  { box-shadow: 0 0 0 6px rgba($open-green-deep, 0); }
+    100% { box-shadow: 0 0 0 0 rgba($open-green-deep, 0); }
+}

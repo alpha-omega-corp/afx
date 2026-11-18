@@ -3,11 +3,11 @@
     'title' => null,
     'lead' => null,
     'text' => null,
-    'facts' => false,
     'tall' => false,
     'priority' => false,
     'embers' => false,
     'rule' => false,
+    'centered' => false,
 ])
 
 @php($quiet = $embers === 'quiet')
@@ -16,11 +16,10 @@
      kind: darker scrim, its words and its action under the band. --}}
 @php($stage = filled($text))
 
-{{-- The house's real facts — hours from App\Support\Opening, the numbers and
-     the address, never anything the copy would have to invent — under the
-     home page's lead and actions. The inner pages' quieter
-     heroes leave them to the footer. --}}
-@php($practical = $facts && ! $stage && $image)
+{{-- The home page's hero is the other kind: taller, and the name, the lead
+     and the actions all on the photograph, centred, rather than the name
+     alone with the rest under the band. --}}
+@php($centered = $centered && ! $stage)
 
 <header @class([
     'hero',
@@ -31,7 +30,7 @@
     'hero--rule' => $rule,
     'hero--quiet' => $quiet,
     'hero--cover' => $image,
-    'hero--facts' => $practical,
+    'hero--centered' => $centered,
 ])>
     {{-- The page's photograph fills the band behind the name, and
          scrolls away slower than the page (app.js,
@@ -62,12 +61,30 @@
          as well. Everything else follows on the page, under the photograph. --}}
     <div class="hero__inner">
         <div class="container">
-            <h1 @class(['hero__title', 'hero-page__title' => $stage])>{{ $title }}</h1>
+            @if($centered)
+                <div class="hero__text">
+                    @isset($eyebrow)
+                        <div class="hero__eyebrow">{{ $eyebrow }}</div>
+                    @endisset
+
+                    <h1 class="hero__title">{{ $title }}</h1>
+
+                    @if($lead)
+                        <p class="hero__lead">{{ $lead }}</p>
+                    @endif
+
+                    @isset($actions)
+                        <div class="hero__actions">{{ $actions }}</div>
+                    @endisset
+                </div>
+            @else
+                <h1 @class(['hero__title', 'hero-page__title' => $stage])>{{ $title }}</h1>
+            @endif
         </div>
     </div>
 </header>
 
-@if(isset($eyebrow) || $lead || $stage || isset($actions) || $practical)
+@if(! $centered && (isset($eyebrow) || $lead || $stage || isset($actions)))
     <div @class(['hero-body', 'hero-body--stage' => $stage])>
         <div class="container">
             @if($stage)
@@ -101,39 +118,6 @@
                         <div class="hero__actions">{{ $actions }}</div>
                     @endif
                 </div>
-            @endif
-            @if($practical)
-                <dl class="hero__facts" aria-label="{{ __('app.practical') }}">
-                    <div class="hero__fact">
-                        @svg('heroicon-o-clock')
-                        <dt>{{ __('footer.hours') }}</dt>
-                        <dd>
-                            {{-- A range is one thing: "11h30 – 14h00" never
-                                 breaks at its dash (a no-break space is not
-                                 enough, the dash itself is a break point). --}}
-                            @foreach(App\Support\Opening::schedule() as $line)
-                                <span>{!! preg_replace('/(\S+) – (\S+)/u', '<span class="text-nowrap">$1 – $2</span>', e($line)) !!}</span>
-                            @endforeach
-                        </dd>
-                    </div>
-
-                    <div class="hero__fact">
-                        @svg('heroicon-o-phone')
-                        <dt>{{ __('app.reservations') }}</dt>
-                        <dd>
-                            <a href="tel:+41227761029">022&nbsp;776&nbsp;10&nbsp;29</a>
-                            · <a href="https://wa.me/+41786857845" target="_blank" rel="noopener">WhatsApp</a>
-                        </dd>
-                    </div>
-
-                    <div class="hero__fact">
-                        @svg('heroicon-o-map-pin')
-                        <dt>{{ __('footer.address') }}</dt>
-                        <dd>
-                            <a href="{{ route(__('route.contact')) }}">Grand'Rue&nbsp;31, 1297&nbsp;Founex</a>
-                        </dd>
-                    </div>
-                </dl>
             @endif
         </div>
     </div>

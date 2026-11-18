@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMenuRequest;
+use App\Http\Requests\DailySpecialRequest;
 use App\Http\Requests\DeleteMenuItemRequest;
 use App\Http\Requests\SortMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
@@ -67,6 +68,67 @@ class MenuController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Writes the card of the day, edited from the card itself.
+     *
+     * The card is a handful of dishes on the carte carrying a flag rather
+     * than records of their own, so this edits those rows and the two views
+     * of them cannot drift apart. A row arrives with the id of the dish it
+     * edits; a row without one is a dish being written for the first time,
+     * and a name already sitting in that section is promoted rather than
+     * copied — otherwise taking a dish off the card and putting it back would
+     * leave the carte holding it twice.
+     *
+     * Dishes dropped from the card go back to being ordinary dishes on the
+     * carte. Nothing here deletes anything.
+     *
+     * Both languages are written from here, as they are on the carte: this is
+     * now the one place a dish on the card is edited, since the sections below
+     * it no longer offer those dishes. A blank English field asks for a
+     * translation — see App\Support\Translations.
+     */
+    public function daily(DailySpecialRequest $request): RedirectResponse
+    {
+        $show = $request->boolean('daily');
+        $kept = [];
+
+        foreach ($request->dishes() as $position => $dish) {
+            $item = $dish['id'] !== null
+                ? MenuItem::find($dish['id'])
+                : self::dishNamed($dish['menu_section_id'], $dish['fr']['title']);
+
+            if (! $item) {
+                continue;
+            }
+
+            $item->menu_section_id = $dish['menu_section_id'];
+            $item->price = $dish['price'];
+
+            // Clearing the box takes the whole card off the home page and
+            // leaves every dish on the carte.
+            $item->daily = $show;
+            // A dish that is not on the card holds no place in its order.
+            $item->daily_position = $show ? $position : null;
+            $item->save();
+
+            // A null 'en' is dropped rather than passed: Translations reads a
+            // missing language as "not managed here", and a present-but-empty
+            // one as "translate this for me".
+            Translations::write($item, array_filter([
+                'fr' => $dish['fr'],
+                'en' => $dish['en'],
+            ], fn ($given) => $given !== null));
+
+            $kept[] = $item->getKey();
+        }
+
+        MenuItem::daily()
+            ->whereNotIn('id', $kept)
+            ->update(['daily' => false, 'daily_position' => null]);
+
+        return redirect()->back();
+    }
+
     public function remove(DeleteMenuItemRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -105,5 +167,23 @@ class MenuController extends Controller
         return response()->json([
             'message' => $data
         ]);
+    }
+
+    /**
+     * A dish already on the carte under this French name, or a fresh one.
+     *
+     * The name is matched in the source language only: the English is a
+     * translation of it, and two dishes are the same dish when the kitchen
+     * calls them the same thing.
+     */
+    private static function dishNamed(int $section, string $title): MenuItem
+    {
+        $existing = MenuItem::where('menu_section_id', $section)
+            ->whereHas('locales', fn ($query) => $query
+                ->where('lang', Translations::SOURCE->value)
+                ->where('title', $title))
+            ->first();
+
+        return $existing ?? new MenuItem(['menu_section_id' => $section]);
     }
 }

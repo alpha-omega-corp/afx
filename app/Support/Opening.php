@@ -93,6 +93,103 @@ class Opening
         return self::isClosedOn(Carbon::today());
     }
 
+    /** The auberge's own clock. The app keeps UTC; the door opens on Founex time. */
+    public const TIMEZONE = 'Europe/Zurich';
+
+    /**
+     * Whether a service is running at this moment, by the published week
+     * alone: holidays and the manual switch are SiteStatus's to add.
+     *
+     * Ranges are "HH:MM" strings and compare as strings. A range that ends
+     * past midnight (18:00 – 00:30) is read as running until the end of the
+     * day it starts on.
+     */
+    public static function isOpenAt(CarbonInterface $moment): bool
+    {
+        $local = Carbon::instance($moment)->setTimezone(self::TIMEZONE);
+        $time = $local->format('H:i');
+
+        foreach (self::days()[$local->dayOfWeek]->services() as [$from, $to]) {
+            $from = substr($from, 0, 5);
+            $to = substr($to, 0, 5);
+
+            if ($time >= $from && ($to <= $from || $time < $to)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** Open right now: a service running, and neither a holiday nor the switch closing it. */
+    public static function isOpenNow(): bool
+    {
+        return app(SiteStatus::class)->isOpen() && self::isOpenAt(Carbon::now());
+    }
+
+    /**
+     * Open or closed, and the next change, in one short line for the bar at
+     * the top of every page: "jusqu'à 22h00", "ouvre à 18h00", "ouvre
+     * demain à 11h30", "ouvre mardi à 11h30", or the reopening date when a
+     * holiday or the manual switch has the auberge shut.
+     *
+     * @return array{open: bool, detail: ?string}
+     */
+    public static function status(?CarbonInterface $at = null): array
+    {
+        $site = app(SiteStatus::class);
+
+        if ($site->isClosed()) {
+            $reopens = $site->reopensOn();
+
+            return [
+                'open' => false,
+                'detail' => $reopens
+                    ? __('app.reopens_on', ['date' => $reopens->locale(app()->getLocale())->isoFormat('D MMMM')])
+                    : null,
+            ];
+        }
+
+        $now = Carbon::instance($at ?? Carbon::now())->setTimezone(self::TIMEZONE);
+        $time = $now->format('H:i');
+
+        // Open: until the end of the service running now.
+        foreach (self::days()[$now->dayOfWeek]->services() as [$from, $to]) {
+            $from = substr($from, 0, 5);
+            $to = substr($to, 0, 5);
+
+            if ($time >= $from && ($to <= $from || $time < $to)) {
+                return ['open' => true, 'detail' => __('app.open_until', ['time' => OpeningHour::time($to)])];
+            }
+        }
+
+        // Closed: the first service still to start, today or in the week ahead.
+        for ($offset = 0; $offset <= 7; $offset++) {
+            $day = $now->copy()->addDays($offset);
+
+            foreach (self::days()[$day->dayOfWeek]->services() as [$from]) {
+                $from = substr($from, 0, 5);
+
+                if ($offset === 0 && $from <= $time) {
+                    continue;
+                }
+
+                $at = OpeningHour::time($from);
+
+                return ['open' => false, 'detail' => match ($offset) {
+                    0 => __('app.opens_at', ['time' => $at]),
+                    1 => __('app.opens_tomorrow', ['time' => $at]),
+                    default => __('app.opens_on', [
+                        'day' => $day->locale(app()->getLocale())->isoFormat('dddd'),
+                        'time' => $at,
+                    ]),
+                }];
+            }
+        }
+
+        return ['open' => false, 'detail' => null];
+    }
+
     /**
      * The given day, or the first serving day after it.
      *
@@ -155,6 +252,31 @@ class Opening
         }
 
         return $lines;
+    }
+
+    /**
+     * The same runs as schedule(), kept apart rather than joined into a
+     * sentence, for a layout that sets the days on one line and each service
+     * under them: ['days' => 'Mardi au samedi', 'services' => [['11h30',
+     * '14h00'], ['18h00', '22h00']]].
+     *
+     * @return array<int, array{days: string, services: array<int, array{0: string, 1: string}>}>
+     */
+    public static function services(): array
+    {
+        return collect(self::runs())
+            ->reject(fn (array $run): bool => $run[0]->isClosed())
+            ->map(fn (array $run): array => [
+                'days' => Str::ucfirst(self::runLabel($run)),
+                'services' => collect($run[0]->services())
+                    ->map(fn (array $range): array => [
+                        OpeningHour::time(substr($range[0], 0, 5)),
+                        OpeningHour::time(substr($range[1], 0, 5)),
+                    ])
+                    ->all(),
+            ])
+            ->values()
+            ->all();
     }
 
     /**

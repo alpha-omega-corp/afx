@@ -31,6 +31,8 @@
 <div class="site-frame">
     <x-site-banner/>
 
+    <x-top-bar/>
+
     @include('components.navigation')
 
     <main id="main" class="app-main">

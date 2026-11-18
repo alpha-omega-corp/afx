@@ -38,5 +38,13 @@ return [
     'today' => 'Today',
     'see_daily' => 'See the daily special',
     'practical' => 'Practical information',
+    'open_now' => 'Open',
+    'closed_now' => 'Closed',
+    'open_until' => 'until :time',
+    'opens_at' => 'opens at :time',
+    'opens_tomorrow' => 'opens tomorrow at :time',
+    'opens_on' => 'opens :day at :time',
+    'reopens_on' => 'reopens :date',
+    'top_bar' => 'Opening and address',
     'reservations' => 'Reservations',
 ];

@@ -14,8 +14,7 @@ class MenuSeeder extends Seeder
      * list of two-line names and three-digit prices, and it only shows its
      * spacing problems when it is seeded with the real thing.
      *
-     * The dish of the day is deliberately absent — it is dated, and staff
-     * enter it through the back office.
+     * The plats du jour are seeded apart, in DAILY below.
      *
      * @var array<int, array{title: string, items: array<int, array{0: string, 1: float, 2?: string}>}>
      */
@@ -112,6 +111,36 @@ class MenuSeeder extends Seeder
     ];
 
     /**
+     * A plat du jour to look at: a short autumn lunch, in the order it is
+     * eaten. Each dish is a dish of the carte carrying the daily flag, filed
+     * under the section named here. Staff replace it from the home page or
+     * Administration → Carte. Every line is in the glossary, so the English
+     * is there without a network call.
+     *
+     * @var array<int, array{section: string, title: string, price: float, description: string}>
+     */
+    private const DAILY = [
+        [
+            'section' => 'Nos entrées',
+            'title' => 'Velouté de courge',
+            'price' => 12.50,
+            'description' => 'Graines de courge torréfiées et crème fraîche',
+        ],
+        [
+            'section' => 'Nos viandes',
+            'title' => 'Civet de chevreuil',
+            'price' => 38.50,
+            'description' => 'Spätzli maison, chou rouge et marrons glacés',
+        ],
+        [
+            'section' => 'Nos desserts',
+            'title' => 'Tarte aux pruneaux',
+            'price' => 9.50,
+            'description' => 'Servie tiède, crème double de la Gruyère',
+        ],
+    ];
+
+    /**
      * The carte is seeded in French, which is the language it is written in.
      * The English comes from the shipped glossary — every line above is in it
      * — so a fresh database serves a complete carte in both languages without
@@ -119,6 +148,8 @@ class MenuSeeder extends Seeder
      */
     public function run(): void
     {
+        $sections = [];
+
         foreach (self::CARTE as $position => $section) {
             $record = MenuSection::create(['position' => $position]);
 
@@ -135,6 +166,22 @@ class MenuSeeder extends Seeder
                     'description' => $item[2] ?? null,
                 ]]);
             }
+
+            $sections[$section['title']] = $record->id;
+        }
+
+        foreach (self::DAILY as $position => $special) {
+            $dish = MenuItem::create([
+                'menu_section_id' => $sections[$special['section']],
+                'price' => $special['price'],
+                'daily' => true,
+                'daily_position' => $position,
+            ]);
+
+            Translations::write($dish, ['fr' => [
+                'title' => $special['title'],
+                'description' => $special['description'],
+            ]]);
         }
     }
 }

@@ -82,7 +82,6 @@ return [
         'description_fr' => 'Description (French)',
         'description_en' => 'Description (English)',
         'price' => 'Price',
-        'daily_on' => 'Date shown on the card',
         'daily_dishes' => 'Dishes on the card of the day',
         'closed_all_day' => 'Closed all day',
         'lunch_from' => 'Lunch — from',

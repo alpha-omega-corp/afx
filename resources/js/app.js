@@ -134,14 +134,16 @@ if (document.querySelector('#gallery')) {
     window.addEventListener('resize', schedule, { passive: true });
 })();
 
-// --- Closed banner offset ------------------------------------
-// The banner sits in the flow and scrolls away; the fixed nav follows it
-// down to the top. Its height is measured on resize only, never on scroll.
+// --- Bars above the navigation ------------------------------
+// The closed banner and the top bar sit in the flow and scroll away; the
+// fixed nav follows them up to the top. Their height is measured on resize
+// only, never on scroll.
 (() => {
-    const banner = document.querySelector('.site-banner');
-    if (!banner) return;
+    const bars = [...document.querySelectorAll('.site-banner, .top-bar')];
+    if (!bars.length) return;
 
-    let height = banner.offsetHeight;
+    const measure = () => bars.reduce((sum, bar) => sum + bar.offsetHeight, 0);
+    let height = measure();
 
     const sync = () => {
         const visible = Math.max(0, height - window.scrollY);
@@ -149,7 +151,7 @@ if (document.querySelector('#gallery')) {
     };
 
     const remeasure = () => {
-        height = banner.offsetHeight;
+        height = measure();
         sync();
     };
 
@@ -192,15 +194,15 @@ document.querySelectorAll('[data-strip]').forEach((strip) => {
 // equivalent Apple Maps URL opens Maps itself, so the href is swapped there
 // — and only there, so a visitor without JS still gets a working link.
 (() => {
-    const link = document.querySelector('[data-directions]');
-    if (!link?.dataset.apple) return;
+    const links = document.querySelectorAll('[data-directions][data-apple]');
+    if (!links.length) return;
 
     // iPadOS reports itself as a Mac, which is why the touch check is here.
     const apple = /iPhone|iPad|iPod/.test(navigator.userAgent)
         || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
         || /Mac/.test(navigator.userAgent);
 
-    if (apple) link.href = link.dataset.apple;
+    if (apple) links.forEach((link) => { link.href = link.dataset.apple; });
 })();
 
 // --- Menu section anchors ------------------------------------

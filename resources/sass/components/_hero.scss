@@ -1,7 +1,7 @@
 // =============================================================
 // Hero — one image per page, a band of a fixed 300px behind the title,
 // under a warm light, scrolling away slower than the page. The band holds
-// the name alone; the lead, the words, the actions and the facts follow
+// the name alone; the lead, the words, and the actions follow
 // under it in `.hero-body`.
 // A real <img> so the browser can prioritise it as the LCP element.
 // =============================================================
@@ -168,6 +168,46 @@
 }
 
 // =============================================================
+// Hero centred — the home page's: taller than the 300px band, and the
+// name, the lead and the two actions on the photograph, centred, under an
+// even scrim (no heavier left side, since nothing starts there).
+// =============================================================
+
+.hero.hero--centered {
+    height: auto;
+    min-height: clamp(26rem, 64vh, 38rem);
+    align-items: center;
+    text-align: center;
+
+    .hero__inner {
+        padding-block: calc(var(--nav-h) + clamp(2rem, 5vw, 3.5rem)) clamp(3rem, 7vw, 5rem);
+    }
+
+    .hero__title {
+        max-width: 16ch;
+        margin-inline: auto;
+        font-size: clamp(2.5rem, 6vw, 4.75rem);
+        line-height: 1.05;
+        text-wrap: balance;
+    }
+
+    .hero__lead {
+        max-width: 46ch;
+        margin: clamp(1rem, 2vw, 1.5rem) auto 0;
+        text-shadow: 0 1px 16px rgba(0, 0, 0, 0.55);
+        text-wrap: pretty;
+    }
+
+    .hero__actions { justify-content: center; }
+
+    .hero__scrim {
+        background:
+            radial-gradient(80% 70% at 50% 55%, rgba($ink, 0.55) 0%, rgba($ink, 0.25) 70%, rgba($ink, 0.15) 100%),
+            linear-gradient(to top, rgba($ink, 0.9) 0%, rgba($ink, 0.2) 45%, rgba($ink, 0.5) 100%);
+    }
+}
+
+// =============================================================
 // Hero page — the hero of every page but the home one.
 //
 // Quieter than the home page's: a band rather than the whole first screen,
@@ -194,15 +234,15 @@
 
 // =============================================================
 // Hero body — what used to sit on the photograph, on the page under it:
-// the eyebrow, the lead or the page's words, the actions and the facts.
+// the eyebrow, the lead or the page's words, and the actions.
 // =============================================================
 
 .hero-body {
     position: relative;
     background-color: $ink;
     // The cards on the home page climb into this bottom edge, so it stays
-    // clear of them: the doors tuck 1rem in on a phone, and anything under
-    // about 2rem here lands them on the buttons.
+    // clear of them: the plat du jour tucks 1rem in on a phone, and anything
+    // under about 2rem here lands it on the buttons.
     padding-block: clamp(1.5rem, 3vw, 2.25rem) clamp(2.5rem, 4.5vw, 3.75rem);
 
     @include media-breakpoint-down(md) {
@@ -239,124 +279,11 @@
     }
 }
 
-// =============================================================
-// Hero facts — what a guest needs to come, along the foot of the hero.
-//
-// Hours, the numbers and the address on one hairline under the words, the
-// whole width of the page: read at a glance on arrival, without opening a
-// panel or scrolling to the footer. Over the darkest part of the scrim, so
-// no surface of its own.
-// =============================================================
-
-.hero__facts {
-    display: grid;
-    // Each fact as wide as its own words, the gaps shared out between them.
-    grid-template-columns: repeat(3, auto);
-    justify-content: space-between;
-    gap: 1.25rem clamp(1.5rem, 4vw, 3.5rem);
-    margin: clamp(2rem, 6vh, 3.5rem) 0 0;
-    padding-top: clamp(1.1rem, 2.5vh, 1.6rem);
-    border-top: 1px solid $hairline-hi;
-
-    // A tablet: the hours take the first row, the two short facts the next.
-    @include media-breakpoint-down(lg) {
-        grid-template-columns: repeat(2, auto);
-        justify-content: start;
-        column-gap: clamp(2rem, 6vw, 4rem);
-    }
-
-    // A phone: the hours across, the two short facts side by side under
-    // them, the icons standing for their labels. Three stacked rows of
-    // label-and-value pushed the name off the top of the photograph.
-    @include media-breakpoint-down(md) {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 0.85rem 1rem;
-        margin-top: 1.5rem;
-        padding-top: 1rem;
-    }
-}
-
-.hero__fact {
-    display: grid;
-    grid-template-columns: 2.25rem auto;
-    column-gap: 0.85rem;
-    align-content: start;
-
-    &:first-child {
-        @include media-breakpoint-down(lg) { grid-column: 1 / -1; }
-    }
-
-    @include media-breakpoint-down(md) {
-        grid-template-columns: 1.75rem minmax(0, 1fr);
-        column-gap: 0.6rem;
-        align-items: center;
-
-        > svg {
-            grid-row: auto;
-            width: 1.75rem;
-            height: 1.75rem;
-            padding: 0.35rem;
-        }
-
-        // Still read out, just not drawn: the icon says it on screen.
-        dt {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-            clip-path: inset(50%);
-            white-space: nowrap;
-        }
-
-        dd { margin: 0; }
-    }
-
-    // The icon chip, one per fact.
-    > svg {
-        grid-row: span 2;
-        width: 2.25rem;
-        height: 2.25rem;
-        padding: 0.5rem;
-        border: 1px solid $hairline-hi;
-        border-radius: 50%;
-        background: rgba($ink, 0.35);
-        color: $ember;
-    }
-
-    dt {
-        font-size: 0.6875rem;
-        font-weight: 600;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: $paper-2;
-    }
-
-    dd {
-        margin: 0.15rem 0 0;
-        font-size: $fs-small;
-        color: $paper-1;
-        text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
-
-        > span { display: block; }
-
-        a {
-            color: $paper-1;
-            text-decoration: underline;
-            text-decoration-color: rgba($paper, 0.25);
-            text-underline-offset: 3px;
-            @include tap;
-        }
-
-        a:hover { color: $ember-hi; text-decoration-color: currentColor; }
-    }
-}
-
 // The single orchestrated moment on the site.
 @media (prefers-reduced-motion: no-preference) {
     .hero__title,
     .hero__text > *,
-    .hero-page > *,
-    .hero__facts > * {
+    .hero-page > * {
         animation: hero-rise 600ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
     }
 
@@ -369,11 +296,6 @@
 
     .hero__lead    { animation-delay: 90ms; }
     .hero__actions { animation-delay: 180ms; }
-
-    // The facts last, one after another along the rule.
-    .hero__facts > :nth-child(1) { animation-delay: 300ms; }
-    .hero__facts > :nth-child(2) { animation-delay: 360ms; }
-    .hero__facts > :nth-child(3) { animation-delay: 420ms; }
 }
 
 @keyframes hero-rise {
@@ -386,5 +308,5 @@
     to   { transform: none; }
 }
 
-// The eyebrow slot, above a hero's title.
+// A line over the title, when a page passes one.
 .hero__eyebrow { margin-bottom: clamp(1rem, 2.5vw, 1.5rem); }

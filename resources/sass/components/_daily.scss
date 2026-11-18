@@ -1,0 +1,194 @@
+// =============================================================
+// Plat du jour — the one thing on the page that is different tomorrow.
+//
+// The courses side by side, centred, no card around them (stacked on a
+// phone): each one a lit disc (ember over the warm black) holding a covered
+// dish, its number on a paper pill at the disc's shoulder, then the name,
+// the line about it and the price, and a dashed ember thread across to the
+// next course (down to it on a phone). Ember is what is lit — the disc's glow, the thread, the
+// price — and paper carries the words.
+// =============================================================
+
+$daily-width: 64rem;
+$daily-gap:   clamp(1.5rem, 3vw, 2.5rem); // between two courses side by side
+$daily-disc:  4.25rem;
+$home-gap-special: clamp(3.5rem, 8vw, 6.5rem); // the home page's own band gap
+
+.home-special {
+    position: relative;
+    padding-bottom: $home-gap-special;
+    // A link to #plat-du-jour lands with the name clear of the fixed bar.
+    scroll-margin-top: 6rem;
+
+    &__admin {
+        display: flex;
+        justify-content: flex-end;
+        max-width: $daily-width;
+        margin: 0 auto 0.75rem;
+    }
+}
+
+.daily {
+    max-width: $daily-width;
+    margin-inline: auto;
+    text-align: center;
+
+    // The name alone: the only lines here run down, between the courses.
+    &__eyebrow {
+        margin: 0 0 clamp(2rem, 4.5vw, 2.75rem);
+        font-family: $font-heading;
+        font-size: clamp(1.75rem, 3vw, 2.75rem);
+        font-weight: $fw-head;
+        line-height: 1.1;
+        color: $paper;
+
+        @include media-breakpoint-down(md) { font-weight: $fw-head-sm; }
+    }
+
+    // Side by side from a tablet up, as many columns as there are courses,
+    // each as wide as the others; a phone stacks them.
+    &__list {
+        display: flex;
+        justify-content: center;
+        gap: $daily-gap;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        @include media-breakpoint-down(md) {
+            flex-direction: column;
+            gap: 0;
+        }
+    }
+
+    &__dish {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 20rem;
+
+        // The thread to the next course: across, level with the middle of
+        // the discs, from just past this disc to just short of the next.
+        // Each course is as wide as the next, so the next disc's centre is
+        // one course width plus the gap further along.
+        &:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            top: calc(#{$daily-disc} / 2 - 1px);
+            left: calc(50% + #{$daily-disc} / 2 + 0.75rem);
+            width: calc(100% + #{$daily-gap} - #{$daily-disc} - 1.5rem);
+            border-top: 2px dashed rgba($ember, 0.45);
+        }
+
+        // A phone: one under the other, the thread running down between.
+        @include media-breakpoint-down(md) {
+            max-width: none;
+
+            &:not(:last-child)::after { display: none; }
+
+            + .daily__dish::before {
+                content: "";
+                display: block;
+                width: 0;
+                height: 2.25rem;
+                margin-block: 1rem;
+                border-left: 2px dashed rgba($ember, 0.45);
+            }
+        }
+    }
+
+    // --- The disc and its pill -------------------------------
+    &__mark {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: $daily-disc;
+        height: $daily-disc;
+        margin-bottom: 1rem;
+        border-radius: 50%;
+        background: mix($ember, $ink, 22%);
+        color: $paper;
+        // A soft halo of the page's own black around it, then the glow.
+        box-shadow:
+            0 0 0 6px rgba($ember, 0.08),
+            0 10px 28px -8px rgba($ember, 0.35);
+    }
+
+    &__icon {
+        width: 1.625rem;
+        height: 1.625rem;
+    }
+
+    &__step {
+        position: absolute;
+        top: -0.2rem;
+        right: -0.35rem;
+        display: grid;
+        place-items: center;
+        min-width: 1.6rem;
+        height: 1.6rem;
+        padding-inline: 0.4rem;
+        border-radius: 999px;
+        background: $paper;
+        color: $ink;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+        // Cut out of the disc by a ring of the page colour.
+        box-shadow: 0 0 0 3px $ink;
+    }
+
+    // --- The words -------------------------------------------
+    &__title {
+        margin: 0;
+        font-family: $font-heading;
+        font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+        font-weight: $fw-head;
+        line-height: 1.2;
+        color: $paper;
+        text-wrap: balance;
+
+        @include media-breakpoint-down(md) { font-weight: $fw-head-sm; }
+    }
+
+    &__description {
+        max-width: 38ch;
+        margin: 0.4rem auto 0;
+        color: $paper-2;
+        font-size: $fs-small;
+        line-height: 1.5;
+        text-wrap: pretty;
+    }
+
+    // Lining figures, never wrapped: the price is read at a glance.
+    &__price {
+        margin: 0.55rem 0 0;
+        font-size: 1rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+        color: $ember-hi;
+    }
+
+    &__currency {
+        color: $paper-3;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+    }
+
+    // Staff only, and only until there is a dish: an outline where the
+    // courses will stand, so the button above has something to explain
+    // itself against.
+    &--empty {
+        padding: 1.5rem;
+        border: 1px dashed $line-strong;
+        border-radius: $r-panel;
+        color: $paper-2;
+        font-size: $fs-small;
+    }
+}

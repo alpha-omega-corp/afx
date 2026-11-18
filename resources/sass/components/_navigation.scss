@@ -44,7 +44,7 @@
     &__inner {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         gap: 1.5rem;
         width: 100%;
         min-height: var(--nav-h);
@@ -81,6 +81,10 @@
         // halo: the ellipsis needs overflow: hidden, which would clip it.
         @media (pointer: coarse) { padding-block: 0.375rem; }
     }
+
+    // The wordmark takes the slack, so the menu, the language, the pill
+    // and (on a phone) the toggle sit together at the right end.
+    &__logo { margin-right: auto; }
 
     &__right {
         display: flex;
