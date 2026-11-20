@@ -33,6 +33,19 @@
     // A fresh row lands in the first section rather than in none: the field
     // is required, and an empty select is a form that will not send.
     $blankRow = ['menu_section_id' => (string) $sections->first()?->id];
+
+    // The days the card is on show. A card being written from nothing, or one
+    // whose last day has gone by, opens on the next day the auberge serves:
+    // re-saving an old card must not quietly keep last month's dates. Any
+    // other card opens on its own dates, empty ones included.
+    $card = $specials->first();
+
+    if ($card === null || $card->dailyState() === 'ended') {
+        $from = $until = \App\Support\Opening::nextOpen(\App\Models\MenuItem::today())->toDateString();
+    } else {
+        $from = $card->daily_on?->toDateString();
+        $until = $card->daily_until?->toDateString();
+    }
 @endphp
 
 @if($sections->isEmpty())
@@ -107,6 +120,14 @@
             :required="true"
         />
     </x-forms.repeater>
+
+    {{-- The card's days, both ends included. Outside them it is off the home
+         page by itself; an empty end is no end. --}}
+    <div class="admin-holiday-fields__dates">
+        <x-forms.date name="daily_from" :label="__('admin.field.daily_from')" :value="$from" :required="false"/>
+        <x-forms.date name="daily_until" :label="__('admin.field.daily_until')" :value="$until" :required="false"/>
+    </div>
+    <p class="admin-hint">{{ __('admin.hint.daily_dates') }}</p>
 
     {{-- Clearing this leaves every dish on the carte and takes the card off
          the home page. It is not a delete. Always open checked: a card that

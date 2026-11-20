@@ -58,6 +58,14 @@
             <div>
                 <h2 class="admin-daily__title">{{ __('app.daily') }}</h2>
                 <p class="admin-daily__description">{{ __('admin.daily_description') }}</p>
+                @if($specials->isNotEmpty())
+                    {{-- When the card is on the home page, in words, and
+                         whether today is one of those days. --}}
+                    <p class="admin-daily__when">
+                        <span class="admin-daily__state admin-daily__state--{{ $specials->first()->dailyState() }}">{{ __('admin.daily_state.' . $specials->first()->dailyState()) }}</span>
+                        <x-admin.daily-when :dish="$specials->first()"/>
+                    </p>
+                @endif
             </div>
 
             <x-admin.action

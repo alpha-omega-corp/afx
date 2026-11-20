@@ -10,7 +10,8 @@ use Illuminate\Foundation\Http\FormRequest;
  * The card holds several dishes now, so the payload is parallel arrays — one
  * entry per row of the repeater, in the order they are shown. The "show on
  * the home page" switch belongs to the card rather than to any one dish,
- * and is sent once. The card carries no date.
+ * and is sent once, as are the card's first and last day on show (both
+ * optional: a bound left empty is no bound).
  *
  * Both languages, as the carte editor does: a blank English field is not an
  * omission but the request to translate that one field, and it keeps
@@ -28,6 +29,10 @@ class DailySpecialRequest extends FormRequest
         return [
             // An unchecked box is absent from the payload, never false.
             'daily' => ['nullable', 'boolean'],
+
+            // The days the card is on the home page, both ends included.
+            'daily_from' => ['nullable', 'date'],
+            'daily_until' => ['nullable', 'date', 'after_or_equal:daily_from'],
 
             // Blank for a dish being written for the first time.
             'daily_ids' => ['array'],

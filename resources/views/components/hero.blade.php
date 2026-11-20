@@ -78,6 +78,13 @@
                     @isset($actions)
                         <div class="hero__actions">{{ $actions }}</div>
                     @endisset
+
+                    {{-- The home page's card of the day, on the photograph
+                         under the buttons: the first thing a guest reads
+                         after the name. --}}
+                    @if(isset($special) && trim((string) $special) !== '')
+                        <div class="hero__special">{{ $special }}</div>
+                    @endif
                 </div>
             @else
                 <h1 @class(['hero__title', 'hero-page__title' => $stage])>{{ $title }}</h1>

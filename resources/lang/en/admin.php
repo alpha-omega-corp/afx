@@ -43,8 +43,25 @@ return [
     ],
 
     'hint' => [
+        'daily_dates' => 'The daily special leaves the home page by itself after its last day. A field left empty sets no limit.',
         'translation' => 'Write in French. An English field left blank is translated for you and keeps following the French; the moment you type in it, your words are the ones that stay.',
         'auto' => 'Machine translation, not yet read over.',
+    ],
+
+    // Where the card of the day stands, and its days in words
+    'daily_state' => [
+        'current' => 'On show',
+        'upcoming' => 'Scheduled',
+        'ended' => 'Ended, no longer shown',
+        'always' => 'On show',
+    ],
+
+    'daily_when' => [
+        'day' => 'on :from',
+        'range' => 'from :from to :until',
+        'from' => 'from :from',
+        'until' => 'until :until',
+        'always' => 'until further notice',
     ],
 
     'pending_migrations' => 'This section is waiting on a database migration. Run it before changing the opening state or the closures — nothing is saved until it has.',
@@ -89,6 +106,8 @@ return [
         'dinner_from' => 'Dinner — from',
         'dinner_to' => 'Dinner — to',
         'section' => 'Menu section',
+        'daily_from' => 'Show from',
+        'daily_until' => 'Until (included)',
         'show_on_home' => 'Show on the home page',
         'starts_on' => 'From',
         'ends_on' => 'To',

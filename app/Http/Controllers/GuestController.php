@@ -17,9 +17,11 @@ class GuestController extends Controller
     {
         return view('app.home', [
             'page' => Page::where('name', PageEnum::HOME)->first(),
-            // The card carries no date: it is on the page for as long as
-            // staff leave the "show on the home page" box ticked.
-            'specials' => MenuItem::specials(),
+            // The card on show today: outside the days staff gave it, it is
+            // off the page for everyone. The editor still opens on the whole
+            // card, so staff can re-date it rather than write it again.
+            'specials' => MenuItem::onShow(),
+            'editing' => Auth::check() ? MenuItem::specials() : collect(),
             // Only the editor needs the list of sections to file the special
             // under; a guest never sees that field, so never pays for it.
             // `locales`, not `locale`: the editor names each section in the

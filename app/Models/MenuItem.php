@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Support\Opening;
 use App\Traits\HasTranslations;
+use Carbon\CarbonInterface;
 use Database\Factories\MenuItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class MenuItem extends Model
@@ -19,6 +22,8 @@ class MenuItem extends Model
         'price',
         'menu_section_id',
         'daily',
+        'daily_on',
+        'daily_until',
         'daily_position',
     ];
 
@@ -38,6 +43,8 @@ class MenuItem extends Model
     {
         return [
             'daily' => 'boolean',
+            'daily_on' => 'date',
+            'daily_until' => 'date',
             'daily_position' => 'integer',
         ];
     }
@@ -80,5 +87,59 @@ class MenuItem extends Model
             ->orderByRaw('daily_position IS NULL, daily_position')
             ->orderBy('id')
             ->get();
+    }
+
+    /**
+     * The card as the home page shows it: the dishes whose days include today.
+     *
+     * Staff write the card with a first and a last day (both optional). The
+     * card leaves the page by itself once the last one has gone by, so nobody
+     * — guest or staff — reads last month's dish as today's (ticket #3). The
+     * editor still opens on the whole card: see specials().
+     *
+     * @return Collection<int, self>
+     */
+    public static function onShow(?CarbonInterface $day = null): Collection
+    {
+        $day ??= self::today();
+
+        return static::specials()->filter->isShownOn($day)->values();
+    }
+
+    /** Whether the card's days include this one. A bound left empty is no bound. */
+    public function isShownOn(CarbonInterface $day): bool
+    {
+        $day = $day->toDateString();
+
+        return ($this->daily_on === null || $this->daily_on->toDateString() <= $day)
+            && ($this->daily_until === null || $this->daily_until->toDateString() >= $day);
+    }
+
+    /**
+     * Where the card stands today: on show, still to come, over, or with no
+     * dates at all (up until the box is cleared).
+     *
+     * @return 'current'|'upcoming'|'ended'|'always'
+     */
+    public function dailyState(?CarbonInterface $day = null): string
+    {
+        $day = ($day ?? self::today())->toDateString();
+
+        return match (true) {
+            $this->daily_on === null && $this->daily_until === null => 'always',
+            $this->daily_on !== null && $this->daily_on->toDateString() > $day => 'upcoming',
+            $this->daily_until !== null && $this->daily_until->toDateString() < $day => 'ended',
+            default => 'current',
+        };
+    }
+
+    /**
+     * Today on the auberge's clock. The app keeps UTC, so without this a card
+     * ending on Friday would stay up until 1 or 2 in the morning on Saturday
+     * and would go up an hour or two late on its first day.
+     */
+    public static function today(): CarbonInterface
+    {
+        return Carbon::now(Opening::TIMEZONE)->startOfDay();
     }
 }

@@ -35,6 +35,13 @@
             </a>
         </x-slot:actions>
 
+        {{-- The one thing on the page that is different tomorrow, on the
+             photograph itself, under the buttons: a slip of the day's
+             carte, seen before anything is scrolled. --}}
+        <x-slot:special>
+            <x-daily :specials="$specials" :editing="$editing" :sections="$sections"/>
+        </x-slot:special>
+
         {{-- The three ways into the house: a table, the carte, a bed.
              This band has no top gap and no seam — the cards climb into the
              hero's firelight, and reveal themselves as they arrive. --}}
@@ -51,11 +58,6 @@
                 </div>
             </div>
         </section>
-
-        {{-- The one thing on the page that is different tomorrow, set
-             like a slip of the printed carte: after the three doors, just
-             before the house introduces itself. --}}
-        <x-daily :specials="$specials" :sections="$sections"/>
 
         {{-- One chapter, not two: the house in its own words and the look
              around it were the same subject under two headings. The words

@@ -33,6 +33,9 @@
         @elseif(isset($actions))
             <x-slot:actions>{{ $actions }}</x-slot:actions>
         @endif
+        @isset($special)
+            <x-slot:special>{{ $special }}</x-slot:special>
+        @endisset
     </x-hero>
 
     {{-- The page in miniature, opened from the icon after its first

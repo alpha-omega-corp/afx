@@ -43,8 +43,25 @@ return [
     ],
 
     'hint' => [
+        'daily_dates' => 'Le plat du jour quitte la page d’accueil tout seul après le dernier jour. Un champ laissé vide n’impose pas de limite.',
         'translation' => 'Écrivez en français. Un champ anglais laissé vide est traduit automatiquement et suit ensuite le français ; dès que vous y écrivez quelque chose, c’est votre texte qui reste.',
         'auto' => 'Traduction automatique, pas encore relue.',
+    ],
+
+    // Where the card of the day stands, and its days in words
+    'daily_state' => [
+        'current' => 'En ligne',
+        'upcoming' => 'Programmé',
+        'ended' => 'Terminé, plus affiché',
+        'always' => 'En ligne',
+    ],
+
+    'daily_when' => [
+        'day' => 'le :from',
+        'range' => 'du :from au :until',
+        'from' => 'à partir du :from',
+        'until' => 'jusqu’au :until',
+        'always' => 'jusqu’à nouvel ordre',
     ],
 
     'pending_migrations' => 'Cette section attend une migration de la base de données. Lancez-la avant de modifier les horaires ou les fermetures — rien n’est enregistré tant qu’elle n’a pas tourné.',
@@ -89,6 +106,8 @@ return [
         'dinner_from' => 'Soir — de',
         'dinner_to' => 'Soir — à',
         'section' => 'Section de la carte',
+        'daily_from' => 'Afficher du',
+        'daily_until' => 'Au (inclus)',
         'show_on_home' => 'Afficher sur la page d’accueil',
         'starts_on' => 'Du',
         'ends_on' => 'Au',

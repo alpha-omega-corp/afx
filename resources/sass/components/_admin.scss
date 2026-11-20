@@ -1014,6 +1014,31 @@ $admin-danger-text: #E07A66;
         font-size: $fs-small;
     }
 
+    // The card's days, under the description: a small state pill, then the
+    // days in words. Only a card that is on show today gets the warm pill.
+    &__when {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem 0.6rem;
+        margin: 0.6rem 0 0;
+        color: $paper;
+        font-size: $fs-small;
+    }
+
+    &__state {
+        padding: 0.1rem 0.5rem;
+        border: 1px solid var(--field-border);
+        border-radius: 999px;
+        font-size: 0.6875rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: $paper-2;
+
+        &--current,
+        &--always { border-color: rgba($ember-hi, 0.55); color: $ember-hi; }
+    }
+
     &__list {
         list-style: none;
         margin: 0.85rem 0 0;

@@ -79,8 +79,8 @@ name and nothing else; everything that used to sit on the photograph follows str
 `.hero-body`, on `$ink`, no card or panel:
 
 - **Home** (`.hero--centered`): taller (`clamp(26rem, 64vh, 38rem)`), and the name, the lead
-  and the two actions all on the photograph, centred, under an even scrim. The plat du jour is
-  not named in the hero.
+  and the two actions all on the photograph, centred, under an even scrim, then the plat du jour
+  slip under the buttons (see below), so the day's dishes are read before anything is scrolled.
 - **Inner pages** (`.hero--stage`): a darker scrim, the name with its ember rule on the band; the
   page's words and its one action under it. The photograph is a backdrop there; no card, no emblem.
 - **The practical facts** (hours from `App\Support\Opening`, the address) close the home page's
@@ -92,20 +92,22 @@ name and nothing else; everything that used to sit on the photograph follows str
 
 ## Plat du jour
 
-On the home page, between the three doors and the welcome band, with no card around it
-(`.daily`, `resources/sass/components/_daily.scss`): the name alone (no horizontal rule), then the
-courses side by side, centred, in the order they are eaten (stacked on a phone). Each course has:
+On the home hero's photograph, under the two buttons (`.hero__special`, the hero's `special`
+slot; `x-daily`, `resources/sass/components/_daily.scss`), set as a slip of the day's carte:
 
-- a lit disc (`$ember` mixed 22% into `$ink`, a faint ember halo and glow) holding a covered dish
-  (`x-icon.concierge-bell`, paper);
-- the course number on a `$paper` pill at the disc's shoulder, `$ink` figures, cut out of the
-  disc by a ring of `$ink`;
-- the dish name in Playfair (paper), its line in `$paper-2`, and the price in `$ember-hi` after a
-  small-caps `CHF` in `$paper-3`.
+- a plate of `$ink` at 80% over the photograph (no backdrop blur: the photograph moves with the
+  parallax), a `$hairline-hi` border, `$r-panel` corners, and the ember hairline along its top edge,
+  fading out at both ends; at most `49rem` wide, centred, its text left-aligned;
+- the label **PLAT DU JOUR** in the fact-label voice (Inter 600, `0.6875rem`, `0.14em`), between two
+  short `$ember` strokes, centred;
+- one row per course, in the order they are eaten: the dish name in Playfair (`$paper`), a dotted
+  leader (`$paper` at 28%), the price in `$ember-hi` after a small `CHF` in `$paper-3`; the line about
+  the dish under it in `$paper-2`; rows parted by a `$hairline`.
 
-A dashed ember thread (2px, 45%) runs across from one disc to the next, level with their centres
-(down between the courses on a phone). No date anywhere: the
-card stays until staff take it off.
+Staff see a small pencil at the label's right that opens the editor (its modal is pushed to the foot
+of the page, out of the hero), and, when nothing is on show, the slip's dashed outline saying why.
+The card is on show between the first and last day staff give it (both optional, Founex time);
+guests never see a date on it.
 
 ## Illustrations
 

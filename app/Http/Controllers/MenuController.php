@@ -90,6 +90,8 @@ class MenuController extends Controller
     public function daily(DailySpecialRequest $request): RedirectResponse
     {
         $show = $request->boolean('daily');
+        $from = $request->date('daily_from');
+        $until = $request->date('daily_until');
         $kept = [];
 
         foreach ($request->dishes() as $position => $dish) {
@@ -109,6 +111,9 @@ class MenuController extends Controller
             $item->daily = $show;
             // A dish that is not on the card holds no place in its order.
             $item->daily_position = $show ? $position : null;
+            // The whole card shares one stretch of days.
+            $item->daily_on = $show ? $from : null;
+            $item->daily_until = $show ? $until : null;
             $item->save();
 
             // A null 'en' is dropped rather than passed: Translations reads a
@@ -124,7 +129,7 @@ class MenuController extends Controller
 
         MenuItem::daily()
             ->whereNotIn('id', $kept)
-            ->update(['daily' => false, 'daily_position' => null]);
+            ->update(['daily' => false, 'daily_position' => null, 'daily_on' => null, 'daily_until' => null]);
 
         return redirect()->back();
     }
