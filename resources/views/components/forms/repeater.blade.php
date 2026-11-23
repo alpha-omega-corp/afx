@@ -50,7 +50,7 @@
     <div class="app-repeater__footer">
         <button type="button" class="admin-action admin-action--neutral" @click="add()">
             @svg(Icon::CREATE->value, 'admin-action__icon')
-            <span class="admin-action__label">{{ __('admin.action.create') }}</span>
+            <span class="admin-action__label">{{ $addLabel ?? __('admin.action.create') }}</span>
         </button>
     </div>
 </div>

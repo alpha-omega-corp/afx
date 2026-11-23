@@ -32,7 +32,7 @@ return [
     'glaces et sorbets' => 'Ice creams and sorbets',
     "pour les p'tits loups" => 'For little ones',
     'menu du jour' => 'Menu of the day',
-    'plat du jour' => 'Dish of the day',
+    'plat du jour' => 'Main dish',
     'boissons' => 'Drinks',
     'vins' => 'Wines',
     'apéritifs' => 'Aperitifs',

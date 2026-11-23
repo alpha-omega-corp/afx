@@ -24,6 +24,47 @@
                 fn ($item) => $item->localeIn(Lang::EN)->isAuto('title')
             )
         );
+
+        // The carte table's rows and words; see the panel further down.
+        $table = $sections->flatMap(fn ($section) => $section->items->reject->daily->map(function ($item) use ($section) {
+            $fr = $item->localeIn(Lang::FR);
+            $en = $item->localeIn(Lang::EN);
+
+            return [
+                'id' => $item->id,
+                'section' => $section->id,
+                'title_fr' => $fr->title,
+                'title_en' => $en->title,
+                'description_fr' => $fr->description,
+                'auto' => $en->isAuto('title'),
+                'price' => (float) $item->price,
+            ];
+        }))->values();
+
+        $tableConfig = [
+            'rows' => $table,
+            'sections' => $sections->map(fn ($section) => [
+                'id' => $section->id,
+                'title' => $section->localeIn(Lang::FR)->title,
+                'modal' => \App\Helpers\ModalHelper::getId(Modal::ADMIN_MENU, Action::UPDATE, $section->id),
+            ])->values(),
+            'text' => [
+                'section' => __('admin.table.section'),
+                'dish' => __('admin.table.dish'),
+                'dish_en' => __('admin.table.dish_en'),
+                'price' => __('admin.table.price'),
+                'edit' => __('admin.table.edit'),
+                'auto' => __('admin.auto'),
+                'auto_hint' => __('admin.hint.auto'),
+                'empty' => __('admin.table.empty'),
+                'dishes' => [
+                    trans_choice('admin.table.dishes', 0),
+                    trans_choice('admin.table.dishes', 1),
+                    trans_choice('admin.table.dishes', 2, ['count' => ':count']),
+                ],
+                'shown' => __('admin.table.shown'),
+            ],
+        ];
     @endphp
 
     <ul class="admin-metrics">
@@ -108,6 +149,7 @@
         :name="Modal::ADMIN_DAILY"
         :action="Action::UPDATE"
         :title="__('admin.action.edit_daily')"
+        size="lg"
         :route="route('admin.menu.daily')"
     >
         <x-admin.daily-fields :specials="$specials" :sections="$sections"/>
@@ -161,15 +203,112 @@
          blur budget gives that up first — one composited layer that size,
          re-sampled on every scroll frame, for a gradient nobody can see move
          behind it. --}}
+    {{-- Two ways of looking at the same carte. Sections is the one that
+         reorders; Table puts every dish on one grid, to sort by price, search
+         a word or pick out what is still the machine's English. The table is
+         drawn by Tabulator, loaded only the first time it is asked for.
+
+         Every section's modals are declared after the panel, not inside the
+         section rows: Bootstrap cannot open a dialog whose ancestor is
+         display:none, and the rows are hidden while the table is shown —
+         which is exactly when the table's edit buttons open them. --}}
+
     <x-admin.panel
         :title="__('admin.menu_title')"
         :description="__('admin.menu_description')"
         tone="flat"
+        x-data="menuView"
     >
+        @if($sections->isNotEmpty())
+            <x-slot:actions>
+                {{-- The back office's segmented control, reused as it is: the
+                     sliding thumb reads aria-selected off these two tabs. --}}
+                <div
+                    class="tab__nav menu-view"
+                    role="tablist"
+                    aria-label="{{ __('admin.view.label') }}"
+                    style="--tab-count: 2"
+                    @keydown.right.prevent="show('table'); $nextTick(() => $refs.tabTable.focus())"
+                    @keydown.left.prevent="show('sections'); $nextTick(() => $refs.tabSections.focus())"
+                >
+                    <button
+                        type="button"
+                        role="tab"
+                        class="tab__link"
+                        id="menu-view-sections"
+                        aria-controls="menu-view-sections-panel"
+                        x-ref="tabSections"
+                        :aria-selected="view === 'sections'"
+                        :tabindex="view === 'sections' ? 0 : -1"
+                        @click="show('sections')"
+                    >
+                        @svg('heroicon-o-queue-list', 'menu-view__icon')
+                        <span class="tab__label">{{ __('admin.view.sections') }}</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        role="tab"
+                        class="tab__link"
+                        id="menu-view-table"
+                        aria-controls="menu-view-table-panel"
+                        x-ref="tabTable"
+                        :aria-selected="view === 'table'"
+                        :tabindex="view === 'table' ? 0 : -1"
+                        @click="show('table')"
+                    >
+                        @svg('heroicon-o-table-cells', 'menu-view__icon')
+                        <span class="tab__label">{{ __('admin.view.table') }}</span>
+                    </button>
+
+                    <span class="tab__thumb" aria-hidden="true"></span>
+                </div>
+            </x-slot:actions>
+        @endif
+
         @if($sections->isEmpty())
             <p class="admin-empty">{{ __('admin.empty.menu') }}</p>
         @else
-            <ul class="admin-sections" x-data="sort" x-sort.ghost="handle">
+            <div
+                id="menu-view-table-panel"
+                role="tabpanel"
+                aria-labelledby="menu-view-table"
+                class="menu-table"
+                x-show="view === 'table'"
+                x-cloak
+            >
+                <div class="menu-table__tools">
+                    <label class="menu-table__search">
+                        @svg('heroicon-o-magnifying-glass', 'menu-table__search-icon')
+                        <span class="visually-hidden">{{ __('admin.table.search') }}</span>
+                        <input
+                            type="search"
+                            class="form-control"
+                            placeholder="{{ __('admin.table.search') }}"
+                            x-model.debounce.150ms="query"
+                        >
+                    </label>
+
+                    <div class="form-check form-switch menu-table__switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="menu-table-auto" x-model="onlyAuto">
+                        <label class="form-check-label" for="menu-table-auto">{{ __('admin.table.only_auto') }}</label>
+                    </div>
+
+                    <p class="menu-table__count u-tabular" aria-live="polite" x-text="count"></p>
+                </div>
+
+                <div x-ref="table" data-config='@json($tableConfig)'></div>
+            </div>
+
+            <ul
+                id="menu-view-sections-panel"
+                role="tabpanel"
+                aria-labelledby="menu-view-sections"
+                class="admin-sections"
+                x-show="view === 'sections'"
+                x-data="sort"
+                x-sort.ghost="handle"
+            >
                 @foreach($sections as $section)
                     <li class="admin-section" x-sort:item="'{{ $section->id }}'">
                         <div class="admin-section__header">
@@ -224,123 +363,125 @@
                                 </li>
                             @endforeach
                         </ul>
-
-                        <x-modal.index
-                            :name="Modal::ADMIN_MENU"
-                            :action="Action::DELETE"
-                            :iterator="$section->id"
-                            :route="route('admin.menu.delete', $section)"
-                            :title="__('admin.action.delete')"
-                        >
-                            <p class="admin-confirm">
-                                {{ __('admin.confirm.delete_section', ['name' => $section->localeIn(Lang::FR)->title]) }}
-                            </p>
-
-                            <x-slot:submit>
-                                <button type="submit" class="btn btn-danger">
-                                    {{ __('admin.action.delete') }}
-                                </button>
-                            </x-slot:submit>
-                        </x-modal.index>
-
-                        <x-modal.index
-                            :name="Modal::ADMIN_MENU"
-                            :action="Action::UPDATE"
-                            :iterator="$section->id"
-                            :route="route('admin.menu.update', $section)"
-                            :title="$section->localeIn(Lang::FR)->title"
-                        >
-                            <input type="hidden" name="section_id" value="{{ $section->id }}">
-
-                            {{-- French is the carte as the kitchen writes it.
-                                 Every English field below may be left blank,
-                                 and blank is not an omission: it hands that
-                                 one field to the translator and keeps it
-                                 following the French from then on. Type in it
-                                 and it is yours, and nothing overwrites it
-                                 again. --}}
-                            <p class="admin-hint">{{ __('admin.hint.translation') }}</p>
-
-                            <x-forms.input
-                                name="title_fr"
-                                :required="true"
-                                :label="__('admin.field.section_title_fr')"
-                                :icon="Icon::TITLE"
-                                :value="$section->localeIn(Lang::FR)->title"
-                            />
-
-                            <x-forms.input
-                                name="title_en"
-                                :label="__('admin.field.section_title_en')"
-                                :icon="Icon::TITLE"
-                                :value="$section->localeIn(Lang::EN)->title"
-                            />
-
-                            <x-forms.repeater
-                                :title="__('admin.field.items')"
-                                :items="$rows[$section->id]"
-                            >
-                                <x-forms.input
-                                    model="item.title_fr"
-                                    name="section_titles_fr[]"
-                                    :label="__('admin.field.dish_fr')"
-                                    :icon="Icon::EDIT"
-                                    :required="true"
-                                />
-
-                                <x-forms.input
-                                    model="item.title_en"
-                                    name="section_titles_en[]"
-                                    :label="__('admin.field.dish_en')"
-                                    :icon="Icon::EDIT"
-                                    :required="false"
-                                />
-
-                                <x-forms.input
-                                    model="item.description_fr"
-                                    name="section_descriptions_fr[]"
-                                    :label="__('admin.field.description_fr')"
-                                    :icon="Icon::INFO"
-                                    :required="false"
-                                />
-
-                                <x-forms.input
-                                    model="item.description_en"
-                                    name="section_descriptions_en[]"
-                                    :label="__('admin.field.description_en')"
-                                    :icon="Icon::INFO"
-                                    :required="false"
-                                />
-
-                                <x-forms.input
-                                    type="number"
-                                    step="0.05"
-                                    model="item.price"
-                                    name="section_prices[]"
-                                    :label="__('admin.field.price')"
-                                    :icon="Icon::PRICE"
-                                    :required="true"
-                                />
-                            </x-forms.repeater>
-
-                            {{-- Queued item removals are flushed just before the
-                                 form itself is submitted. --}}
-                            <x-slot:submit>
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary"
-                                    x-data="repeaterDelete"
-                                    @click.prevent="submit()"
-                                >
-                                    {{ __('admin.action.save') }}
-                                </button>
-                            </x-slot:submit>
-                        </x-modal.index>
                     </li>
                 @endforeach
             </ul>
         @endif
     </x-admin.panel>
+
+    @foreach($sections as $section)
+        <x-modal.index
+            :name="Modal::ADMIN_MENU"
+            :action="Action::DELETE"
+            :iterator="$section->id"
+            :route="route('admin.menu.delete', $section)"
+            :title="__('admin.action.delete')"
+        >
+            <p class="admin-confirm">
+                {{ __('admin.confirm.delete_section', ['name' => $section->localeIn(Lang::FR)->title]) }}
+            </p>
+
+            <x-slot:submit>
+                <button type="submit" class="btn btn-danger">
+                    {{ __('admin.action.delete') }}
+                </button>
+            </x-slot:submit>
+        </x-modal.index>
+
+        <x-modal.index
+            :name="Modal::ADMIN_MENU"
+            :action="Action::UPDATE"
+            :iterator="$section->id"
+            :route="route('admin.menu.update', $section)"
+            :title="$section->localeIn(Lang::FR)->title"
+        >
+            <input type="hidden" name="section_id" value="{{ $section->id }}">
+
+            {{-- French is the carte as the kitchen writes it.
+                 Every English field below may be left blank,
+                 and blank is not an omission: it hands that
+                 one field to the translator and keeps it
+                 following the French from then on. Type in it
+                 and it is yours, and nothing overwrites it
+                 again. --}}
+            <p class="admin-hint">{{ __('admin.hint.translation') }}</p>
+
+            <x-forms.input
+                name="title_fr"
+                :required="true"
+                :label="__('admin.field.section_title_fr')"
+                :icon="Icon::TITLE"
+                :value="$section->localeIn(Lang::FR)->title"
+            />
+
+            <x-forms.input
+                name="title_en"
+                :label="__('admin.field.section_title_en')"
+                :icon="Icon::TITLE"
+                :value="$section->localeIn(Lang::EN)->title"
+            />
+
+            <x-forms.repeater
+                :title="__('admin.field.items')"
+                :items="$rows[$section->id]"
+            >
+                <x-forms.input
+                    model="item.title_fr"
+                    name="section_titles_fr[]"
+                    :label="__('admin.field.dish_fr')"
+                    :icon="Icon::EDIT"
+                    :required="true"
+                />
+
+                <x-forms.input
+                    model="item.title_en"
+                    name="section_titles_en[]"
+                    :label="__('admin.field.dish_en')"
+                    :icon="Icon::EDIT"
+                    :required="false"
+                />
+
+                <x-forms.input
+                    model="item.description_fr"
+                    name="section_descriptions_fr[]"
+                    :label="__('admin.field.description_fr')"
+                    :icon="Icon::INFO"
+                    :required="false"
+                />
+
+                <x-forms.input
+                    model="item.description_en"
+                    name="section_descriptions_en[]"
+                    :label="__('admin.field.description_en')"
+                    :icon="Icon::INFO"
+                    :required="false"
+                />
+
+                <x-forms.input
+                    type="number"
+                    step="0.05"
+                    model="item.price"
+                    name="section_prices[]"
+                    :label="__('admin.field.price')"
+                    :icon="Icon::PRICE"
+                    :required="true"
+                />
+            </x-forms.repeater>
+
+            {{-- Queued item removals are flushed just before the
+                 form itself is submitted. --}}
+            <x-slot:submit>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    x-data="repeaterDelete"
+                    @click.prevent="submit()"
+                >
+                    {{ __('admin.action.save') }}
+                </button>
+            </x-slot:submit>
+        </x-modal.index>
+    @endforeach
 
     <x-modal.index
         :name="Modal::ADMIN_MENU"

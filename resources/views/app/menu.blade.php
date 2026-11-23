@@ -9,7 +9,7 @@
          hero measure the same as the restaurant's and the hotel's: the
          lockup is anchored to the bottom edge, so the rule's height is the
          25px that had the title sitting lower here than anywhere else. --}}
-    <x-page :page="$page" :title="$page?->locale?->title ?: ucfirst(__('nav.menu'))" emblem="carte">
+    <x-page :page="$page" :title="$page?->locale?->title ?: ucfirst(__('nav.menu'))" emblem="carte" :hero-emblem="false">
 
         <x-slot:preview>
             @if($carte->isNotEmpty())
@@ -77,7 +77,10 @@
             </nav>
         @endif
 
+        {{-- The carte's drawing stands beside the dishes rather than in the
+             hero, and stays in view as they scroll past it. --}}
         <div class="container menu-list">
+            <div class="menu-list__sections">
             @foreach($carte as $section)
                 <section class="menu-section" id="section-{{ $section->id }}">
                     <h2 class="menu-section__title">{{ $section->locale?->title }}</h2>
@@ -99,6 +102,11 @@
                     </ul>
                 </section>
             @endforeach
+            </div>
+
+            <aside class="menu-list__emblem" aria-hidden="true">
+                <x-illustration.carte/>
+            </aside>
         </div>
     </x-page>
 @endsection

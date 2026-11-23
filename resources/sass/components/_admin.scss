@@ -1349,6 +1349,189 @@ $admin-danger-text: #E07A66;
 }
 
 // =============================================================
+// The main dish editor — the card of the day, in its modal
+// =============================================================
+// Opened in a wide dialog so a dish reads as one line of the card: its
+// name and its price side by side, its description underneath. Under 768px
+// every field goes back to one column.
+.daily-fields {
+    // The repeater's own top margin is for a repeater under other fields;
+    // here it is the first thing in the dialog.
+    .app-repeater { margin-top: 0; }
+
+    &__dish {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 11rem;
+        // No row gap: every field ships with Bootstrap's .mb-3, an
+        // !important utility, so the fields space themselves and the grid
+        // only gives back the last row's margin.
+        column-gap: 1rem;
+        align-items: start;
+
+        @include media-breakpoint-down(md) { grid-template-columns: 1fr; }
+    }
+
+    // That give-back, at a weight that beats the repeater's own
+    // `__fields > *:last-of-type { margin-bottom: 0 }`, which would otherwise
+    // leave the last row's 1rem under the row's 1rem of padding: twice the
+    // air at the foot of the hollow as at its head.
+    .app-repeater__fields > .daily-fields__dish { margin-bottom: -1rem; }
+
+    // "1  Civet de chevreuil": the row's number and its name as typed, so a
+    // long card can be scanned without reading every field.
+    &__course {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        min-width: 0;
+        // Level with the delete button beside the row.
+        min-height: 2.25rem;
+        margin: 0 0 0.75rem;
+    }
+
+    &__number {
+        display: inline-grid;
+        place-items: center;
+        flex: none;
+        width: 1.75rem;
+        height: 1.75rem;
+        border: 1px solid rgba($ember, 0.55);
+        border-radius: 999px;
+        color: $ember;
+        font-size: $fs-small;
+        font-weight: 600;
+    }
+
+    &__course-name {
+        min-width: 0;
+        overflow: hidden;
+        color: $paper;
+        font-family: $font-heading;
+        font-size: 1.05rem;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    // Name and price on one line, as the card prints them; the description
+    // under both, the full width of the row.
+    &__name        { grid-column: 1; }
+    &__price       { grid-column: 2; }
+    &__description { grid-column: 1 / -1; }
+
+    @include media-breakpoint-down(md) {
+        &__name,
+        &__price,
+        &__description { grid-column: 1; }
+    }
+
+    // When it is on the home page: one hollow, the switch above its days.
+    &__when {
+        margin: 1.5rem 0 0;
+        padding: 1rem 1.25rem 1.1rem;
+        border: 0;
+        @include glass-inlay($r-panel);
+
+        .admin-check { margin-bottom: 0.5rem; }
+    }
+
+    // Floated full width, as Bootstrap's reboot has it: a legend that is not
+    // floated is drawn ON the fieldset's top border, breaking the line and
+    // sitting against it with no air, so the hollow had three even edges and
+    // a fourth with a heading through it. Floated, it is ordinary content
+    // inside the padding; the reboot's `legend + * { clear: left }` puts the
+    // switch back underneath it.
+    &__legend {
+        float: left;
+        width: 100%;
+        margin: 0 0 0.5rem;
+        padding: 0;
+        color: $paper-2;
+        font-family: $font-body;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    &__sub {
+        margin: 0.75rem 0 0.5rem;
+        color: $paper-2;
+        font-size: $fs-small;
+    }
+
+    // The next days the auberge serves, one tap each. Five across in the
+    // wide dialog, as many as fit on a phone: they wrap rather than scroll,
+    // so none of them is out of sight.
+    &__days {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(6.25rem, 1fr));
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    &__day {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 0.1rem;
+        min-height: $tap;
+        padding: 0.45rem 0.7rem;
+        border: 1px solid var(--field-border);
+        border-radius: $r-control;
+        background-color: var(--field-bg);
+        color: $paper-2;
+        text-align: start;
+        cursor: pointer;
+        @include field-transition;
+
+        @include hoverable {
+            &:hover { border-color: $paper-2; }
+        }
+
+        &:focus-visible { @include focus-glow-button; }
+        &:focus:not(:focus-visible) { box-shadow: none; }
+
+        // The day the card is for: the one heated choice in the row.
+        &[aria-pressed="true"] {
+            border-color: $ember;
+            background-color: rgba($ember, 0.14);
+            color: $paper;
+
+            .daily-fields__day-name { color: $ember-hi; }
+        }
+    }
+
+    &__day-name {
+        color: $paper;
+        font-size: $fs-small;
+        font-weight: 600;
+        line-height: 1.25;
+    }
+
+    &__day-date {
+        font-size: 0.8125rem;
+        line-height: 1.3;
+    }
+
+    &__dates {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 1rem;
+
+        @include media-breakpoint-down(sm) { grid-template-columns: 1fr; }
+    }
+
+    &__note {
+        margin: 0;
+        color: $paper-2;
+        font-size: $fs-small;
+        line-height: 1.5;
+    }
+}
+
+// =============================================================
 // Gallery switch
 // =============================================================
 // One rail entry, several things of the same kind behind it.

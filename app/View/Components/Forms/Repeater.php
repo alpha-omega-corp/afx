@@ -14,6 +14,7 @@ class Repeater extends Component
      * @param  string $idName    the field carrying each row's record id
      * @param  bool   $queue     whether removing a row queues the record for deletion
      * @param  array  $defaults  the row a fresh "Add" button creates
+     * @param  ?string $addLabel the Add button's words, when "Add" alone says too little
      */
     public function __construct(
         public array $items,
@@ -21,6 +22,7 @@ class Repeater extends Component
         public string $idName = 'ids[]',
         public bool $queue = true,
         public array $defaults = [],
+        public ?string $addLabel = null,
     )
     {
         //

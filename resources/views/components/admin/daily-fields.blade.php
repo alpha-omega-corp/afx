@@ -5,27 +5,15 @@
     $sections ??= collect();
 
     // The rows the editor opens on. Ids and section ids are strings because
-    // Alpine matches a <select>'s value by identity, and 3 is not "3".
+    // the hidden section field sends back exactly what it was given.
     $rows = $specials->map(function ($dish) {
         $fr = $dish->localeIn(Lang::FR);
-        $en = $dish->localeIn(Lang::EN);
 
         return [
             'id' => (string) $dish->id,
             'menu_section_id' => (string) $dish->menu_section_id,
             'title' => $fr->title,
             'description' => $fr->description,
-            // A machine translation is deliberately NOT put in the box.
-            //
-            // Whatever is in an English field comes back as typed, and typed
-            // means "a person wrote this, never touch it again". Prefilling
-            // the machine's own words therefore froze them on the first save
-            // of any dish: the English stopped following the French for good.
-            // Left empty, it stays the machine's and keeps up. The current
-            // translation is still on screen — it is in the list behind this
-            // form, beside its `auto` badge.
-            'title_en' => $en->isAuto('title') ? null : $en->title,
-            'description_en' => $en->isAuto('description') ? null : $en->description,
             'price' => number_format($dish->price, 2, '.', ''),
         ];
     })->values()->all();
@@ -46,95 +34,162 @@
         $from = $card->daily_on?->toDateString();
         $until = $card->daily_until?->toDateString();
     }
+
+    // The days the card can be written for in one tap: the next five the
+    // auberge serves, today first when it is one of them. A day further out
+    // is still the date field's to pick.
+    $today = \App\Models\MenuItem::today();
+    $days = collect();
+
+    for ($day = $today->copy(), $i = 0; $days->count() < 5 && $i < 21; $day = $day->addDay(), $i++) {
+        if (\App\Support\Opening::isClosedOn($day)) {
+            continue;
+        }
+
+        $local = $day->copy()->locale(app()->getLocale());
+
+        $days->push([
+            'date' => $day->toDateString(),
+            'name' => match (true) {
+                $day->isSameDay($today) => __('admin.field.today'),
+                $day->isSameDay($today->copy()->addDay()) => __('admin.field.tomorrow'),
+                default => \Illuminate\Support\Str::ucfirst($local->isoFormat('dddd')),
+            },
+            'date_label' => $local->isoFormat('D MMMM'),
+        ]);
+    }
 @endphp
 
 @if($sections->isEmpty())
     <p class="admin-confirm">{{ __('admin.empty.daily_sections') }}</p>
 @else
-    <p class="admin-hint">{{ __('admin.hint.translation') }}</p>
+    <div class="daily-fields">
+        {{-- The dishes come first: they are what changes every day. Each row
+             reads as a line of the card — French beside English, then where
+             it is filed and what it costs — instead of six fields stacked
+             one under the other.
 
-    {{-- Taking a row off the card unflags the dish; it stays on the carte.
-         Nothing in here deletes anything, which is why this repeater queues
-         no removals. --}}
-    <x-forms.repeater
-        :title="__('admin.field.daily_dishes')"
-        :items="$rows"
-        id-name="daily_ids[]"
-        :queue="false"
-        :defaults="$blankRow"
-    >
-        <div class="form-floating mb-3">
-            <select
-                class="form-select"
-                name="daily_sections[]"
-                x-model="item.menu_section_id"
-                :id="`daily-section-${index}`"
-                required
-            >
-                @foreach($sections as $section)
-                    <option value="{{ $section->id }}">{{ $section->localeIn(Lang::FR)->title }}</option>
+             Taking a row off the card unflags the dish; it stays on the
+             carte. Nothing in here deletes anything, which is why this
+             repeater queues no removals. --}}
+        <x-forms.repeater
+            :title="__('admin.field.daily_dishes')"
+            :items="$rows"
+            id-name="daily_ids[]"
+            :queue="false"
+            :defaults="$blankRow"
+            :add-label="__('admin.action.add_daily')"
+        >
+            <div class="daily-fields__dish">
+                <p class="daily-fields__course">
+                    <span class="daily-fields__number u-tabular" x-text="index + 1"></span>
+                    <span class="daily-fields__course-name" x-text="item.title || @js(__('admin.field.daily_new'))"></span>
+                </p>
+
+                {{-- Name, description, price: the card as a guest reads it.
+                     English is not written here. It is left to the
+                     translator and follows the French; a correction typed
+                     on the carte is kept, because fields that are not sent
+                     are not touched (see DailySpecialRequest::english).
+
+                     The section is not asked either: a dish already on the
+                     carte stays where it is filed, and a new one goes into
+                     the first section. --}}
+                <input type="hidden" name="daily_sections[]" x-model="item.menu_section_id">
+
+                <div class="daily-fields__name">
+                    <x-forms.input
+                        model="item.title"
+                        name="daily_titles[]"
+                        :icon="Icon::TITLE"
+                        :label="__('admin.field.daily_name')"
+                        :required="true"
+                    />
+                </div>
+
+                <div class="daily-fields__price">
+                    <x-forms.input
+                        type="number"
+                        step="0.05"
+                        model="item.price"
+                        name="daily_prices[]"
+                        :icon="Icon::PRICE"
+                        :label="__('admin.field.price')"
+                        :required="true"
+                    />
+                </div>
+
+                <div class="daily-fields__description">
+                    <x-forms.input
+                        model="item.description"
+                        name="daily_descriptions[]"
+                        :icon="Icon::INFO"
+                        :label="__('admin.field.description')"
+                        :required="false"
+                    />
+                </div>
+            </div>
+        </x-forms.repeater>
+
+        {{-- When the card is on the home page: the switch, the day it is
+             for, then its days as dates, both ends included. Outside them it
+             is off the home page by itself; an empty end is no end.
+
+             Clearing the switch leaves every dish on the carte and takes the
+             card off the home page. It is not a delete. Always open checked:
+             a card that is being read is a card that is on show, and a card
+             being written is one about to be.
+
+             The two dates are one choice, not two. A day picked above sets
+             both; a first day typed in carries the last one along while they
+             are the same day, and never leaves it behind. Both fields used to
+             open on the same day and move independently, so changing only
+             the first one sent a last day before it: the save was refused,
+             nothing said so, and the card stayed on the day it already had. --}}
+        <fieldset class="daily-fields__when" x-data="dailyDays(@js($from), @js($until))">
+            <legend class="daily-fields__legend">{{ __('admin.field.daily_when') }}</legend>
+
+            <label class="admin-check">
+                <input type="checkbox" name="daily" value="1" checked>
+                <span>{{ __('admin.field.show_on_home') }}</span>
+            </label>
+
+            <p class="daily-fields__sub" id="daily-days-label">{{ __('admin.field.daily_day') }}</p>
+
+            <div class="daily-fields__days" role="group" aria-labelledby="daily-days-label">
+                @foreach($days as $day)
+                    <button
+                        type="button"
+                        class="daily-fields__day"
+                        @click="pick(@js($day['date']))"
+                        :aria-pressed="isPicked(@js($day['date'])).toString()"
+                        aria-pressed="{{ $from === $day['date'] && $until === $day['date'] ? 'true' : 'false' }}"
+                    >
+                        <span class="daily-fields__day-name">{{ $day['name'] }}</span>
+                        <span class="daily-fields__day-date">{{ $day['date_label'] }}</span>
+                    </button>
                 @endforeach
-            </select>
-            <label :for="`daily-section-${index}`">{{ __('admin.field.section') }}</label>
-        </div>
+            </div>
 
-        <x-forms.input
-            model="item.title"
-            name="daily_titles[]"
-            :icon="Icon::TITLE"
-            :label="__('admin.field.dish_fr')"
-            :required="true"
-        />
+            <div class="daily-fields__dates">
+                <x-forms.date
+                    name="daily_from"
+                    :label="__('admin.field.daily_from')"
+                    :value="$from"
+                    :required="false"
+                    x-model="from"
+                />
+                <x-forms.date
+                    name="daily_until"
+                    :label="__('admin.field.daily_until')"
+                    :value="$until"
+                    :required="false"
+                    x-model="until"
+                    x-bind:min="from || null"
+                />
+            </div>
 
-        <x-forms.input
-            model="item.title_en"
-            name="daily_titles_en[]"
-            :icon="Icon::TITLE"
-            :label="__('admin.field.dish_en')"
-            :required="false"
-        />
-
-        <x-forms.input
-            model="item.description"
-            name="daily_descriptions[]"
-            :icon="Icon::INFO"
-            :label="__('admin.field.description_fr')"
-            :required="false"
-        />
-
-        <x-forms.input
-            model="item.description_en"
-            name="daily_descriptions_en[]"
-            :icon="Icon::INFO"
-            :label="__('admin.field.description_en')"
-            :required="false"
-        />
-
-        <x-forms.input
-            type="number"
-            step="0.05"
-            model="item.price"
-            name="daily_prices[]"
-            :icon="Icon::PRICE"
-            :label="__('admin.field.price')"
-            :required="true"
-        />
-    </x-forms.repeater>
-
-    {{-- The card's days, both ends included. Outside them it is off the home
-         page by itself; an empty end is no end. --}}
-    <div class="admin-holiday-fields__dates">
-        <x-forms.date name="daily_from" :label="__('admin.field.daily_from')" :value="$from" :required="false"/>
-        <x-forms.date name="daily_until" :label="__('admin.field.daily_until')" :value="$until" :required="false"/>
+            <p class="daily-fields__note">{{ __('admin.hint.daily_dates') }}</p>
+        </fieldset>
     </div>
-    <p class="admin-hint">{{ __('admin.hint.daily_dates') }}</p>
-
-    {{-- Clearing this leaves every dish on the carte and takes the card off
-         the home page. It is not a delete. Always open checked: a card that
-         is being read is a card that is on show, and a card being written is
-         one about to be. --}}
-    <label class="admin-check">
-        <input type="checkbox" name="daily" value="1" checked>
-        <span>{{ __('admin.field.show_on_home') }}</span>
-    </label>
 @endif

@@ -1,0 +1,306 @@
+// =============================================================
+// The carte as a table (admin › Menu › Table)
+//
+// Tabulator draws the grid; this partial makes it one of ours. Its own
+// stylesheet ships light grey, so every surface it paints is redrawn here in
+// the back office's planes: the header is a hollow, a section is a band, a
+// row is a line on the panel with a hover tint. Every rule is scoped under
+// .menu-table so it outranks tabulator.min.css whatever order the two load
+// in — that file arrives in a lazy chunk, after this one.
+// =============================================================
+
+// The two-tab switch in the panel header. The segmented control's own
+// thumb does the sliding; this only sizes it for a header.
+.menu-view {
+    flex: none;
+    width: 15rem;
+    max-width: 100%;
+
+    .tab__link { gap: 0.45rem; }
+}
+
+.menu-view__icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+}
+
+.menu-table {
+    padding: 0.25rem 0 0.5rem;
+}
+
+// --- Search, the switch and the count, one row -----------------
+.menu-table__tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    padding: 0 0 1rem;
+}
+
+.menu-table__search {
+    position: relative;
+    flex: 1 1 20rem;
+    min-width: 0;
+    margin: 0;
+
+    .form-control {
+        min-height: $tap;
+        padding-left: 2.5rem;
+
+        // The fields elsewhere hide their placeholder behind a floating
+        // label; this one has no label to float and the placeholder is it.
+        &::placeholder { color: $paper-3; }
+    }
+}
+
+.menu-table__search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0.8rem;
+    width: 18px;
+    height: 18px;
+    translate: 0 -50%;
+    color: $paper-3;
+    pointer-events: none;
+}
+
+.menu-table__switch {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: $tap;
+    margin: 0;
+    color: $paper-1;
+    font-size: $fs-small;
+
+    .form-check-input { margin-top: 0; }
+}
+
+.menu-table__count {
+    margin: 0 0 0 auto;
+    color: $paper-3;
+    font-size: $fs-small;
+    white-space: nowrap;
+}
+
+// --- The grid --------------------------------------------------
+.menu-table .tabulator {
+    border: 0;
+    background: transparent;
+    font-family: $font-body;
+    font-size: $fs-small;
+    color: $paper-1;
+
+    // Header: a hollow band, labels in the back office's small caps.
+    .tabulator-header {
+        border-bottom: 1px solid rgba($g-tint, 0.10);
+        background: transparent;
+        color: $paper-3;
+        font-weight: 600;
+
+        .tabulator-col {
+            border-right: 0;
+            background: transparent;
+
+            &.tabulator-sortable:hover { background: rgba($paper, 0.04); color: $paper; }
+        }
+
+        .tabulator-col-content { padding: 0.7rem 0.75rem; }
+
+        .tabulator-col-title {
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        // The sort arrow: quiet until the column is the one sorted on.
+        .tabulator-col .tabulator-col-sorter .tabulator-arrow {
+            border-bottom-color: $line-strong;
+        }
+
+        .tabulator-col[aria-sort="ascending"] .tabulator-col-sorter .tabulator-arrow {
+            border-bottom-color: $ember-hi;
+        }
+
+        .tabulator-col[aria-sort="descending"] .tabulator-col-sorter .tabulator-arrow {
+            border-top-color: $ember-hi;
+            border-bottom-color: transparent;
+        }
+
+        .tabulator-col[aria-sort="ascending"],
+        .tabulator-col[aria-sort="descending"] { color: $paper; }
+    }
+
+    .tabulator-tableholder {
+        background: transparent;
+
+        .tabulator-table { background: transparent; color: $paper-1; }
+    }
+
+    // A section: a band across the grid, its name in the carte's serif.
+    .tabulator-row.tabulator-group {
+        min-height: 3rem;
+        padding: 0.35rem 0.75rem;
+        border: 0;
+        border-top: 1px solid rgba($g-tint, 0.10);
+        background: rgba($g-tint, 0.045);
+        color: $paper;
+        font-weight: 400;
+
+        &:hover { background: rgba($g-tint, 0.065); cursor: default; }
+
+        .tabulator-group-toggle {
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+
+        .tabulator-arrow { border-left-color: $paper-2; }
+        &.tabulator-group-visible .tabulator-arrow {
+            border-top-color: $paper-2;
+            border-left-color: transparent;
+        }
+
+        // Tabulator appends its own "(n item)" count; ours is in the header.
+        > span:last-child:not(.menu-table__group) { display: none; }
+    }
+
+    .tabulator-row {
+        min-height: 3rem;
+        border-bottom: 1px solid rgba($g-tint, 0.06);
+        background: transparent;
+        cursor: pointer;
+        transition: background-color $d-quick $ease-out;
+
+        &.tabulator-row-even { background: transparent; }
+
+        @include hoverable {
+            &.tabulator-selectable:hover,
+            &:hover { background: rgba($paper, 0.045); }
+        }
+
+        .tabulator-cell {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 3rem;
+            padding: 0.55rem 0.75rem;
+            border-right: 0;
+            white-space: normal;
+            overflow-wrap: anywhere;
+
+            &[tabulator-field="title_en"] {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 0.25rem;
+            }
+
+            &[tabulator-field="price"] { align-items: flex-end; }
+
+            &.menu-table__toggle,
+            &.menu-table__actions { align-items: center; padding-inline: 0.25rem; }
+        }
+    }
+
+    // Everything the collapse folds away on a narrow screen, under the row.
+    .tabulator-responsive-collapse {
+        padding: 0 0.75rem 0.75rem 2.75rem;
+        border: 0;
+
+        table { font-size: $fs-small; color: $paper-1; }
+        td { padding: 0.15rem 0.75rem 0.15rem 0; vertical-align: top; }
+        td:first-child strong { color: $paper-3; font-weight: 600; }
+    }
+
+    .tabulator-responsive-collapse-toggle {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: $r-control;
+        background: rgba($g-tint, 0.10);
+        color: $paper;
+
+        &:hover { background: rgba($ember, 0.25); }
+    }
+
+    .tabulator-placeholder .tabulator-placeholder-contents {
+        padding: 2.25rem 1.5rem;
+        color: $paper-2;
+        font-size: $fs-small;
+        font-weight: 400;
+    }
+}
+
+// --- Cell contents ---------------------------------------------
+.menu-table__dish { color: $paper; font-weight: 500; }
+
+.menu-table__description {
+    margin-top: 0.15rem;
+    color: $paper-3;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+}
+
+.menu-table__en { color: $paper-2; }
+
+// G4: small ember type on glass is $ember-hi.
+.menu-table__price {
+    color: $ember-hi;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.menu-table__group {
+    display: inline-flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.menu-table__group-title {
+    font-family: $font-heading;
+    font-size: 1.0625rem;
+    color: $paper;
+}
+
+.menu-table__group-count {
+    color: $paper-3;
+    font-size: 0.8125rem;
+}
+
+.menu-table__group .menu-table__edit { margin-left: auto; }
+
+.menu-table__edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: $r-control;
+    background: transparent;
+    color: $paper-2;
+    cursor: pointer;
+    transition: color $d-quick $ease-out, background-color $d-quick $ease-out, border-color $d-quick $ease-out;
+
+    svg { width: 18px; height: 18px; }
+
+    @include hoverable {
+        &:hover { color: $ember-hi; background: rgba($paper, 0.07); border-color: rgba($g-tint, 0.12); }
+    }
+
+    &:focus-visible { @include focus-glow-button; }
+
+    @media (pointer: coarse) { width: $tap; height: $tap; }
+}
+
+// The group band is a flex row in Tabulator; ours has to be able to fill it
+// so the edit button reaches the right edge.
+.menu-table .tabulator-row.tabulator-group {
+    display: flex;
+    align-items: center;
+}

@@ -64,8 +64,6 @@
              open the band, the photographs follow, centred under them with
              an arrow on either side, and the house itself is the frame the
              strip opens on. Raised off the page, as one movement. --}}
-        @php($photos = $gallery?->items ?? collect())
-
         <section class="home-lede" aria-labelledby="home-lede-title">
             <div class="container home-lede__body" data-strip>
                 <h2 class="app-section__title home-lede__title" id="home-lede-title">{{ __('app.welcome') }}</h2>
@@ -73,7 +71,7 @@
                 <p class="prose home-lede__text">{{ $page?->locale?->content }}</p>
 
                 <div class="home-lede__stage">
-                    @if($photos->isNotEmpty())
+                    @if($strip->count() > 1)
                         <button type="button" class="strip__btn home-lede__btn" data-strip-prev>
                             <span class="visually-hidden">{{ __('app.previous') }}</span>
                             <x-icon.chevron-left/>
@@ -81,18 +79,14 @@
                     @endif
 
                     <ul class="strip__track home-lede__track" data-strip-track>
-                        <li class="strip__item">
-                            <img src="{{ Vite::image('afx-building.jpg') }}" alt="{{ __('app.title') }}" loading="lazy" decoding="async"/>
-                        </li>
-
-                        @foreach($photos as $item)
+                        @foreach($strip as $photo)
                             <li class="strip__item">
-                                <img src="{{ asset($item->image) }}" alt="" loading="lazy" decoding="async"/>
+                                <img src="{{ $photo['src'] }}" alt="{{ $photo['alt'] }}" loading="lazy" decoding="async"/>
                             </li>
                         @endforeach
                     </ul>
 
-                    @if($photos->isNotEmpty())
+                    @if($strip->count() > 1)
                         <button type="button" class="strip__btn home-lede__btn" data-strip-next>
                             <span class="visually-hidden">{{ __('app.next') }}</span>
                             <x-icon.chevron-right/>

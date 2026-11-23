@@ -1,48 +1,75 @@
 // =============================================================
-// Visit — where the house is and how to reach it. On the home page
-// (`--home`) with the hours and the map beside them; on the contact page
-// (`--single`) the address and the ways to write, in one column.
+// Visit — where the house is, when it is open and how to reach it. The
+// same band on the home page (`--home`, a seam above it) and as the body
+// of the contact page.
 //
-// The UI kit's left-aligned description list with an inline action: a
-// label column, the value beside it, hairline between rows, the row's one
-// action at its end. The map takes the larger half of the grid.
+// A raised card on the left holds the UI kit's left-aligned description
+// list with inline actions: label column, value beside it, hairline
+// between rows, the row's one action at its end. The map takes the larger
+// half and stretches to the card's height, so the two read as one block.
 // =============================================================
 
 .app-visit {
     padding-block: $section-gap;
 
+    & &__title { margin-top: 0; }
+
     &__grid {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
-        gap: clamp(1.75rem, 4vw, 3rem);
+        gap: clamp(1.25rem, 3vw, 1.75rem);
 
         @include media-breakpoint-up(lg) {
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-            gap: clamp(2.5rem, 5vw, 4.5rem);
-            align-items: center;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+            align-items: stretch;
         }
 
-        .app-map { margin-top: 0; }
+        .app-map {
+            margin-top: 0;
+            border-radius: $r-glass;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-map__frame { flex: 1 1 auto; }
 
         @include media-breakpoint-up(lg) {
-            .app-map__frame { height: clamp(340px, 48vh, 460px); }
+            .app-map__frame { height: auto; min-height: 420px; }
         }
     }
 
-    & &__title { margin-top: 0; }
+    // A raised plane, its top edge lit in ember fading out — the site's one
+    // ornament, as on the other raised cards.
+    &__card {
+        position: relative;
+        padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(1.25rem, 3vw, 2rem);
+        background: $ink-2;
+        border: 1px solid $hairline;
+        border-radius: $r-glass;
+        box-shadow:
+            inset 0 1px 0 $hairline-hi,
+            0 16px 36px -24px rgba(0, 0, 0, 0.85);
+        overflow: hidden;
 
-    &__list {
-        margin: 0;
-        border-top: 1px solid $line;
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto;
+            height: 2px;
+            background: linear-gradient(90deg, $ember 0%, rgba($ember, 0.35) 45%, transparent 85%);
+        }
     }
+
+    &__list { margin: 0; }
 
     &__row {
-        padding-block: 1.25rem;
-        border-bottom: 1px solid $line;
+        padding-block: 1.15rem;
+
+        & + & { border-top: 1px solid $line; }
 
         @include media-breakpoint-up(sm) {
             display: grid;
-            grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+            grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
             gap: 1rem;
         }
 
@@ -57,7 +84,7 @@
 
             svg { width: 18px; height: 18px; flex: none; color: $ember; }
 
-            @include media-breakpoint-up(sm) { margin-bottom: 0; align-self: start; }
+            @include media-breakpoint-up(sm) { margin-bottom: 0; align-self: start; padding-top: 0.1rem; }
         }
 
         dd {
@@ -77,6 +104,14 @@
         line-height: 1.55;
 
         > span { display: block; }
+    }
+
+    // The number to call is what most visitors came for: set larger.
+    a.app-visit__phone {
+        font-family: $font-heading;
+        font-size: $fs-h3;
+        line-height: 1.2;
+        font-variant-numeric: lining-nums;
     }
 
     // The week as a small timetable: the days on one line, each service
@@ -137,6 +172,9 @@
 
     // The row's inline action, as in the kit: a quiet text link at the end.
     &__action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
         font-size: $fs-small;
         font-weight: 600;
         color: $ember;
@@ -144,6 +182,8 @@
         @include tap;
 
         &:hover { color: $ember-hi; text-decoration: underline; text-underline-offset: 3px; }
+
+        svg { width: 14px; height: 14px; }
     }
 }
 
@@ -208,15 +248,14 @@
     }
 }
 
-// The two contact rows the home band did not have: an address that has to
-// fold on a phone, and the social links stacked.
+// An address that has to fold on a phone, and the social links in a row.
 .app-visit {
     &__email { overflow-wrap: anywhere; }
 
     &__social {
         display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.5rem;
 
         a {
             display: inline-flex;
@@ -230,7 +269,7 @@
 
         // On touch the rows themselves are the 44px.
         @media (pointer: coarse) {
-            gap: 0;
+            gap: 0 1.5rem;
 
             a { min-height: $tap; }
         }
@@ -247,5 +286,3 @@
     border-top: 1px solid $hairline;
 }
 
-// No map beside it: the list alone, at a reading width.
-.app-visit--single .app-visit__info { max-width: 40rem; }

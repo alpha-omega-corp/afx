@@ -50,7 +50,6 @@ $daily-width: 49rem;
 
     // --- The label -------------------------------------------
     &__head {
-        position: relative;
         display: flex;
         justify-content: center;
         margin-bottom: 0.85rem;
@@ -80,12 +79,18 @@ $daily-width: 49rem;
         }
     }
 
-    // Staff only: the pencil, out of the way at the label's right.
+    // Staff only: the editor's button, centred under the courses behind a
+    // hairline, full width on a phone where a thumb reaches for it.
+    &__foot {
+        display: flex;
+        justify-content: center;
+        margin-top: 0.85rem;
+        padding-top: 1rem;
+        border-top: 1px solid $hairline;
+    }
+
     &__edit {
-        position: absolute;
-        top: 50%;
-        right: 0;
-        translate: 0 -50%;
+        @include media-breakpoint-down(sm) { width: 100%; }
     }
 
     // --- The courses -----------------------------------------

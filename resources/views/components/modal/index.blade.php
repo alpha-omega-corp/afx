@@ -5,7 +5,7 @@
      opens the dialog and strips them when it closes, so writing them here
      would only leave a hidden container announcing itself as a dialog. --}}
 <div class="modal fade" id="{{ $id }}" tabindex="-1" aria-labelledby="{{ $id }}-title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div @class(['modal-dialog modal-dialog-centered modal-dialog-scrollable', 'modal-' . $size => $size])>
         <div class="modal-content">
             <div class="modal-header">
                 {{-- Sized and tracked in _modal.scss rather than with utility

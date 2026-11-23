@@ -21,16 +21,6 @@
     <aside id="plat-du-jour" @class(['daily', 'daily--empty' => $specials->isEmpty()]) aria-labelledby="daily-label">
         <header class="daily__head">
             <h2 class="daily__label" id="daily-label">{{ __('app.daily') }}</h2>
-
-            @auth
-                <x-admin.action
-                    class="daily__edit"
-                    :name="Modal::ADMIN_DAILY"
-                    :action="Action::UPDATE"
-                    :label="__('admin.action.edit_daily')"
-                    :compact="true"
-                />
-            @endauth
         </header>
 
         @if($specials->isNotEmpty())
@@ -63,6 +53,20 @@
                 @endif
             </p>
         @endif
+
+        {{-- Staff only: the way into the editor, centred under the slip, a
+             labelled button at a full thumb's height rather than a pencil
+             crowded into a corner of the label. --}}
+        @auth
+            <footer class="daily__foot">
+                <x-admin.action
+                    class="daily__edit"
+                    :name="Modal::ADMIN_DAILY"
+                    :action="Action::UPDATE"
+                    :label="__('admin.action.edit_daily')"
+                />
+            </footer>
+        @endauth
     </aside>
 
     {{-- Pushed to the foot of the page, out of the hero: a fixed-position
@@ -75,6 +79,7 @@
                 :name="Modal::ADMIN_DAILY"
                 :action="Action::UPDATE"
                 :title="__('admin.action.edit_daily')"
+                size="lg"
                 :route="route('admin.menu.daily')"
             >
                 <x-admin.daily-fields :specials="$editing" :sections="$sections"/>

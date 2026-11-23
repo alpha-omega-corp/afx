@@ -40,6 +40,75 @@ export function registerAdmin() {
             },
         }));
 
+        // --- The day the plat du jour is for --------------------
+        // One day is the usual card: a day picked sets both ends. A first
+        // day typed in carries the last one along while they are the same
+        // day, and pushes it forward rather than leave it behind — a last
+        // day before the first is a save the server refuses.
+        Alpine.data('dailyDays', (from, until) => ({
+            from: from ?? '',
+            until: until ?? '',
+
+            init() {
+                this.$watch('from', (value, old) => {
+                    if (!value) return;
+                    if (this.until === old || (this.until && this.until < value)) this.until = value;
+                });
+            },
+
+            pick(day) {
+                this.from = day;
+                this.until = day;
+            },
+
+            isPicked(day) {
+                return this.from === day && this.until === day;
+            },
+        }));
+
+        // --- The carte: Sections or Table -------------------------
+        // The view is remembered per browser — a convenience, not state:
+        // storage that throws or comes back empty simply means Sections.
+        // Tabulator is imported the first time the table is shown and never
+        // before, so a visit that stays on Sections does not load it.
+        Alpine.data('menuView', () => ({
+            view: 'sections',
+            query: '',
+            onlyAuto: false,
+            count: '',
+            table: null,
+
+            init() {
+                let saved = null;
+                try { saved = localStorage.getItem('admin.menu.view'); } catch {}
+                if (saved === 'table') this.show('table');
+
+                this.$watch('query', () => this.table?.filter(this.query, this.onlyAuto));
+                this.$watch('onlyAuto', () => this.table?.filter(this.query, this.onlyAuto));
+            },
+
+            async show(view) {
+                this.view = view;
+                try { localStorage.setItem('admin.menu.view', view); } catch {}
+
+                if (view !== 'table') return;
+
+                // Drawn once the panel is visible: Tabulator measures its
+                // columns, and a display:none container measures zero.
+                await this.$nextTick();
+
+                if (this.table) {
+                    this.table.redraw();
+                    return;
+                }
+
+                const el = this.$refs.table;
+                const { mountMenuTable } = await import('./menu-table');
+                this.table = mountMenuTable(el, JSON.parse(el.dataset.config), (text) => { this.count = text; });
+                this.table.filter(this.query, this.onlyAuto);
+            },
+        }));
+
         // --- Rows in a repeating form ----------------------------
         // Removals are queued and flushed on submit, so an edit can be
         // abandoned by closing the modal without deleting anything.

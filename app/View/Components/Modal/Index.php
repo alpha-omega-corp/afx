@@ -19,6 +19,8 @@ class Index extends Component
         public ?string $route = null,
         public mixed $iterator = null,
         public bool $padding = true,
+        /** Bootstrap's dialog width: null for the default, or 'lg' / 'xl'. */
+        public ?string $size = null,
     ) {
         $this->id = ModalHelper::getId($name, $action, $iterator);
     }

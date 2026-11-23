@@ -1,4 +1,4 @@
-@props(['page' => null, 'title' => null, 'lead' => null, 'tall' => false, 'embers' => 'quiet', 'rule' => true, 'intro' => true, 'centered' => false, 'emblem' => null])
+@props(['page' => null, 'title' => null, 'lead' => null, 'tall' => false, 'embers' => 'quiet', 'rule' => true, 'intro' => true, 'centered' => false, 'emblem' => null, 'heroEmblem' => true])
 
 {{-- Every page opens the same way: its record's photograph as a 300px band
      with its name on it, its words under it, then whatever the page itself
@@ -6,7 +6,10 @@
      in their own band further down the home page (x-visit) and in the footer. All of it reads from the Page row edited under
      Administration → Pages, so a photograph or a paragraph changed there
      lands in the same place on every page. Without words (the home page, or
-     a record not yet written) the hero is the name beside the photograph. --}}
+     a record not yet written) the hero is the name beside the photograph.
+     A page whose drawing travels with its own content (the carte, where it
+     keeps level with the dishes as they scroll) passes :hero-emblem="false"
+     and draws it itself; the preview still shows it. --}}
 @php($text = $intro ? $page?->locale?->content : null)
 
 <div class="app-page">
@@ -19,7 +22,7 @@
         :embers="$embers"
         :rule="$rule"
         :centered="$centered"
-        :emblem="$emblem"
+        :emblem="$heroEmblem ? $emblem : null"
         :preview="filled($text) ? 'page-preview' : null"
         :priority="true"
     >

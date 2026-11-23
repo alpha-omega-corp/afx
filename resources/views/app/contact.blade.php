@@ -14,8 +14,8 @@
             </ul>
         </x-slot:preview>
 
-        {{-- Where the auberge is and the ways to reach it. The hours and
-             the map are on the home page's visit band. --}}
+        {{-- The home page's visit band, whole: the address, the hours, the
+             ways to reach the house, and the map. --}}
         <x-visit/>
     </x-page>
 @endsection

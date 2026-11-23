@@ -5,7 +5,8 @@
            id="{{ $id }}"
            name="{{ $name }}"
            value="{{ $value }}"
-           placeholder=" ">
+           placeholder=" "
+           {{ $attributes }}>
 
     <label for="{{ $id }}">{{ $label }}</label>
 </div>

@@ -2,18 +2,24 @@
 // La carte — a list you can read, not a stack of parallax banners.
 // =============================================================
 
-// The rail follows the card every page opens with, clear of its shadow.
-.app-page__content > .menu-anchors:first-child { margin-top: clamp(1.25rem, 3vw, 2rem); }
+// The bar's height on a wide screen, where there is room for a bar that
+// reads as the carte's own navigation rather than a phone's thumb row.
+$anchors-h-wide: 3.75rem;
 
+// The rail is the carte's tab bar, fixed along the foot of the screen at
+// every width: reached without a stretch on a phone, and on a wide screen
+// it takes nothing from under the navigation, so a section jumped to lands
+// right under the bar. The page keeps a band of the same height at its
+// foot (below) so the footer's last line is not left underneath it.
 .menu-anchors {
-    position: sticky;
-    // Under the bar, and under the closed banner while that is still on
-    // screen — the bar itself is offset by the same amount.
-    top: calc(var(--banner-offset, 0px) + var(--nav-h));
-    z-index: 10;
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 20;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     background-color: rgba($ink, 0.94);
     backdrop-filter: blur(8px);
-    border-block: 1px solid $line;
+    border-top: 1px solid $line;
+    box-shadow: 0 -12px 28px -14px rgba(0, 0, 0, 0.7);
 
     // A rail that can scroll and a button that cannot: the button has to stay
     // reachable at every width, so it sits outside the scrolling box.
@@ -76,27 +82,34 @@
 
         svg { width: 22px; height: 22px; }
 
+        @include media-breakpoint-up(lg) {
+            width: $anchors-h-wide;
+
+            svg { width: 26px; height: 26px; }
+        }
+
         &:hover,
         &.is-open { color: $ember; }
     }
 
-    // Opens under the bar at its right edge, as a list rather than a rail:
-    // every section at once, which is the point of it.
+    // Opens above the bar at its right edge, over the carte, its square
+    // edge against the bar: a list rather than a rail, every section at
+    // once, which is the point of it.
     &__panel {
         position: absolute;
-        top: 100%;
+        bottom: 100%;
         right: 0;
         z-index: 11;
         min-width: 15rem;
         max-height: 60vh;
         overflow-y: auto;
         overscroll-behavior: contain;
-        margin-top: 1px;
+        margin-bottom: 1px;
         padding: 0.75rem 0;
         background-color: $ink-2;
         border: 1px solid $line;
-        border-radius: 0 0 $r-panel $r-panel;
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+        border-radius: $r-panel $r-panel 0 0;
+        box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.55);
 
         // At phone width it is the whole bar wide: a 15rem panel hanging off
         // one corner of a 360px screen reads as something that came loose.
@@ -141,39 +154,80 @@
         display: flex;
         align-items: center;
         white-space: nowrap;
-        padding: 1rem 0.85rem;
-        font-family: $font-body;
-        font-size: $fs-small;
-        color: $paper-2;
-        border-bottom: 2px solid transparent;
-
-        // A sticky bar under a sticky nav costs a phone real estate, but a
+        // A bar fixed over the carte costs the screen real estate, but a
         // row of one-tap targets still has to be tappable: shorter, not
-        // small enough to miss.
-        @include media-breakpoint-down(md) {
-            min-height: $tap;
-            padding: 0.5rem 0.7rem;
-            font-size: 0.875rem;
+        // small enough to miss. One height at every width, which is the
+        // height the page leaves free for it.
+        min-height: $tap;
+        padding: 0.5rem 0.7rem;
+        font-family: $font-body;
+        font-size: 0.875rem;
+        color: $paper-2;
+        // The mark sits on the edge that faces the carte, as a tab bar's does.
+        border-top: 2px solid transparent;
+
+        @include media-breakpoint-up(lg) {
+            min-height: $anchors-h-wide;
+            padding: 0.5rem 1.1rem;
+            font-size: 1rem;
         }
 
         &:hover { color: $paper; }
 
         &.is-current {
             color: $ember;
-            border-bottom-color: $ember;
+            border-top-color: $ember;
         }
+    }
+}
+
+// The rail is fixed to the foot of the screen: the page ends a rail's
+// height lower, so the footer's last line scrolls clear of it.
+body:has(.menu-anchors) {
+    padding-bottom: calc(#{$tap} + 1px + env(safe-area-inset-bottom, 0px));
+
+    @include media-breakpoint-up(lg) {
+        padding-bottom: calc(#{$anchors-h-wide} + 1px + env(safe-area-inset-bottom, 0px));
     }
 }
 
 .menu-list {
     padding-block-end: $section-gap;
 
-    // Roughly the height of the sticky anchors bar above; a section jumped to
-    // from that bar has to land below both it and the navigation, not behind
-    // them. Kept here rather than on :root so it travels with the bar.
-    --anchors-h: 46px;
+    // A section jumped to from the rail lands below the navigation; the
+    // rail is at the foot of the screen and costs nothing at the top. Kept
+    // here rather than on :root so it travels with the bar.
+    --anchors-h: 0px;
 
-    @include media-breakpoint-up(md) { --anchors-h: 60px; }
+    // The dishes on the left, the carte's drawing on the right, where the
+    // hero keeps every other page's drawing. It sticks under the navigation
+    // and stays level with the dishes all the way down the carte. A phone
+    // has no room beside the dishes, as in the hero.
+    @include media-breakpoint-up(md) {
+        display: grid;
+        grid-template-columns: minmax(0, 760px) clamp(8rem, 13vw, 11rem);
+        justify-content: space-between;
+        column-gap: clamp(2rem, 6vw, 5rem);
+    }
+
+    &__sections { min-width: 0; }
+
+    &__emblem {
+        display: none;
+
+        @include media-breakpoint-up(md) {
+            display: block;
+            position: sticky;
+            top: calc(var(--nav-h) + #{$section-gap});
+            align-self: start;
+            margin-top: $section-gap;
+            color: $paper-3;
+
+            @media (prefers-reduced-motion: no-preference) {
+                animation: hero-rise 700ms 200ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+            }
+        }
+    }
 }
 
 .menu-section {

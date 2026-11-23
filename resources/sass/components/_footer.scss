@@ -3,9 +3,11 @@
 // =============================================================
 
 .app-footer {
-    // A half-step below the page: the house ends, the ground begins.
+    // A half-step below the page: the house ends, the ground begins. The
+    // end is drawn in the brand orange, so the footer is plainly parted
+    // from whatever page stands above it.
     background-color: mix($ink, $g-void, 55%);
-    border-top: 1px solid $hairline;
+    border-top: 2px solid $ember;
     padding-block: clamp(2.5rem, 5vw, 4rem) 2rem;
     font-family: $font-body;
 

@@ -16,6 +16,18 @@
     overflow: hidden;
     background-color: $ink;
 
+    // An ember line along the band's lower edge, on every page: where the
+    // photograph ends and the page begins. Over the scrim and the hearth.
+    &::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        z-index: 3;
+        height: 2px;
+        background: $ember;
+        pointer-events: none;
+    }
+
     // The ember bar that marks a section title, under the name of a page.
     // Not on the carte, where the sticky rail already rules the page there.
     &--rule .hero__title::after {

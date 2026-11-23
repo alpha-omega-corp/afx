@@ -21,12 +21,32 @@ return [
     'gallery_description' => 'Sélectionnez des photos pour les supprimer, ou ajoutez-en de nouvelles.',
     'daily_description' => 'Ce qui change tous les jours. Ces plats sont affichés sur la page d’accueil et en tête de la carte ; ils ne réapparaissent pas dans les sections ci-dessous.',
     'menu_title' => 'Sections de la carte',
-    'menu_description' => 'Glissez une section pour la réordonner. Chaque section contient ses plats.',
+    'menu_description' => 'Glissez une section pour la réordonner, ou passez au tableau pour trier et chercher parmi tous les plats.',
     'review_title' => 'À relire',
     'review_description' => 'Les plats dont la version anglaise est encore celle de la machine.',
     'review_more' => 'les :n premiers sont listés ci-dessous',
 
     'auto' => 'auto',
+
+    // La carte en tableau : tous les plats sur une grille, à lire, trier, chercher
+    'view' => [
+        'label' => 'Affichage de la carte',
+        'sections' => 'Sections',
+        'table' => 'Tableau',
+    ],
+
+    'table' => [
+        'search' => 'Chercher un plat, une section, un mot de la description…',
+        'only_auto' => 'Anglais automatique seulement',
+        'section' => 'Section',
+        'dish' => 'Plat (français)',
+        'dish_en' => 'Anglais',
+        'price' => 'Prix',
+        'edit' => 'Modifier la section :name',
+        'dishes' => '{0} aucun plat|{1} 1 plat|[2,*] :count plats',
+        'shown' => ':shown plats sur :total',
+        'empty' => 'Aucun plat ne correspond à cette recherche.',
+    ],
 
     // Métriques — une bande de chiffres en tête de chaque écran, lus avant
     // qu'un panneau ait à être ouvert.
@@ -43,7 +63,7 @@ return [
     ],
 
     'hint' => [
-        'daily_dates' => 'Le plat du jour quitte la page d’accueil tout seul après le dernier jour. Un champ laissé vide n’impose pas de limite.',
+        'daily_dates' => 'Choisissez le jour, ou plusieurs jours avec les deux dates. Le plat du jour quitte la page d’accueil tout seul après le dernier jour ; une date laissée vide n’impose pas de limite.',
         'translation' => 'Écrivez en français. Un champ anglais laissé vide est traduit automatiquement et suit ensuite le français ; dès que vous y écrivez quelque chose, c’est votre texte qui reste.',
         'auto' => 'Traduction automatique, pas encore relue.',
     ],
@@ -84,6 +104,7 @@ return [
         'reopen' => 'Rouvrir le site',
         'reorder' => 'Réordonner',
         'edit_daily' => 'Modifier le plat du jour',
+        'add_daily' => 'Ajouter un plat',
         'edit_hours' => 'Modifier les horaires',
     ],
 
@@ -100,12 +121,20 @@ return [
         'description_en' => 'Description (anglais)',
         'price' => 'Prix',
         'daily_dishes' => 'Plats de la carte du jour',
+        'daily_new' => 'Nouveau plat',
+        'daily_when' => 'Sur la page d’accueil',
+        'french' => 'Français',
+        'english' => 'Anglais',
         'closed_all_day' => 'Fermé toute la journée',
         'lunch_from' => 'Midi — de',
         'lunch_to' => 'Midi — à',
         'dinner_from' => 'Soir — de',
         'dinner_to' => 'Soir — à',
         'section' => 'Section de la carte',
+        'daily_name' => 'Nom',
+        'daily_day' => 'Pour quel jour',
+        'today' => 'Aujourd’hui',
+        'tomorrow' => 'Demain',
         'daily_from' => 'Afficher du',
         'daily_until' => 'Au (inclus)',
         'show_on_home' => 'Afficher sur la page d’accueil',

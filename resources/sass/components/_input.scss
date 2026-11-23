@@ -95,6 +95,10 @@
     > label {
         color: $paper-2;
         padding: 1rem 0.9rem;
+        // A step under the text typed into the field: the label names the
+        // box, the value is what is read. At body size a two-column form
+        // ran "Description (anglais)" past the right edge of its field.
+        font-size: 0.875rem;
         // Bootstrap animates this in 0.1s linear-ish, which reads as a
         // twitch. Same curve as everything else that moves in the admin.
         transition:
@@ -174,6 +178,11 @@
 }
 
 .input-group-text {
+    // Bootstrap's 0.75rem a side was sized for an addon with a border of
+    // its own. Inside one object the label's 0.9rem already separates the
+    // icon from the words, so the icon keeps a little air at the left and
+    // next to none at the right.
+    padding-inline: 0.65rem 0.15rem;
     color: $paper-2;
     transition: color $d-base $ease-out;
 
