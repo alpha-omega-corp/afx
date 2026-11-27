@@ -17,6 +17,11 @@
     </script>
 
     @vite(['resources/js/app.js'])
+    {{-- FIGMA-CAPTURE-TEMP: remove after the Figma import --}}
+    @if(app()->isLocal())
+        <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+        <script>if (location.hash.includes('figmacapture')) addEventListener('load', () => setTimeout(() => document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-in')), 200));</script>
+    @endif
 </head>
 <body class="admin">
 

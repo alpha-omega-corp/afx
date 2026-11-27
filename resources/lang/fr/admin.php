@@ -63,7 +63,7 @@ return [
     ],
 
     'hint' => [
-        'daily_dates' => 'Choisissez le jour, ou plusieurs jours avec les deux dates. Le plat du jour quitte la page d’accueil tout seul après le dernier jour ; une date laissée vide n’impose pas de limite.',
+        'daily_dates' => 'Chaque plat a son jour : écrivez ceux de la semaine prochaine dès aujourd’hui, ils s’afficheront sur la page d’accueil le jour venu et la quitteront tout seuls ensuite. « Tous les jours » reste affiché jusqu’à ce que vous retiriez le plat.',
         'translation' => 'Écrivez en français. Un champ anglais laissé vide est traduit automatiquement et suit ensuite le français ; dès que vous y écrivez quelque chose, c’est votre texte qui reste.',
         'auto' => 'Traduction automatique, pas encore relue.',
     ],
@@ -74,6 +74,13 @@ return [
         'upcoming' => 'Programmé',
         'ended' => 'Terminé, plus affiché',
         'always' => 'En ligne',
+    ],
+
+    // What a dish of the plan is served on, as the editor offers it
+    'daily_choice' => [
+        'always' => 'Tous les jours, jusqu’à nouvel ordre',
+        'always_short' => 'Tous les jours',
+        'range' => 'Plusieurs jours…',
     ],
 
     'daily_when' => [
@@ -103,8 +110,11 @@ return [
         'close' => 'Fermer le site',
         'reopen' => 'Rouvrir le site',
         'reorder' => 'Réordonner',
-        'edit_daily' => 'Modifier le plat du jour',
+        'edit_daily' => 'Planifier les plats du jour',
         'add_daily' => 'Ajouter un plat',
+        'add_daily_on' => 'Ajouter un plat pour :day',
+        'add_short' => 'Ajouter',
+        'remove_daily' => 'Retirer du programme',
         'edit_hours' => 'Modifier les horaires',
     ],
 
@@ -120,7 +130,11 @@ return [
         'description_fr' => 'Description (français)',
         'description_en' => 'Description (anglais)',
         'price' => 'Prix',
-        'daily_dishes' => 'Plats de la carte du jour',
+        'daily_dishes' => 'Plats au programme',
+        'daily_plan' => 'Les prochains jours',
+        'daily_nothing' => 'Rien de prévu',
+        'daily_served' => 'Servi',
+        'daily_served_before' => 'Déjà servis — à reprendre',
         'daily_new' => 'Nouveau plat',
         'daily_when' => 'Sur la page d’accueil',
         'french' => 'Français',
@@ -158,6 +172,7 @@ return [
         'gallery' => 'Aucune photo dans cette galerie.',
         'holidays' => 'Aucune fermeture planifiée.',
         'daily' => 'Aucun plat du jour affiché. Le bouton ci-dessus en compose un.',
+        'daily_plan' => 'Aucun plat au programme. Ajoutez-en un pour un jour ci-dessus.',
         'hours' => 'Aucun horaire enregistré.',
         'daily_sections' => 'Créez d’abord une section dans la carte : le plat du jour y est rangé comme n’importe quel plat.',
         'review' => 'Tout l’anglais de la carte a été relu.',

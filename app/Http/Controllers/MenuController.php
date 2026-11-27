@@ -89,9 +89,6 @@ class MenuController extends Controller
      */
     public function daily(DailySpecialRequest $request): RedirectResponse
     {
-        $show = $request->boolean('daily');
-        $from = $request->date('daily_from');
-        $until = $request->date('daily_until');
         $kept = [];
 
         foreach ($request->dishes() as $position => $dish) {
@@ -103,17 +100,23 @@ class MenuController extends Controller
                 continue;
             }
 
+            // The same dish planned on two days is two rows of the plan, and
+            // a row holds one stretch of days: the second row gets a record
+            // of its own rather than moving the first one's dates.
+            if ($item->exists && in_array($item->getKey(), $kept, true)) {
+                $item = new MenuItem();
+            }
+
             $item->menu_section_id = $dish['menu_section_id'];
             $item->price = $dish['price'];
-
-            // Clearing the box takes the whole card off the home page and
-            // leaves every dish on the carte.
-            $item->daily = $show;
-            // A dish that is not on the card holds no place in its order.
-            $item->daily_position = $show ? $position : null;
-            // The whole card shares one stretch of days.
-            $item->daily_on = $show ? $from : null;
-            $item->daily_until = $show ? $until : null;
+            $item->daily = true;
+            // The order the rows were sent in: grouped by day in the editor,
+            // and within a day, the order the dishes are eaten in.
+            $item->daily_position = $position;
+            // Each dish has days of its own, so next week can be written
+            // today without taking this week's dishes off the page.
+            $item->daily_on = $dish['from'];
+            $item->daily_until = $dish['until'];
             $item->save();
 
             // A null 'en' is dropped rather than passed: Translations reads a
@@ -127,8 +130,16 @@ class MenuController extends Controller
             $kept[] = $item->getKey();
         }
 
+        // A dish taken off the plan goes back to being an ordinary dish of
+        // the carte. A dish already served is not in the editor's rows at
+        // all — it is offered back underneath them — so its absence from the
+        // payload is not a request to move it: it keeps its flag, and the
+        // carte does not fill up with last month's specials.
+        $today = MenuItem::today()->toDateString();
+
         MenuItem::daily()
             ->whereNotIn('id', $kept)
+            ->where(fn ($query) => $query->whereNull('daily_until')->orWhereDate('daily_until', '>=', $today))
             ->update(['daily' => false, 'daily_position' => null, 'daily_on' => null, 'daily_until' => null]);
 
         return redirect()->back();

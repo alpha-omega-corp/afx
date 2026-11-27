@@ -40,29 +40,139 @@ export function registerAdmin() {
             },
         }));
 
-        // --- The day the plat du jour is for --------------------
-        // One day is the usual card: a day picked sets both ends. A first
-        // day typed in carries the last one along while they are the same
-        // day, and pushes it forward rather than leave it behind — a last
-        // day before the first is a save the server refuses.
-        Alpine.data('dailyDays', (from, until) => ({
-            from: from ?? '',
-            until: until ?? '',
+        // --- The plan of the plats du jour ----------------------
+        // Every dish has days of its own: one of the next open days, every
+        // day (no dates), or a stretch of dates. The strip of days above the
+        // rows is read off the rows, so it cannot disagree with what is
+        // saved. Rows are keyed by a key of their own, never by index: a row
+        // removed from the middle must take its own fields with it.
+        Alpine.data('dailyPlan', (config) => ({
+            rows: [],
+            served: [],
+            days: config.days ?? [],
+            text: config.text ?? {},
+            flashed: null,
+            sequence: 0,
 
             init() {
-                this.$watch('from', (value, old) => {
-                    if (!value) return;
-                    if (this.until === old || (this.until && this.until < value)) this.until = value;
+                this.rows = (config.rows ?? []).map((row) => this.prepare(row));
+                this.served = (config.served ?? []).map((row) => ({ ...row }));
+            },
+
+            prepare(row) {
+                const item = { from: '', until: '', ...row, key: ++this.sequence };
+                item.ranged = this.choice(item) === 'range';
+                return item;
+            },
+
+            covers(item, date) {
+                return (!item.from || item.from <= date) && (!item.until || item.until >= date);
+            },
+
+            dishesOn(date) {
+                return this.rows.filter((item) => this.covers(item, date));
+            },
+
+            // What the row's "served" field reads: a day of the list, every
+            // day, or several days.
+            choice(item) {
+                if (item.ranged) return 'range';
+                if (!item.from && !item.until) return 'always';
+                if (item.from === item.until && this.days.some((day) => day.date === item.from)) return item.from;
+                return 'range';
+            },
+
+            choose(item, value) {
+                if (value === 'always') {
+                    item.ranged = false;
+                    item.from = item.until = '';
+                } else if (value === 'range') {
+                    item.ranged = true;
+                    item.from ||= this.freeDay();
+                    if (item.until && item.until < item.from) item.until = item.from;
+                } else {
+                    item.ranged = false;
+                    item.from = item.until = value;
+                }
+
+                this.place(item);
+            },
+
+            // A first day typed in carries the last one along while they are
+            // the same day, and never leaves it behind.
+            keepOrder(item) {
+                if (item.from && item.until && item.until < item.from) item.until = item.from;
+                this.place(item);
+            },
+
+            // The row's day in a few words, for the badge on its header.
+            label(item) {
+                const day = (date) => this.days.find((d) => d.date === date)?.short ?? date.split('-').reverse().join('.');
+                if (!item.from && !item.until) return this.text.always;
+                if (item.from && item.until) {
+                    return item.from === item.until ? day(item.from) : `${day(item.from)} – ${day(item.until)}`;
+                }
+                return item.from
+                    ? this.text.from.replace(':from', day(item.from))
+                    : this.text.until.replace(':until', day(item.until));
+            },
+
+            // The first day of the list with nothing on it yet: where a dish
+            // added without a day goes, since that is the day still to write.
+            freeDay() {
+                return (this.days.find((day) => !this.dishesOn(day.date).length) ?? this.days[0])?.date ?? '';
+            },
+
+            // Rows read in the order they are served: the dishes of every day
+            // first, then by first day. Within a day, the order is the staff's.
+            place(item) {
+                const start = (row) => row.from || '';
+                const from = this.rows.indexOf(item);
+                if (from === -1) return;
+                this.rows.splice(from, 1);
+                let at = this.rows.findIndex((row) => start(row) > start(item));
+                if (at === -1) at = this.rows.length;
+                this.rows.splice(at, 0, item);
+            },
+
+            add(date = null, row = {}) {
+                const day = date ?? this.freeDay();
+                const item = this.prepare({
+                    id: '',
+                    menu_section_id: config.section,
+                    title: '',
+                    description: '',
+                    price: '',
+                    ...row,
+                    from: day,
+                    until: day,
                 });
+
+                this.rows.push(item);
+                this.place(item);
+                this.reveal(item, true);
             },
 
-            pick(day) {
-                this.from = day;
-                this.until = day;
+            reuse(index) {
+                const [dish] = this.served.splice(index, 1);
+                this.add(null, dish);
             },
 
-            isPicked(day) {
-                return this.from === day && this.until === day;
+            remove(index) {
+                this.rows.splice(index, 1);
+            },
+
+            // Brings a row into view and lights it for a moment; a row just
+            // added gets the cursor in its name.
+            reveal(item, focus = false) {
+                this.$nextTick(() => {
+                    const el = document.getElementById(`daily-row-${item.key}`);
+                    if (!el) return;
+                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    this.flashed = item.key;
+                    setTimeout(() => { if (this.flashed === item.key) this.flashed = null; }, 1200);
+                    if (focus && !item.title) el.querySelector('input[name="daily_titles[]"]')?.focus({ preventScroll: true });
+                });
             },
         }));
 

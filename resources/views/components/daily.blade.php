@@ -7,9 +7,11 @@
     // The whole card, on show today or not: what the editor opens on.
     $editing ??= $specials;
     $sections ??= collect();
-    // A card staff wrote that is not on show today, because its first day is
-    // still to come or its last one has gone by.
-    $waiting = $specials->isEmpty() ? $editing->first() : null;
+    // Nothing on show today, for staff: the next dish planned, or failing
+    // that the last one served, so the empty slip says which side it is on.
+    $waiting = $specials->isEmpty()
+        ? (\App\Models\MenuItem::planned($editing)->first() ?? \App\Models\MenuItem::served($editing)->first())
+        : null;
 @endphp
 
 {{-- The plat du jour as a slip of the day's carte, on the home hero's

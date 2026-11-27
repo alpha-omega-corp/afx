@@ -14,14 +14,12 @@ $home-gap: clamp(3.5rem, 8vw, 6.5rem);
 // firelight simply continues behind the top of the cards and dies out.
 .home-doors {
     position: relative;
-    // A short tuck: the hero's words and buttons sit on its bottom edge, so
-    // anything reaching further up lands on the buttons rather than on the
-    // firelight below them.
-    margin-top: clamp(-2.5rem, -3vw, -1rem);
+    // Wholly under the hero's ember line, never across it: the cards used to
+    // tuck up into the photograph, and the line on its lower edge (drawn over
+    // everything in the hero) ran straight through all three of them.
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
     padding-bottom: $home-gap;
     z-index: 1;
-
-    @include media-breakpoint-down(md) { margin-top: -1rem; }
 
     &__grid {
         display: grid;

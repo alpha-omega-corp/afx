@@ -63,7 +63,7 @@ return [
     ],
 
     'hint' => [
-        'daily_dates' => 'Pick the day, or several days with the two dates. The main dish leaves the home page by itself after its last day; a date left empty sets no limit.',
+        'daily_dates' => 'Every dish has its own day: write next week’s today, and each goes up on the home page on its day and comes down by itself afterwards. “Every day” stays up until you take the dish off.',
         'translation' => 'Write in French. An English field left blank is translated for you and keeps following the French; the moment you type in it, your words are the ones that stay.',
         'auto' => 'Machine translation, not yet read over.',
     ],
@@ -74,6 +74,13 @@ return [
         'upcoming' => 'Scheduled',
         'ended' => 'Ended, no longer shown',
         'always' => 'On show',
+    ],
+
+    // What a dish of the plan is served on, as the editor offers it
+    'daily_choice' => [
+        'always' => 'Every day, until further notice',
+        'always_short' => 'Every day',
+        'range' => 'Several days…',
     ],
 
     'daily_when' => [
@@ -103,8 +110,11 @@ return [
         'close' => 'Close the site',
         'reopen' => 'Reopen the site',
         'reorder' => 'Reorder',
-        'edit_daily' => 'Edit the main dish',
+        'edit_daily' => 'Plan the main dishes',
         'add_daily' => 'Add a dish',
+        'add_daily_on' => 'Add a dish for :day',
+        'add_short' => 'Add',
+        'remove_daily' => 'Take off the plan',
         'edit_hours' => 'Edit the hours',
     ],
 
@@ -120,7 +130,11 @@ return [
         'description_fr' => 'Description (French)',
         'description_en' => 'Description (English)',
         'price' => 'Price',
-        'daily_dishes' => 'On the card today',
+        'daily_dishes' => 'Dishes planned',
+        'daily_plan' => 'The days ahead',
+        'daily_nothing' => 'Nothing planned',
+        'daily_served' => 'Served',
+        'daily_served_before' => 'Served before — plan again',
         'daily_new' => 'New dish',
         'daily_when' => 'On the home page',
         'french' => 'French',
@@ -158,6 +172,7 @@ return [
         'gallery' => 'No photos in this gallery.',
         'holidays' => 'No closing planned.',
         'daily' => 'No main dish on show. The button above writes one.',
+        'daily_plan' => 'Nothing planned. Add a dish for one of the days above.',
         'hours' => 'No hours saved yet.',
         'daily_sections' => 'Create a menu section first: the main dish is filed under one, like any other dish.',
         'review' => 'Every English line on the carte has been read over.',

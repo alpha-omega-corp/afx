@@ -106,6 +106,45 @@ class MenuItem extends Model
         return static::specials()->filter->isShownOn($day)->values();
     }
 
+    /**
+     * The card as staff plan it: every dish whose days are not all behind it,
+     * grouped by when it is served — the dishes with no first day first (they
+     * are on already), then by first day — and within a day, in the order
+     * they are eaten.
+     *
+     * @param  Collection<int, self>|null  $dishes  the card already loaded, to sort rather than fetch again
+     * @return Collection<int, self>
+     */
+    public static function planned(?Collection $dishes = null, ?CarbonInterface $day = null): Collection
+    {
+        return ($dishes ?? static::specials())
+            ->reject(fn (self $dish): bool => $dish->dailyState($day) === 'ended')
+            ->sortBy(fn (self $dish): array => [
+                $dish->daily_on?->toDateString() ?? '',
+                $dish->daily_position ?? PHP_INT_MAX,
+                $dish->id,
+            ])
+            ->values();
+    }
+
+    /**
+     * The dishes whose days are all over, the latest first.
+     *
+     * They keep their flag: a plat du jour that has been served is not a dish
+     * of the carte, and saving the plan does not push it there. The editor
+     * offers them back, to plan again in one tap.
+     *
+     * @param  Collection<int, self>|null  $dishes  the card already loaded
+     * @return Collection<int, self>
+     */
+    public static function served(?Collection $dishes = null, ?CarbonInterface $day = null): Collection
+    {
+        return ($dishes ?? static::specials())
+            ->filter(fn (self $dish): bool => $dish->dailyState($day) === 'ended')
+            ->sortByDesc(fn (self $dish): string => $dish->daily_until->toDateString())
+            ->values();
+    }
+
     /** Whether the card's days include this one. A bound left empty is no bound. */
     public function isShownOn(CarbonInterface $day): bool
     {

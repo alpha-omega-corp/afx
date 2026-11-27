@@ -80,7 +80,7 @@
 
         <li class="admin-metric">
             <p class="admin-metric__label">{{ __('admin.metric.daily') }}</p>
-            <p class="admin-metric__value u-tabular">{{ $specials->count() }}</p>
+            <p class="admin-metric__value u-tabular">{{ \App\Models\MenuItem::planned($specials)->count() }}</p>
         </li>
     </ul>
 
@@ -99,14 +99,6 @@
             <div>
                 <h2 class="admin-daily__title">{{ __('app.daily') }}</h2>
                 <p class="admin-daily__description">{{ __('admin.daily_description') }}</p>
-                @if($specials->isNotEmpty())
-                    {{-- When the card is on the home page, in words, and
-                         whether today is one of those days. --}}
-                    <p class="admin-daily__when">
-                        <span class="admin-daily__state admin-daily__state--{{ $specials->first()->dailyState() }}">{{ __('admin.daily_state.' . $specials->first()->dailyState()) }}</span>
-                        <x-admin.daily-when :dish="$specials->first()"/>
-                    </p>
-                @endif
             </div>
 
             <x-admin.action
@@ -116,32 +108,54 @@
             />
         </header>
 
-        @if($specials->isEmpty())
+        {{-- The plan, by day: what is on the home page now, then what is
+             coming and when. Each group is headed by its days in words and
+             whether today is one of them; the dishes already served are the
+             editor's to offer back, not this list's. --}}
+        @php
+            $groups = \App\Models\MenuItem::planned($specials)
+                ->groupBy(fn ($dish) => ($dish->daily_on?->toDateString() ?? '') . '|' . ($dish->daily_until?->toDateString() ?? ''))
+                ->sortBy(fn ($dishes) => [in_array($dishes->first()->dailyState(), ['current', 'always'], true) ? 0 : 1, $dishes->first()->daily_on?->toDateString() ?? ''])
+                ->values();
+        @endphp
+
+        @if($groups->isEmpty())
             <p class="admin-daily__empty">{{ __('admin.empty.daily') }}</p>
         @else
-            <ul class="admin-daily__list">
-                @foreach($specials as $dish)
-                    @php($fr = $dish->localeIn(Lang::FR))
-                    @php($en = $dish->localeIn(Lang::EN))
+            @foreach($groups as $dishes)
+                @php($first = $dishes->first())
 
-                    <li class="admin-daily__dish">
-                        <span class="admin-daily__course">{{ $loop->iteration }}</span>
+                <div class="admin-daily__group">
+                    <p class="admin-daily__when">
+                        <span class="admin-daily__state admin-daily__state--{{ $first->dailyState() }}">{{ __('admin.daily_state.' . $first->dailyState()) }}</span>
+                        <x-admin.daily-when :dish="$first"/>
+                    </p>
 
-                        <span class="admin-daily__name">{{ $fr->title }}</span>
+                    <ul class="admin-daily__list">
+                        @foreach($dishes as $dish)
+                            @php($fr = $dish->localeIn(Lang::FR))
+                            @php($en = $dish->localeIn(Lang::EN))
 
-                        <span class="admin-daily__name-en">
-                            {{ $en->title }}
-                            @if($en->isAuto('title'))
-                                <span class="admin-auto" title="{{ __('admin.hint.auto') }}">{{ __('admin.auto') }}</span>
-                            @endif
-                        </span>
+                            <li class="admin-daily__dish">
+                                <span class="admin-daily__course">{{ $loop->iteration }}</span>
 
-                        <span class="admin-daily__section">{{ $dish->section?->localeIn(Lang::FR)->title }}</span>
+                                <span class="admin-daily__name">{{ $fr->title }}</span>
 
-                        <span class="admin-daily__price u-tabular">{{ number_format($dish->price, 2, '.', "'") }}</span>
-                    </li>
-                @endforeach
-            </ul>
+                                <span class="admin-daily__name-en">
+                                    {{ $en->title }}
+                                    @if($en->isAuto('title'))
+                                        <span class="admin-auto" title="{{ __('admin.hint.auto') }}">{{ __('admin.auto') }}</span>
+                                    @endif
+                                </span>
+
+                                <span class="admin-daily__section">{{ $dish->section?->localeIn(Lang::FR)->title }}</span>
+
+                                <span class="admin-daily__price u-tabular">{{ number_format($dish->price, 2, '.', "'") }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endforeach
         @endif
     </section>
 

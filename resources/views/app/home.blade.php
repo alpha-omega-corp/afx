@@ -43,8 +43,8 @@
         </x-slot:special>
 
         {{-- The three ways into the house: a table, the carte, a bed.
-             This band has no top gap and no seam — the cards climb into the
-             hero's firelight, and reveal themselves as they arrive. --}}
+             The cards start under the hero's ember line, with a little air
+             above them, and reveal themselves as they arrive. --}}
         <section class="home-doors">
             <div class="container">
                 {{-- `get`, not `[...]`: a collection subscript throws on a key
